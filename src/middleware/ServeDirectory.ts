@@ -45,7 +45,7 @@ export default class ServeDirectory implements Handler {
 						return;
 					}
 
-					response.end(this.createHtml(location, files));
+					response.end(this.createHtml(requestUrl.path, files));
 					resolve('immediate');
 				});
 			}
