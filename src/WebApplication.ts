@@ -48,15 +48,21 @@ export default class WebApplication implements Handler {
 
 	postProcessing(_request: IncomingMessage, response: ServerResponse) {
 		if (!response.finished) {
-			response.end();
+			throw new MiddlewareError('Not Found', 404);
 		}
 	}
 
 	errorHandler(_request: IncomingMessage, response: ServerResponse, error: Error): Promise<string> {
-		return new Promise(function (resolve) {
+		return new Promise((resolve) => {
+			const message = this.statusResponse(response.statusCode, error);
 			response.statusCode = (<MiddlewareError> error).statusCode || 500;
-			response.end(error.message, resolve);
+			response.end(message, resolve);
 		});
+	}
+
+	statusResponse(_code: number, error: Error) {
+		// override to provide custom error messages
+		return error.message;
 	}
 
 	private promiseTimeout(timeout: number = this.timeout): Promise<void> {

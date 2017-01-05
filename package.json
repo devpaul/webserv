@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "arraylike-proxy": "^0.1.0",
+    "http-proxy": "^1.16.2",
     "send": "^0.14.1"
   },
   "devDependencies": {

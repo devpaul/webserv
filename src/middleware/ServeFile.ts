@@ -16,10 +16,13 @@ export default class ServeFile implements Handler {
 	}
 
 	handle(request: IncomingMessage, response: ServerResponse): Promise<Response> {
+		if (response.finished) {
+			return Promise.resolve();
+		}
+
 		return new Promise<Response>((resolve) => {
 			const requestUrl = parseUrl(request.url);
 			const location = this.mapToLocalFile(joinPath(this.rootDirectory, requestUrl.path), true);
-			console.log(location);
 
 			if (location) {
 				send(request, location)
