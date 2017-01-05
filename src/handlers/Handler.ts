@@ -8,5 +8,5 @@ export interface HandlerFunction {
 
 export interface Handler {
 	name?: string;
-	handle: HandlerFunction;
+	handle(request: IncomingMessage, response: ServerResponse): Promise<Response>;
 }
