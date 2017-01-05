@@ -1,0 +1,30 @@
+{
+	"version": "2.0.0",
+	"compilerOptions": {
+		"allowSyntheticDefaultImports": true,
+		"baseUrl": ".",
+		"declaration": true,
+		"module": "umd",
+		"moduleResolution": "node",
+		"noImplicitAny": true,
+		"noImplicitThis": true,
+		"noUnusedParameters": true,
+		"noUnusedLocals": true,
+		"outDir": "./_dist/tests",
+		"preserveConstEnums": true,
+		"removeComments": true,
+		"sourceMap": true,
+		"target": "ES6",
+		"paths": {
+			"src/*": [
+				"./_dist/src/*"
+			]
+		}
+	},
+	"files": [
+		"./node_modules/intern/typings/intern/intern.d.ts"
+	],
+	"include": [
+		"./tests/**/*.ts"
+	]
+}
