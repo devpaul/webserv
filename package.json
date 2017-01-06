@@ -1,7 +1,7 @@
 {
   "name": "webserv",
   "author": "Paul Shannon <pshannon@sitepen.com>",
-  "version": "0.1.0-pre",
+  "version": "0.1.0",
   "description": "Programmatically create a frontend web-server for development",
   "license": "MPL-2.0",
   "bugs": {
