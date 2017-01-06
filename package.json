@@ -1,7 +1,7 @@
 {
   "name": "webserv",
   "author": "Paul Shannon <pshannon@sitepen.com>",
-  "version": "0.1.0",
+  "version": "0.2.0-pre",
   "description": "Programmatically create a frontend web-server for development",
   "license": "MPL-2.0",
   "bugs": {
@@ -22,7 +22,6 @@
     "test": "ts-node ./support/test"
   },
   "dependencies": {
-    "arraylike-proxy": "^0.1.0",
     "http-proxy": "^1.16.2",
     "send": "^0.14.1"
   },
@@ -42,6 +41,8 @@
     "server",
     "proxy",
     "http",
-    "https"
+    "https",
+    "devserver",
+    "development"
   ]
 }
