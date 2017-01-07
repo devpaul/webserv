@@ -4,28 +4,21 @@ import Group from './handlers/Group';
 import MiddlewareError from './MiddlewareError';
 
 export interface Options {
-	name?: WebApplication["name"];
 	timeout?: WebApplication["timeout"];
 	errorHandler?: WebApplication["errorHandler"];
 }
 
-const DEFAULT_NAME = 'application';
-const DEFAULT_MIDDLEWARE_NAME = `${ DEFAULT_NAME } middleware`;
 const DEFAULT_TIMEOUT = 1000;
 
 /**
  * A WebApplication is typically the root handler for the server. It manages the middleware.
  */
 export default class WebApplication implements Handler {
-	readonly name: string;
-
 	middleware: Handler;
 
 	timeout: number;
 
-	constructor(middleware: Handler = new Group([], DEFAULT_MIDDLEWARE_NAME), options: Options = {}) {
-		this.name = options.name || DEFAULT_NAME;
-
+	constructor(middleware: Handler = new Group([]), options: Options = {}) {
 		this.middleware = middleware;
 		this.timeout = options.timeout || DEFAULT_TIMEOUT;
 
@@ -46,13 +39,13 @@ export default class WebApplication implements Handler {
 		});
 	}
 
-	postProcessing(_request: IncomingMessage, response: ServerResponse) {
+	protected postProcessing(_request: IncomingMessage, response: ServerResponse) {
 		if (!response.finished) {
 			throw new MiddlewareError('Not Found', 404);
 		}
 	}
 
-	errorHandler(_request: IncomingMessage, response: ServerResponse, error: Error): Promise<string> {
+	protected errorHandler(_request: IncomingMessage, response: ServerResponse, error: Error): Promise<string> {
 		return new Promise((resolve) => {
 			const message = this.statusResponse(response.statusCode, error);
 			response.statusCode = (<MiddlewareError> error).statusCode || 500;
@@ -60,12 +53,12 @@ export default class WebApplication implements Handler {
 		});
 	}
 
-	statusResponse(_code: number, error: Error) {
+	protected statusResponse(_code: number, error: Error) {
 		// override to provide custom error messages
 		return error.message;
 	}
 
-	private promiseTimeout(timeout: number = this.timeout): Promise<void> {
+	protected promiseTimeout(timeout: number = this.timeout): Promise<void> {
 		return new Promise<void>(function (_resolve, reject) {
 			setTimeout(function () {
 				reject(new MiddlewareError(`Response timeout of ${ timeout } reached.`));

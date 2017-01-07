@@ -12,12 +12,9 @@ import Functional from './Functional';
 export type Directive = Response | 'skip' | 'immediate';
 
 export default class Group implements Handler {
-	readonly name: string;
-
 	readonly handlers: Handler[];
 
-	constructor(handlers: Handler[] = [], name: string = 'group') {
-		this.name = name;
+	constructor(handlers: Handler[] = []) {
 		this.handlers = handlers;
 	}
 

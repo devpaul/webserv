@@ -91,16 +91,13 @@ export function method(method: string, filter: Filter, handler: Handler) {
  * A route is simply a piece of middleware that has a filter condition attached
  */
 export default class Route implements Handler {
-	readonly name: string;
-
 	private _filter: FilterRules;
 
 	private _filterFunction: FilterFunction;
 
 	private _handler: Handler;
 
-	constructor(filter: FilterRules, handler: Handler, name: string = 'route') {
-		this.name = name;
+	constructor(filter: FilterRules, handler: Handler) {
 		this.filter = filter;
 		this._handler = handler;
 	}
