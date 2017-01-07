@@ -1,17 +1,16 @@
-#!/usr/bin/env node
-
 /*
  * Clean the build
  */
 
-import { distDirectory } from './common';
-import runCommand from './commands/runCommand';
+import { distDirectory } from '../common';
 const shell = require('shelljs');
 
-runCommand({
+const commands = {
 	dist() {
 		shell.rm('-rf', distDirectory);
 	},
 
 	'default': 'dist'
-});
+};
+
+export default commands;

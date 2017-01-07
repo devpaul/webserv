@@ -1,6 +1,6 @@
 const shell = require('shelljs');
 
-export default function exec(command: string, print: boolean = true): Promise<any> {
+export default function exec(command: string, print: boolean = false): Promise<any> {
 	return new Promise(function (resolve, reject) {
 		shell.exec(command, { async: true }, function (code: number, stdout: Buffer, stderr: Buffer) {
 			if (print) {
