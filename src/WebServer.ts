@@ -1,4 +1,4 @@
-import { Handler } from './handlers/handler';
+import { Handler } from './handlers/Handler';
 import { createServer as createHttpServer, Server as HttpServer, ServerResponse, IncomingMessage } from 'http';
 import { createServer as createHttpsServer, Server as HttpsServer, ServerOptions as HttpsOptions } from 'https';
 import WebApplication from './WebApplication';

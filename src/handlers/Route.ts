@@ -1,4 +1,4 @@
-import { Handler } from '../handlers/handler';
+import { Handler } from '../handlers/Handler';
 import { IncomingMessage, ServerResponse } from 'http';
 import { Response } from './Handler';
 
