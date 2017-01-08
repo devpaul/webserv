@@ -1,4 +1,4 @@
-import { HandlerFunction, Response, Handler } from '../Handler';
+import { HandlerFunction, Response, Handler } from './Handler';
 import { IncomingMessage } from 'http';
 import { ServerResponse } from 'http';
 import { parse as parseUrl } from 'url';
@@ -56,7 +56,7 @@ export function wrap(handler: Handler, f: Filter): Handler {
 				return wrappedHandler;
 			}
 			if (property === FILTER) {
-				return filter;
+				return f;
 			}
 		}
 	});
@@ -69,7 +69,7 @@ export function wrap(handler: Handler, f: Filter): Handler {
  */
 export function method(method: string): FilterFunction {
 	return filterObject({
-		method
+		method: method.toLowerCase()
 	});
 }
 

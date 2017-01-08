@@ -19,6 +19,7 @@
     "build": "ts-node ./support/run build",
     "ci": "ts-node ./support/run ci",
     "clean": "ts-node ./support/run clean",
+    "sample": "ts-node ./support/sample",
     "test": "ts-node ./support/run test"
   },
   "dependencies": {
