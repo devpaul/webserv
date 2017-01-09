@@ -7,8 +7,10 @@ import { runCommands } from '../commands/runCommand';
 const commands = {
 	'default'() {
 		return runCommands(
+			'clean',
 			'build',
-			'test'
+			'test',
+			'package'
 		);
 	}
 };
