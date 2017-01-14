@@ -1,4 +1,4 @@
-import { Handler, Response, HandlerFunction } from './Handler';
+import { Handler, Response, HandlerFunction, isHandlerFunction, isHandler } from './Handler';
 import { ServerResponse, IncomingMessage } from 'http';
 import Functional from './Functional';
 
@@ -23,11 +23,15 @@ export default class Group implements Handler {
 	}
 
 	add(handler: Handler | HandlerFunction): this {
-		if (typeof handler === 'function') {
-			handler = new Functional(<HandlerFunction> handler);
+		if (isHandlerFunction(handler)) {
+			this.handlers.push(new Functional(handler));
 		}
-
-		this.handlers.push(<Handler> handler);
+		else if (isHandler(handler)) {
+			this.handlers.push(handler);
+		}
+		else {
+			throw new Error('Unrecognized type');
+		}
 
 		return this;
 	}

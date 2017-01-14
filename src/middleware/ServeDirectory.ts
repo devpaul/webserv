@@ -4,19 +4,32 @@ import { parse as parseUrl } from 'url';
 import { join as joinPath } from 'path';
 import { IncomingMessage, ServerResponse } from 'http';
 
+export interface Options {
+	rootDirectory?: ServeDirectory['rootDirectory'];
+	basePath?: ServeDirectory['basePath'];
+}
+
 export default class ServeDirectory implements Handler {
 	public rootDirectory: string;
 
-	constructor(rootDirectory: string) {
-		this.rootDirectory = rootDirectory;
+	public basePath: string = '';
+
+	constructor(options: Options | string = {}) {
+		if (typeof options === 'string') {
+			this.rootDirectory = options;
+		}
+		else {
+			this.rootDirectory = options.rootDirectory || process.cwd();
+			this.basePath = options.basePath || '';
+		}
 	}
 
 	createHtml(currentDirectory: string, files: string[]) {
-		function fileLinks(): string {
-			return files.map(function (file) {
-				return `<a href="${ joinPath(currentDirectory, file) }">${ file }</a>`
+		const fileLinks: () => string = () => {
+			return files.map((file) => {
+				return `<a href="${ joinPath(this.basePath, currentDirectory, file) }">${ file }</a>`
 			}).join('<br>');
-		}
+		};
 
 		return '<!DOCTYPE html>' +
 			'<html lang="en">' +
@@ -45,7 +58,8 @@ export default class ServeDirectory implements Handler {
 						return;
 					}
 
-					response.end(this.createHtml(requestUrl.path, files));
+					const url = (<any> request).originalUrl ? parseUrl((<any> request).originalUrl) : requestUrl;
+					response.end(this.createHtml(url.path, files));
 					resolve('immediate');
 				});
 			}

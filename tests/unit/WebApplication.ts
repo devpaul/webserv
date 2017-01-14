@@ -1,6 +1,6 @@
 import * as registerSuite from 'intern!object';
 import * as assert from 'intern/chai!assert';
-import WebApplication from 'src/WebApplication';
+import WebApplication, { Application } from 'src/WebApplication';
 import * as sinon from 'sinon';
 import { createMockMiddleware, createMockResponse } from './_support/mocks';
 import { Handler } from 'src/handlers/Handler';
@@ -16,13 +16,13 @@ registerSuite({
 		'provided middleware'() {
 			const middleware = createMockMiddleware();
 
-			const app = new WebApplication(middleware);
+			const app = new Application(middleware);
 			assert.strictEqual(app.middleware, middleware);
 		},
 
 		'custom options': {
 			timeout() {
-				const app = new WebApplication(undefined, {
+				const app = new WebApplication({
 					timeout: 5000
 				});
 
@@ -32,7 +32,7 @@ registerSuite({
 
 			errorHandler() {
 				const errorHandler = sinon.stub();
-				const app = new WebApplication(undefined, {
+				const app = new WebApplication({
 					errorHandler
 				});
 
@@ -45,7 +45,7 @@ registerSuite({
 	'#handle()': {
 		'on timeout; rejects and is handled by errorHandler'() {
 			const middleware: Handler = <any> { handle: () => new Promise(() => {}) };
-			const app = new WebApplication(middleware, {
+			const app = new Application(middleware, {
 				timeout: 100
 			});
 
@@ -54,7 +54,7 @@ registerSuite({
 
 		'request and response passed to middleware'() {
 			const middleware = createMockMiddleware();
-			const app = new WebApplication(middleware);
+			const app = new Application(middleware);
 			const response = createMockResponse();
 
 			return app.handle(null, response)
@@ -67,7 +67,7 @@ registerSuite({
 
 		'response is not marked as finished; postProcessing sends to errorHandler'() {
 			const middleware = createMockMiddleware();
-			const app = new WebApplication(middleware);
+			const app = new Application(middleware);
 			const response = createMockResponse();
 			response.finished = false;
 

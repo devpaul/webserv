@@ -1,6 +1,6 @@
 import * as registerSuite from 'intern!object';
 import * as assert from 'intern/chai!assert';
-import WebServer from 'src/WebServer';
+import WebServer, { Server } from 'src/WebServer';
 import WebApplication from 'src/WebApplication';
 import { Handler } from 'src/handlers/Handler';
 import * as sinon from 'sinon';
@@ -21,10 +21,10 @@ registerSuite({
 			const handler: Handler = <any> {
 				handler: sinon.stub()
 			};
-			const server = new WebServer({
+			const server = new Server(handler, {
 				type: 'http',
 				port: '3345'
-			}, handler);
+			});
 
 			assert.equal(server.app, handler);
 			assert.equal(server.config.type, 'http');

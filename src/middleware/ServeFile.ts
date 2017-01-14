@@ -10,7 +10,7 @@ export default class ServeFile implements Handler {
 
 	public searchDefaults: string[];
 
-	constructor(rootDirectory: string, searchDefaults: string[] = [ 'index.html' ]) {
+	constructor(rootDirectory: string = process.cwd(), searchDefaults: string[] = [ 'index.html' ]) {
 		this.rootDirectory = rootDirectory;
 		this.searchDefaults = searchDefaults;
 	}
@@ -22,7 +22,8 @@ export default class ServeFile implements Handler {
 
 		return new Promise<Response>((resolve) => {
 			const requestUrl = parseUrl(request.url);
-			const location = this.mapToLocalFile(joinPath(this.rootDirectory, requestUrl.path), true);
+			const path = joinPath(this.rootDirectory, requestUrl.path);
+			const location = this.mapToLocalFile(path, true);
 
 			if (location) {
 				send(request, location)

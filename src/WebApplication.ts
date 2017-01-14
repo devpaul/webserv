@@ -13,12 +13,12 @@ const DEFAULT_TIMEOUT = 1000;
 /**
  * A WebApplication is typically the root handler for the server. It manages the middleware.
  */
-export default class WebApplication implements Handler {
-	middleware: Handler;
+export class Application<T extends Handler> implements Handler {
+	middleware: T;
 
 	timeout: number;
 
-	constructor(middleware: Handler = new Group([]), options: Options = {}) {
+	constructor(middleware: T, options: Options = {}) {
 		this.middleware = middleware;
 		this.timeout = options.timeout || DEFAULT_TIMEOUT;
 
@@ -64,5 +64,11 @@ export default class WebApplication implements Handler {
 				reject(new MiddlewareError(`Response timeout of ${ timeout } reached.`));
 			}, timeout);
 		});
+	}
+}
+
+export default class WebApplication extends Application<Group> {
+	constructor(options: Options = {}) {
+		super(new Group(), options);
 	}
 }

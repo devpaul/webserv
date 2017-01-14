@@ -1,6 +1,6 @@
 import * as registerSuite from 'intern!object';
 import * as assert from 'intern/chai!assert';
-import { filter, wrap, FILTER, method, first, FilterFunction, every, createFilter } from 'src/handlers/filter';
+import { filter, proxy, method, first, FilterFunction, every, createFilter } from 'src/handlers/filter';
 import { IncomingMessage, ServerResponse } from 'http';
 import Functional from 'src/handlers/Functional';
 import * as sinon from 'sinon';
@@ -55,7 +55,7 @@ registerSuite({
 
 	'#wrap()': {
 		'when filter passes; the underlying handler is ran'() {
-			return wrap(handler, passingFilter).handle(request, response)
+			return proxy(handler, passingFilter).handle(request, response)
 				.then(function () {
 					assert.isTrue(passingFilter.calledOnce);
 					assert.isTrue(handlerMethod.called);
@@ -63,15 +63,11 @@ registerSuite({
 		},
 
 		'when filter fails; the underlying handler is not ran'() {
-			return wrap(handler, failingFilter).handle(request, response)
+			return proxy(handler, failingFilter).handle(request, response)
 				.then(function () {
 					assert.isTrue(failingFilter.calledOnce);
 					assert.isFalse(handlerMethod.called);
 				});
-		},
-
-		'get underlying filter using the symbol'() {
-			return assert.strictEqual((<any> wrap(handler, failingFilter))[FILTER], failingFilter);
 		}
 	},
 
@@ -135,7 +131,7 @@ registerSuite({
 				assert.isFalse(filterMethod(request));
 				assert.isTrue(failingFilter.calledThrice);
 			}
-		},
+		}
 	},
 
 	'#every()': {

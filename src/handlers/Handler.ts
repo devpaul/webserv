@@ -9,3 +9,11 @@ export interface HandlerFunction {
 export interface Handler {
 	handle(request: IncomingMessage, response: ServerResponse): Promise<Response>;
 }
+
+export function isHandler(value: any): value is Handler {
+	return !!value && typeof value === 'object' && 'handle' in value;
+}
+
+export function isHandlerFunction(value: any): value is HandlerFunction {
+	return typeof value === 'function';
+}

@@ -27,7 +27,7 @@ export default class Proxy implements Handler {
 			});
 			proxy.on('proxyRes', function () {
 			});
-			console.log(`proxying to ${ this.baseUrl }`);
+			console.log(`proxying to ${ this.baseUrl }${ request.url }`);
 			proxy.web(request, response, {
 				changeOrigin: true,
 				target: this.baseUrl

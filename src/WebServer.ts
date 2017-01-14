@@ -14,19 +14,19 @@ const DEFAULT_CONFIG: Config = <Config> Object.freeze({
 	port: '8888'
 });
 
-export default class WebServer {
-	readonly app: Handler;
+export class Server<T extends Handler> {
+	readonly app: T;
 
 	readonly config: Config;
 
 	private _server: HttpServer | HttpsServer;
 
 	constructor(
-		config: Config = Object.assign({}, DEFAULT_CONFIG),
-		handler: Handler = new WebApplication()
+		handler: T,
+		config: Config = Object.assign({}, DEFAULT_CONFIG)
 	) {
-		this.config = config;
 		this.app = handler;
+		this.config = config;
 	}
 
 	start(port: string = this.config.port): Promise<any> {
@@ -35,7 +35,7 @@ export default class WebServer {
 			.then((server: HttpServer | HttpsServer) => {
 				return new Promise((resolve) => {
 					server.listen(port, resolve);
-				})
+				});
 			});
 	}
 
@@ -65,5 +65,11 @@ export default class WebServer {
 				reject(new Error(`Unknown server type "${ this.config.type }"`));
 			}
 		});
+	}
+}
+
+export default class WebServer extends Server<WebApplication> {
+	constructor(config: Config = Object.assign({}, DEFAULT_CONFIG)) {
+		super(new WebApplication(), config);
 	}
 }

@@ -12,8 +12,7 @@
 		"noUnusedLocals": true,
 		"outDir": "./_dist/src",
 		"preserveConstEnums": true,
-		"removeComments": true,
-		"jsx": "react",
+		"removeComments": false,
 		"sourceMap": true,
 		"target": "ES6"
 	},

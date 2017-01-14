@@ -45,4 +45,4 @@ export const suites = [
 ];
 
 export const functionalSuites: string[] = [];
-export const excludeInstrumentation = /^(?:dist\/tests|node_modules)\//;
+export const excludeInstrumentation = /^(?:_dist\/tests|node_modules)\//;

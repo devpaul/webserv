@@ -32,13 +32,8 @@ export function filter(handler: HandlerFunction, filter: Filter): HandlerFunctio
 		}
 
 		return handler(request, response);
-	}
+	};
 }
-
-/**
- * a Symbol providing access to the proxied filter
- */
-export const FILTER = Symbol();
 
 /**
  * Wrap a Handler in a Proxy that filters #handle()
@@ -47,16 +42,13 @@ export const FILTER = Symbol();
  * @param f the filter that must pass for the handler to be executed
  * @return {Handler} a proxied version of the handler
  */
-export function wrap(handler: Handler, f: Filter): Handler {
-	let wrappedHandler = filter(handler.handle.bind(handler), f);
+export function proxy(handler: Handler, f: Filter): Handler {
+	const filterFunction = createFilter(f);
 
 	return new Proxy(handler, {
-		get(_target: any, property: PropertyKey) {
+		get(target: Handler, property: PropertyKey) {
 			if (property === 'handle') {
-				return wrappedHandler;
-			}
-			if (property === FILTER) {
-				return f;
+				return filter(target.handle.bind(target), filterFunction);
 			}
 		}
 	});
@@ -85,8 +77,8 @@ export function first(... filters: Filter[]): FilterFunction {
 	return function (request: IncomingMessage): boolean {
 		return filterFunctions.some(function (filter) {
 			return filter(request);
-		})
-	}
+		});
+	};
 }
 
 /**
@@ -101,8 +93,8 @@ export function every(... filters: Filter[]): FilterFunction {
 	return function (request: IncomingMessage): boolean {
 		return filterFunctions.every(function (filter) {
 			return filter(request);
-		})
-	}
+		});
+	};
 }
 
 /**
@@ -133,7 +125,7 @@ function filterStringRoute(match: string): FilterFunction {
 	return function (request: IncomingMessage): boolean {
 		// TODO make this more robust
 		const url = parseUrl(request.url);
-		return url.pathname === match;
+		return url.pathname.indexOf(match) === 0;
 	};
 }
 
