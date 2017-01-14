@@ -1,9 +1,12 @@
 {
   "name": "webserv",
   "author": "Paul Shannon <pshannon@sitepen.com>",
-  "version": "0.3.0-pre",
+  "version": "0.2.0",
   "description": "Programmatically create a frontend web-server for development",
   "license": "MPL-2.0",
+  "bin": {
+    "webserv": "bin/webserv.js"
+  },
   "bugs": {
     "url": "https://github.com/devpaul/webserv/issues"
   },
@@ -23,10 +26,13 @@
     "test": "ts-node ./support/run test"
   },
   "dependencies": {
+    "commander": "^2.9.0",
+    "findup": "^0.1.5",
     "http-proxy": "^1.16.2",
     "send": "^0.14.1"
   },
   "devDependencies": {
+    "@types/commander": "^2.3.31",
     "@types/node": "0.0.2",
     "@types/sinon": "^1.16.34",
     "dojo-loader": "^2.0.0-beta.7",
