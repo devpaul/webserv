@@ -40,9 +40,8 @@ registerSuite({
 		server['_server'] = {
 			listen: listenMethod
 		};
-		return server.start().then(function () {
-			assert.isTrue(listenMethod.called);
-		});
+		assert.isTrue(server.isRunning());
+		return server.start();
 	},
 
 	stop() {

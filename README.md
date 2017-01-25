@@ -6,12 +6,20 @@
 
 Programatic API for creating front-end webservers to support development. Webserv was built to provide a complete
 	and simple way for front-end engineers develop decoupled from the backend.
+	
+## Features
 
-## Example Usage
+* Fully typed API
+* Command line interface
+* Grunt support
+
+## Usage
+
+## Programmatic
 
 Let's start a new server that servers files from a directory and proxies requests through to a parent server
 
-```typescript
+```javascript
 import WebServer from 'webserv/WebServer';
 import ServeFile from 'webserv/middleware/ServeFile';
 import ServeDirectory from 'webserv/middleware/ServeDirectory';
@@ -24,6 +32,24 @@ const group: Group = <Group> (<WebApplication> server.app).middleware;
 group.add(new ServeFile('./_dist'));
 group.add(new ServeDirectory('./_dist'));
 group.add(new Proxy('https://devpaul.com'));
-server.start();
-console.log(`started server on ${ server.config.port }`);
+server.start()
+	.then(function () {
+		console.log(`started server on ${ server.config.port }`);
+	})
 ```
+
+## Grunt
+
+```javascript
+{
+	webserv: {
+		options: {
+			port: number, // defaults to 8888
+			directory: string // if present, host the directory
+			middleware: Handler[] // array of middleware
+		}
+	}
+}
+```
+
+## Command Line
