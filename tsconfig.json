@@ -1,5 +1,5 @@
 {
-	"version": "2.0.0",
+	"version": "2.1.0",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
 		"baseUrl": ".",
@@ -8,12 +8,14 @@
 		"moduleResolution": "node",
 		"noImplicitAny": true,
 		"noImplicitThis": true,
+		"noImplicitReturns": false,
 		"noUnusedParameters": true,
 		"noUnusedLocals": true,
 		"outDir": "./_dist/src",
 		"preserveConstEnums": true,
 		"removeComments": false,
 		"sourceMap": true,
+		"strictNullChecks": false,
 		"target": "ES6"
 	},
 	"include": [
