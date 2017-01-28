@@ -11,19 +11,21 @@ import Functional from './Functional';
  */
 export type Directive = Response | 'skip' | 'immediate';
 
+export type HandlerDefinition = Handler | HandlerFunction | Array<Handler | HandlerFunction>;
+
 export default class Group implements Handler {
 	readonly handlers: Handler[];
 
-	constructor(handlers: Array<Handler | HandlerFunction> = []) {
+	constructor(handlers: HandlerDefinition = []) {
 		this.handlers = [];
-
-		for (let handler of handlers) {
-			this.add(handler);
-		}
+		this.add(handlers);
 	}
 
-	add(handler: Handler | HandlerFunction): this {
-		if (isHandlerFunction(handler)) {
+	add(handler: HandlerDefinition): this {
+		if (Array.isArray(handler)) {
+			handler.forEach(this.add.bind(this));
+		}
+		else if (isHandlerFunction(handler)) {
 			this.handlers.push(new Functional(handler));
 		}
 		else if (isHandler(handler)) {
