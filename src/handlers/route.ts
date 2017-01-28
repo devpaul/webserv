@@ -1,4 +1,4 @@
-import { Handler, HandlerFunction, isHandlerFunction, isHandler } from './Handler';
+import { Handler, HandlerFunction, isHandlerFunction } from './Handler';
 import Functional from './Functional';
 import { proxy as filterProxy, Filter } from './filter';
 import { Transform, proxy as transformProxy } from './transform';
@@ -7,13 +7,7 @@ import Group from './Group';
 export type RouteHandler = Handler | HandlerFunction | Array<Handler | HandlerFunction>;
 
 export class Route {
-	protected handler: Handler;
-
 	protected stack: Array<(handler: Handler) => Handler> = [];
-
-	constructor(handler: Handler) {
-		this.handler = handler;
-	}
 
 	filter(filter: Filter): this {
 		this.stack.unshift(function (handler) {
@@ -29,8 +23,14 @@ export class Route {
 		return this;
 	}
 
-	end(): Handler {
-		let handler = this.handler;
+	wrap(handler: RouteHandler): Handler {
+		if (Array.isArray(handler)) {
+			handler = new Group(handler);
+		}
+		else if (isHandlerFunction(handler)) {
+			handler = new Functional(handler);
+		}
+
 		for (let factory of this.stack) {
 			handler = factory(handler);
 		}
@@ -38,27 +38,12 @@ export class Route {
 	}
 }
 
-export function route(filter: Filter, handler: RouteHandler): Route;
-export function route(handler: RouteHandler): Route;
-export default function route(filter: Filter | RouteHandler, handler?: RouteHandler): Route {
-	if (arguments.length === 1) {
-		handler = <RouteHandler> filter;
-		filter = null;
+export default function route(filter?: Filter): Route {
+	const route = new Route();
+
+	if (filter) {
+		route.filter(filter);
 	}
 
-	let route: Route;
-	if (Array.isArray(handler)) {
-		route = new Route(new Group(handler));
-	}
-	else if (isHandler(handler)) {
-		route = new Route(handler);
-	}
-	else if (isHandlerFunction(handler)) {
-		route = new Route(new Functional(handler));
-	}
-	else {
-		throw new Error('Unrecognized type');
-	}
-
-	return filter ? route.filter(<Filter> filter) : route;
+	return route;
 }

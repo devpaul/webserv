@@ -5,7 +5,7 @@ export interface Handler {
 	(args?: any[]): Promise<void> | void;
 }
 
-export type HandlerMap = { [ key: string ]: Handler | string }
+export type HandlerMap = { [ key: string ]: Handler | string };
 
 export default function run(command: string, directive: string = 'default', args: string[] = []): Promise<void> {
 	return new Promise<void>(function (resolve, reject) {
@@ -39,13 +39,13 @@ export function runCommand(commandStr: string): Promise<void> {
 }
 
 export async function runCommands(... commands: string[]) {
-	for (var i = 0; i < commands.length; i++) {
+	for (let i = 0; i < commands.length; i++) {
 		await runCommand(commands[i]);
 	}
 }
 
 function listCommands(handlers: HandlerMap): void {
-	var commands = [];
+	const commands = [];
 	for (let name in handlers) {
 		commands.push(`"${ name }"`);
 	}

@@ -3,6 +3,7 @@ import { statSync } from 'fs';
 import { parse as parseUrl } from 'url';
 import { join as joinPath } from 'path';
 import { IncomingMessage, ServerResponse } from 'http';
+import { log } from '../log';
 const send = require('send');
 
 export default class ServeFile implements Handler {
@@ -26,6 +27,7 @@ export default class ServeFile implements Handler {
 			const location = this.mapToLocalFile(path, true);
 
 			if (location) {
+				log.debug(`ServeFile: serving file "${ location }"`);
 				send(request, location)
 					.on('end', function () {
 						response.end();
@@ -34,6 +36,7 @@ export default class ServeFile implements Handler {
 					.pipe(response);
 			}
 			else {
+				log.debug(`ServeFile: "${ location } does not exist`);
 				resolve();
 			}
 		});

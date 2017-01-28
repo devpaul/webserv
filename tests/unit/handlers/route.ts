@@ -28,19 +28,19 @@ function createTests(factory: () => Target) {
 		},
 
 		construct() {
-			const proxy = route(target).end();
+			const proxy = route().wrap(target);
 			assert.property(proxy, 'handle');
 		},
 
 		filter() {
-			const proxy = route(target).filter(filter).end();
+			const proxy = route().filter(filter).wrap(target);
 			proxy.handle(request, response);
 
 			assert.isTrue(filter.calledOnce);
 		},
 
 		transform() {
-			const proxy = route(target).transform(transform).end();
+			const proxy = route().transform(transform).wrap(target);
 			proxy.handle(request, response);
 
 			assert.isTrue(transform.calledOnce);
@@ -48,7 +48,7 @@ function createTests(factory: () => Target) {
 		},
 
 		'filter and transform'() {
-			const proxy = route(target).transform(transform).filter(filter).end();
+			const proxy = route().transform(transform).filter(filter).wrap(target);
 			proxy.handle(request, response);
 
 			assert.isTrue(transform.calledOnce);

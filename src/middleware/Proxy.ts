@@ -1,5 +1,6 @@
 import { Handler, Response } from '../handlers/Handler';
 import { IncomingMessage, ServerResponse } from 'http';
+import { log } from '../log';
 const httpProxy = require('http-proxy');
 
 export default class Proxy implements Handler {
@@ -10,6 +11,10 @@ export default class Proxy implements Handler {
 	}
 
 	handle(request: IncomingMessage, response: ServerResponse): Promise<Response> {
+		if (response.finished) {
+			return Promise.resolve();
+		}
+
 		return new Promise<Response>((resolve) => {
 			if (response.finished) {
 				resolve();
@@ -18,7 +23,7 @@ export default class Proxy implements Handler {
 
 			const proxy = httpProxy.createProxyServer({});
 			proxy.on('error', function (err: Error) {
-				console.log(err.message);
+				log.error(`Proxy failed: ${ err.message }`);
 				resolve();
 			});
 			response.on('close', function () {
@@ -27,7 +32,9 @@ export default class Proxy implements Handler {
 			});
 			proxy.on('proxyRes', function () {
 			});
-			console.log(`proxying to ${ this.baseUrl }${ request.url }`);
+
+			log.debug(`proxying to ${ this.baseUrl }${ request.url }`);
+
 			proxy.web(request, response, {
 				changeOrigin: true,
 				target: this.baseUrl

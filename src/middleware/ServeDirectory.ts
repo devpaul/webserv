@@ -3,6 +3,7 @@ import { statSync, readdir } from 'fs';
 import { parse as parseUrl } from 'url';
 import { join as joinPath } from 'path';
 import { IncomingMessage, ServerResponse } from 'http';
+import { log } from '../log';
 
 export interface Options {
 	rootDirectory?: ServeDirectory['rootDirectory'];
@@ -53,6 +54,8 @@ export default class ServeDirectory implements Handler {
 			const location = joinPath(this.rootDirectory, requestUrl.path);
 
 			if (this.isDirectory(location)) {
+				log.debug(`ServeDirectory: listing contents of "${ location }"`);
+
 				readdir(location, (err, files) => {
 					if (err) {
 						return;
@@ -60,10 +63,11 @@ export default class ServeDirectory implements Handler {
 
 					const url = (<any> request).originalUrl ? parseUrl((<any> request).originalUrl) : requestUrl;
 					response.end(this.createHtml(url.path, files));
-					resolve('immediate');
+					resolve();
 				});
 			}
 			else {
+				log.debug(`ServeDirectory: "${ location }" does not exist.`);
 				resolve();
 			}
 		});
