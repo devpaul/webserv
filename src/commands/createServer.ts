@@ -4,10 +4,12 @@ import Group from '../handlers/Group';
 import ServeFile from '../middleware/ServeFile';
 import ServeDirectory from '../middleware/ServeDirectory';
 
+export type Middleware = () => Handler[] | Handler[];
+
 export interface Config {
 	port?: string;
 	directory?: string;
-	middleware?: Handler[];
+	middleware?: Middleware;
 }
 
 export default function (config: Config) {
@@ -16,7 +18,8 @@ export default function (config: Config) {
 	});
 
 	if (config.middleware) {
-		for (let handler of config.middleware) {
+		const middleware = (typeof config.middleware === 'function') ? config.middleware() : config.middleware;
+		for (let handler of middleware) {
 			server.app.middleware.add(handler);
 		}
 	}
