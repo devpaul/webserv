@@ -10,7 +10,7 @@ registerSuite({
 		'default'() {
 			const app = new WebApplication();
 			assert.isNotNull(app.middleware);
-			assert.strictEqual(app.timeout, 1000);
+			assert.strictEqual(app.timeout, 5000);
 		},
 
 		'provided middleware'() {
