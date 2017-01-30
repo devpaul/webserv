@@ -8,7 +8,7 @@ export interface Options {
 	errorHandler?: WebApplication["errorHandler"];
 }
 
-const DEFAULT_TIMEOUT = 1000;
+const DEFAULT_TIMEOUT = 5000;
 
 /**
  * A WebApplication is typically the root handler for the server. It manages the middleware.

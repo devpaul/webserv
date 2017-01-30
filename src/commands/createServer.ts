@@ -1,15 +1,16 @@
-import { Handler } from '../handlers/Handler';
+import { Handler, HandlerFunction } from '../handlers/Handler';
 import WebServer from '../WebServer';
 import Group from '../handlers/Group';
 import ServeFile from '../middleware/ServeFile';
 import ServeDirectory from '../middleware/ServeDirectory';
 
-export type Middleware = () => Handler[] | Handler[];
+export type Middleware = () => Array<Handler | HandlerFunction>;
 
 export interface Config {
-	port?: string;
 	directory?: string;
 	middleware?: Middleware;
+	port?: string;
+	timeout?: number;
 }
 
 export default function (config: Config) {
@@ -29,6 +30,10 @@ export default function (config: Config) {
 			new ServeFile(config.directory),
 			new ServeDirectory(config.directory)
 		]));
+	}
+
+	if (config.timeout) {
+		server.app.timeout = config.timeout;
 	}
 
 	return server;
