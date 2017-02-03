@@ -1,7 +1,7 @@
 {
   "name": "webserv",
   "author": "Paul Shannon <pshannon@sitepen.com>",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "Programmatically create a frontend web-server for development",
   "license": "MPL-2.0",
   "bin": {
@@ -27,6 +27,7 @@
     "test": "ts-node ./support/run test"
   },
   "dependencies": {
+    "@types/winston": "^2.2.0",
     "commander": "^2.9.0",
     "findup": "^0.1.5",
     "http-proxy": "^1.16.2",
@@ -38,7 +39,6 @@
     "@types/grunt": "^0.4.21",
     "@types/node": "0.0.2",
     "@types/sinon": "^1.16.34",
-    "@types/winston": "^2.2.0",
     "dojo-loader": "^2.0.0-beta.7",
     "grunt": "^1.0.1",
     "intern": "^3.4.2",
