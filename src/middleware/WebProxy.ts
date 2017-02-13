@@ -3,7 +3,7 @@ import { IncomingMessage, ServerResponse } from 'http';
 import { log } from '../log';
 const httpProxy = require('http-proxy');
 
-export default class Proxy implements Handler {
+export default class WebProxy implements Handler {
 	baseUrl: string;
 
 	constructor(baseUrl: string) {

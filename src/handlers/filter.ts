@@ -2,6 +2,7 @@ import { HandlerFunction, Response, Handler } from './Handler';
 import { IncomingMessage } from 'http';
 import { ServerResponse } from 'http';
 import { parse as parseUrl } from 'url';
+import { overrideWrapper } from '../util/proxies';
 
 export interface FilterFunction {
 	(request: IncomingMessage): boolean;
@@ -45,12 +46,8 @@ export function filter(handler: HandlerFunction, filter: Filter): HandlerFunctio
 export function proxy(handler: Handler, f: Filter): Handler {
 	const filterFunction = createFilter(f);
 
-	return new Proxy(handler, {
-		get(target: Handler, property: PropertyKey) {
-			if (property === 'handle') {
-				return filter(target.handle.bind(target), filterFunction);
-			}
-		}
+	return overrideWrapper(handler, {
+		handle: filter(handler.handle.bind(handler), filterFunction)
 	});
 }
 

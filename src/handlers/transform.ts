@@ -4,6 +4,7 @@
 import { Handler, Response, HandlerFunction } from './Handler';
 import { IncomingMessage, ServerResponse } from 'http';
 import { parse as parseUrl, format as formatUrl } from 'url';
+import { overrideWrapper, descriptorWrapper } from '../util/proxies';
 
 export interface Transform {
 	(request: IncomingMessage): IncomingMessage;
@@ -31,31 +32,27 @@ export function transform(handler: HandlerFunction, transform: Transform): Handl
  * @return {Handler} a proxied version of the Handler
  */
 export function proxy(handler: Handler, transformFunc: Transform): Handler {
-	return new Proxy(handler, {
-		get(target: Handler, property: PropertyKey) {
-			if (property === 'handle') {
-				return transform(target.handle.bind(target), transformFunc);
-			}
-		}
+	return overrideWrapper(handler, {
+		handle: transform(handler.handle.bind(handler), transformFunc)
 	});
 }
 
 export function relativeUrl(match: string, replace: string = ''): Transform {
 	return function (request: IncomingMessage) {
-		return new Proxy<IncomingMessage>(request, {
-			get(target: any, property: PropertyKey) {
-				if (property === 'originalUrl') {
-					return target.url;
+		return descriptorWrapper(request, {
+			originalUrl: {
+				get() {
+					return request.url;
 				}
-				if (property === 'url') {
-					const requestUrl = parseUrl(target.url);
+			},
+			url: {
+				get() {
+					const requestUrl = parseUrl(request.url);
 					if (requestUrl.path.indexOf(match) === 0) {
 						requestUrl.path = requestUrl.pathname = replace + requestUrl.path.substring(match.length) || '/';
 					}
 					return formatUrl(requestUrl);
 				}
-
-				return target[property];
 			}
 		});
 	};
