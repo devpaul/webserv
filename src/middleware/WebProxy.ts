@@ -10,6 +10,18 @@ export default class WebProxy implements Handler {
 		this.baseUrl = baseUrl;
 	}
 
+	onClose() {
+		log.debug('closed proxy');
+	}
+
+	onError(err: Error) {
+		log.error(`Proxy failed: ${ err.message }`);
+	}
+
+	onProxyRequest?(proxyRequest: IncomingMessage, request: IncomingMessage, response: ServerResponse): void;
+
+	onProxyResponse?(proxyResponse: ServerResponse, request: IncomingMessage, response: ServerResponse): void;
+
 	handle(request: IncomingMessage, response: ServerResponse): Promise<Response> {
 		if (response.finished) {
 			return Promise.resolve();
@@ -22,15 +34,23 @@ export default class WebProxy implements Handler {
 			}
 
 			const proxy = httpProxy.createProxyServer({});
-			proxy.on('error', function (err: Error) {
-				log.error(`Proxy failed: ${ err.message }`);
+			proxy.on('error', (err: Error) => {
+				this.onError(err);
 				resolve();
 			});
-			response.on('close', function () {
-				console.log('closed');
+			response.on('close', () => {
+				this.onClose();
 				resolve();
 			});
-			proxy.on('proxyRes', function () {
+			proxy.on('proxyRes', (proxyResponse: ServerResponse, request: IncomingMessage, response: ServerResponse) => {
+				if (this.onProxyResponse) {
+					this.onProxyResponse(proxyResponse, request, response);
+				}
+			});
+			proxy.on('proxyReq', (proxyRequest: IncomingMessage, request: IncomingMessage, response: ServerResponse) => {
+				if (this.onProxyRequest) {
+					this.onProxyRequest(proxyRequest, request, response);
+				}
 			});
 
 			log.debug(`proxying to ${ this.baseUrl }${ request.url }`);

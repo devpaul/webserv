@@ -51,7 +51,7 @@ export default class ServeDirectory implements Handler {
 
 		return new Promise<Response>((resolve) => {
 			const requestUrl = parseUrl(request.url);
-			const location = joinPath(this.rootDirectory, requestUrl.path);
+			const location = joinPath(this.rootDirectory, requestUrl.pathname);
 
 			if (this.isDirectory(location)) {
 				log.debug(`ServeDirectory: listing contents of "${ location }"`);

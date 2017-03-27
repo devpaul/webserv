@@ -23,7 +23,7 @@ export default class ServeFile implements Handler {
 
 		return new Promise<Response>((resolve) => {
 			const requestUrl = parseUrl(request.url);
-			const path = joinPath(this.rootDirectory, requestUrl.path);
+			const path = joinPath(this.rootDirectory, requestUrl.pathname);
 			const location = this.mapToLocalFile(path, true);
 
 			if (location) {
