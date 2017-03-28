@@ -38,10 +38,12 @@
   "devDependencies": {
     "@types/commander": "^2.3.31",
     "@types/grunt": "^0.4.21",
-    "@types/sinon": "^1.16.34",
+    "@types/mockery": "^1.4.29",
+    "@types/sinon": "^1.16.36",
     "dojo-loader": "^2.0.0-beta.7",
     "grunt": "^1.0.1",
     "intern": "^3.4.2",
+    "mockery": "^2.0.0",
     "shelljs": "^0.7.5",
     "sinon": "^1.17.7",
     "ts-node": "^2.0.0",

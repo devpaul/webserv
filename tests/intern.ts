@@ -25,7 +25,8 @@ export const loaderOptions = {
 			'util': 'intern/dojo/node!util',
 			'url': 'intern/dojo/node!url',
 			'https': 'intern/dojo/node!https',
-			'shelljs': 'intern/dojo/node!shelljs'
+			'shelljs': 'intern/dojo/node!shelljs',
+			'mockery': 'intern/dojo/node!mockery'
 		},
 		'tests/srcLoader': {
 			'src': 'src'

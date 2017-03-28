@@ -7,3 +7,4 @@ import './handlers/filter';
 import './handlers/Handler';
 import './handlers/transform';
 import './handlers/route';
+import './middleware/ServeFile';
