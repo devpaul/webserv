@@ -3,6 +3,9 @@ import { IncomingMessage, ServerResponse } from 'http';
 import { log } from '../log';
 const httpProxy = require('http-proxy');
 
+/**
+ * Wraps http-proxy to provide support for a forwarding proxy
+ */
 export default class WebProxy implements Handler {
 	baseUrl: string;
 

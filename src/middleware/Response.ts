@@ -1,6 +1,9 @@
 import { Handler, Response as HandlerResponse } from '../handlers/Handler';
 import { IncomingMessage, ServerResponse } from 'http';
 
+/**
+ * Middleware to return a http response
+ */
 export default class Response implements Handler {
 	statusCode: number;
 

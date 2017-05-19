@@ -3,6 +3,11 @@ import IMultiTask = grunt.task.IMultiTask;
 import { log } from '../log';
 import { inspect } from 'util';
 
+/**
+ * A Grunt MultiTask that will start a server
+ *
+ * Configuration is passed directly from grunt to create a webserv
+ */
 export = function (grunt: IGrunt) {
 	grunt.registerMultiTask('webserv', function (this: IMultiTask<Config>) {
 		const done = this.async();

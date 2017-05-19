@@ -8,6 +8,8 @@ import * as route from './handlers/route';
 import * as transform from './handlers/transform';
 import * as proxies from './util/proxies';
 
+// This index is used to support a node.js require without worrying about `default` values
+
 export { default as WebServer } from './WebServer';
 export { default as WebApplication } from './WebApplication';
 

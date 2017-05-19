@@ -3,6 +3,13 @@ import {
 	isPropertyDescriptor
 } from './descriptors';
 
+/**
+ * Proxies an object so it overrides values
+ *
+ * @param target the target of the Proxy
+ * @param values a map of values to return
+ * @return a Proxied object where values in the values object are returned instead of an object's own values
+ */
 export function overrideWrapper(target: Object, values: { [ key: string ]: any } = {}) {
 	return new Proxy(target, {
 		get(target: any, property: PropertyKey): any {
@@ -26,6 +33,16 @@ export function overrideWrapper(target: Object, values: { [ key: string ]: any }
 	});
 }
 
+/**
+ * Proxies an object so property descriptors can be overridden.
+ *
+ * This is useful for when complex functionality needs to be replaced in an object. For simple value replacement
+ * overrideWrapper should be used instead.
+ *
+ * @param target the proxy target
+ * @param descriptors a map of descriptors
+ * @return a Proxied object where descriptors are overridden by the property descriptor map
+ */
 export function descriptorWrapper(target: Object, descriptors: PropertyDescriptorMap = {}) {
 	return new Proxy(target, {
 		get(target: any, property: PropertyKey): any {

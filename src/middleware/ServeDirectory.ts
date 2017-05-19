@@ -10,6 +10,9 @@ export interface Options {
 	basePath?: ServeDirectory['basePath'];
 }
 
+/**
+ * Middleware for serving a list of files in a directory
+ */
 export default class ServeDirectory implements Handler {
 	public rootDirectory: string;
 

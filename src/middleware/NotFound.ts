@@ -3,6 +3,9 @@ import { IncomingMessage, ServerResponse } from 'http';
 import { log } from '../log';
 import Response from './Response';
 
+/**
+ * Middleware to return a 404 response
+ */
 export default class NotFound extends Response {
 	constructor(message: string = 'Not Found') {
 		super(404, null, message);

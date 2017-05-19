@@ -13,6 +13,12 @@ export type Directive = Response | 'skip' | 'immediate';
 
 export type HandlerDefinition = Handler | HandlerFunction | Array<Handler | HandlerFunction>;
 
+/**
+ * Groups together a sequence of Handlers as a single Handler.
+ *
+ * Handlers are processed asynchronously and sequentially until the end of the list of handlers has been reached or
+ * a Directive response is returned that changes this behavior.
+ */
 export default class Group implements Handler {
 	readonly handlers: Handler[];
 

@@ -6,6 +6,9 @@ import Group from './Group';
 
 export type RouteHandler = Handler | HandlerFunction | Array<Handler | HandlerFunction>;
 
+/**
+ * A route is comprised of an number of Filters or Transforms followed which wraps a Handler
+ */
 export class Route {
 	protected stack: Array<(handler: Handler) => Handler> = [];
 
@@ -38,6 +41,11 @@ export class Route {
 	}
 }
 
+/**
+ * A helper function used for defining a route
+ * @param filter an optional filter that must be matched for the wrapped handler to be called
+ * @return a new Route which must wrap a Handler
+ */
 export default function route(filter?: Filter): Route {
 	const route = new Route();
 

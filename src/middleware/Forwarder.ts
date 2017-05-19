@@ -3,6 +3,9 @@ import { IncomingMessage, ServerResponse } from 'http';
 import { log } from '../log';
 import Response from './Response';
 
+/**
+ * Middleware to forward a request to a different location using HTTP 301: Moved Permanently
+ */
 export default class Forwarder extends Response {
 	location: string;
 

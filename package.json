@@ -19,11 +19,7 @@
     "url": "https://github.com/devpaul/webserv"
   },
   "scripts": {
-    "build": "ts-node ./support/run build",
-    "ci": "ts-node ./support/run ci",
-    "clean": "ts-node ./support/run clean",
-    "sample": "ts-node ./support/sample",
-    "test": "ts-node ./support/run test"
+    "sample": "ts-node ./support/sample"
   },
   "dependencies": {
     "@types/node": "0.0.2",

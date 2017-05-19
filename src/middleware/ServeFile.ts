@@ -6,11 +6,25 @@ import { IncomingMessage, ServerResponse } from 'http';
 import { log } from '../log';
 const send = require('send');
 
+/**
+ * Middleware for serving files from a specified directory
+ *
+ * Files are served relative to the provided root directory and url pathname. If files are not being served from
+ * the root pathname the url pathname should be transformed.
+ *
+ * ```
+ *    new Route().transform(relativeUrl('/match')).wrap(new ServeFile('./location'));
+ * ```
+ */
 export default class ServeFile implements Handler {
 	public rootDirectory: string;
 
 	public searchDefaults: string[];
 
+	/**
+	 * @param rootDirectory the base directory to be used to find files
+	 * @param searchDefaults when a directory is passed, search for these files in the provided order
+	 */
 	constructor(rootDirectory: string = process.cwd(), searchDefaults: string[] = [ 'index.html' ]) {
 		this.rootDirectory = rootDirectory;
 		this.searchDefaults = searchDefaults;

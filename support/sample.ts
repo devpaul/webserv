@@ -1,7 +1,7 @@
 import WebServer from '../_dist/src/WebServer';
 import ServeFile from '../_dist/src/middleware/ServeFile';
 import ServeDirectory from '../_dist/src/middleware/ServeDirectory';
-import MiddlewareProxy from '../_dist/src/middleware/Proxy';
+import WebProxy from '../_dist/src/middleware/WebProxy';
 import { proxy as filter } from '../_dist/src/handlers/filter';
 import route from '../_dist/src/handlers/route';
 import { relativeUrl } from '../src/handlers/transform';
@@ -23,7 +23,7 @@ server.app.middleware.add([
 		new ServeDirectory('./_dist'),
 		notFound
 	]),
-	new MiddlewareProxy('https://devpaul.com')
+	new WebProxy('https://devpaul.com')
 ]);
 server.start();
 console.log(`started server on ${ server.config.port }`);

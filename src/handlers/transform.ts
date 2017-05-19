@@ -37,6 +37,13 @@ export function proxy(handler: Handler, transformFunc: Transform): Handler {
 	});
 }
 
+/**
+ * A helper transform used to change the pathname of the url
+ *
+ * @param match text to match
+ * @param replace text to replace
+ * @return a function that transforms an IncomingMessage
+ */
 export function relativeUrl(match: string, replace: string = ''): Transform {
 	return function (request: IncomingMessage) {
 		return descriptorWrapper(request, {
