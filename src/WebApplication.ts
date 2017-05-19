@@ -4,8 +4,8 @@ import Group from './handlers/Group';
 import MiddlewareError from './MiddlewareError';
 
 export interface Options {
-	timeout?: WebApplication["timeout"];
-	errorHandler?: WebApplication["errorHandler"];
+	timeout?: WebApplication['timeout'];
+	errorHandler?: WebApplication['errorHandler'];
 }
 
 const DEFAULT_TIMEOUT = 5000;

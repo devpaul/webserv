@@ -3,7 +3,6 @@ import * as assert from 'intern/chai!assert';
 import * as webserv from 'src/tasks/webserv';
 import * as sinon from 'sinon';
 
-
 let taskMock: any;
 
 registerSuite({

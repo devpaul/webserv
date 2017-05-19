@@ -29,7 +29,7 @@ registerSuite({
 
 	'#add()': {
 		'handler function'() {
-			const handler = sinon.spy(function () { return Promise.resolve() });
+			const handler = sinon.spy(() => Promise.resolve());
 			const group = new Group();
 			group.add(handler);
 
@@ -43,7 +43,7 @@ registerSuite({
 		},
 
 		'Handler instance'() {
-			const handleMethod = sinon.spy(function () { return Promise.resolve() });
+			const handleMethod = sinon.spy(() => Promise.resolve());
 			const handler = new Functional(handleMethod);
 			const group = new Group();
 			group.add(handler);
@@ -69,7 +69,7 @@ registerSuite({
 			const request = createMockRequest();
 			const response = createMockResponse();
 			const handlers = [
-				sinon.spy(function () { return Promise.resolve() })
+				sinon.spy(() => Promise.resolve())
 			];
 			const group = new Group(handlers);
 
@@ -86,9 +86,9 @@ registerSuite({
 			const request = createMockRequest();
 			const response = createMockResponse();
 			const handlers = [
-				sinon.spy(function () { return Promise.resolve() }),
-				sinon.spy(function () { return Promise.resolve() }),
-				sinon.spy(function () { return Promise.resolve() })
+				sinon.spy(() => Promise.resolve()),
+				sinon.spy(() => Promise.resolve()),
+				sinon.spy(() => Promise.resolve())
 			];
 			const group = new Group(handlers);
 
@@ -105,9 +105,9 @@ registerSuite({
 			const request = createMockRequest();
 			const response = createMockResponse();
 			const handlers = [
-				sinon.spy(function () { return Promise.resolve() }),
-				sinon.spy(function () { return Promise.resolve('skip') }),
-				sinon.spy(function () { return Promise.resolve() })
+				sinon.spy(() => Promise.resolve()),
+				sinon.spy(() => Promise.resolve('skip')),
+				sinon.spy(() => Promise.resolve())
 			];
 			const group = new Group(handlers);
 
@@ -127,9 +127,9 @@ registerSuite({
 			const request = createMockRequest();
 			const response = createMockResponse();
 			const handlers = [
-				sinon.spy(function () { return Promise.resolve() }),
-				sinon.spy(function () { return Promise.resolve('immediate') }),
-				sinon.spy(function () { return Promise.resolve() })
+				sinon.spy(() => Promise.resolve()),
+				sinon.spy(() => Promise.resolve('immediate')),
+				sinon.spy(() => Promise.resolve())
 			];
 			const group = new Group(handlers);
 

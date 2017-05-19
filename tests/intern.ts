@@ -7,7 +7,7 @@ export const maxConcurrency = 1;
 export const loaderOptions = {
 	packages: [
 		{ name: 'src', location: './_dist/src' },
-		{ name: 'tests', location: './_dist/tests' },
+		{ name: 'tests', location: './_dist/tests' }
 	],
 	map: {
 		'tests': {

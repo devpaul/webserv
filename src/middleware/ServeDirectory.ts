@@ -13,7 +13,7 @@ export interface Options {
 export default class ServeDirectory implements Handler {
 	public rootDirectory: string;
 
-	public basePath: string = '';
+	public basePath = '';
 
 	constructor(options: Options | string = {}) {
 		if (typeof options === 'string') {
@@ -28,7 +28,7 @@ export default class ServeDirectory implements Handler {
 	createHtml(currentDirectory: string, files: string[]) {
 		const fileLinks: () => string = () => {
 			return files.map((file) => {
-				return `<a href="${ joinPath(this.basePath, currentDirectory, file) }">${ file }</a>`
+				return `<a href="${ joinPath(this.basePath, currentDirectory, file) }">${ file }</a>`;
 			}).join('<br>');
 		};
 
