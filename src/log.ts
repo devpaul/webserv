@@ -15,3 +15,14 @@ export let log: LoggerInstance = new Logger({
 export function setLogger(logger: LoggerInstance) {
 	log = logger;
 }
+
+/**
+ * Sets the log level for all transports
+ * @param level the log level
+ */
+export function setLogLevel(level: string) {
+	for (let key in log.transports) {
+		const transport = log.transports[key];
+		transport.level = level;
+	}
+}
