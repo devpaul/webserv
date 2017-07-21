@@ -7,7 +7,7 @@ import { noCache } from '../src/middleware/SetHeaders';
 const server = new WebServer();
 
 server.app.middleware.add([
-	route('/dist(.*)').wrap([
+	route('/*').wrap([
 		noCache(),
 		new ServeFile('./_dist'),
 		new ServeDirectory('./_dist')
