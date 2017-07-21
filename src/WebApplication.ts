@@ -1,4 +1,4 @@
-import { Handler, Response } from './handlers/Handler';
+import { Handler, HandlerResponse } from './handlers/Handler';
 import { ServerResponse, IncomingMessage } from 'http';
 import Group from './handlers/Group';
 import MiddlewareError from './MiddlewareError';
@@ -27,7 +27,7 @@ export class Application<T extends Handler> implements Handler {
 		}
 	}
 
-	handle(request: IncomingMessage, response: ServerResponse): Promise<Response> {
+	handle(request: IncomingMessage, response: ServerResponse): Promise<HandlerResponse> {
 		return Promise.race([
 			this.promiseTimeout(),
 			this.middleware.handle(request, response)

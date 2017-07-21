@@ -1,4 +1,4 @@
-import { Handler, Response } from '../handlers/Handler';
+import { Handler, HandlerResponse } from '../handlers/Handler';
 import { statSync } from 'fs';
 import { parse as parseUrl } from 'url';
 import { join as joinPath } from 'path';
@@ -30,12 +30,12 @@ export default class ServeFile implements Handler {
 		this.searchDefaults = searchDefaults;
 	}
 
-	handle(request: IncomingMessage, response: ServerResponse): Promise<Response> {
+	handle(request: IncomingMessage, response: ServerResponse): Promise<HandlerResponse> {
 		if (response.finished) {
 			return Promise.resolve();
 		}
 
-		return new Promise<Response>((resolve) => {
+		return new Promise<HandlerResponse>((resolve) => {
 			const requestUrl = parseUrl(request.url);
 			const path = joinPath(this.rootDirectory, requestUrl.pathname);
 			const location = this.mapToLocalFile(path, true);

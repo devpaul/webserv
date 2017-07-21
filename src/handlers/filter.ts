@@ -1,4 +1,4 @@
-import { HandlerFunction, Response, Handler } from './Handler';
+import { HandlerFunction, HandlerResponse, Handler } from './Handler';
 import { IncomingMessage } from 'http';
 import { ServerResponse } from 'http';
 import { parse as parseUrl } from 'url';
@@ -27,7 +27,7 @@ export declare type Filter = string | RegExp | FilterFunction | FilterObject;
 export function filter(handler: HandlerFunction, filter: Filter): HandlerFunction {
 	let filterFunction: FilterFunction = createFilter(filter);
 
-	return function (request: IncomingMessage, response: ServerResponse): Promise<Response> {
+	return function (request: IncomingMessage, response: ServerResponse): Promise<HandlerResponse> | HandlerResponse {
 		if (!filterFunction(request)) {
 			return Promise.resolve();
 		}

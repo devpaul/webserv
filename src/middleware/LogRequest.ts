@@ -1,5 +1,5 @@
 import { NPMLoggingLevel } from 'winston';
-import { Handler, Response } from '../handlers/Handler';
+import { Handler, HandlerResponse } from '../handlers/Handler';
 import { IncomingMessage } from 'http';
 import { log } from '../log';
 
@@ -13,7 +13,7 @@ export default class LogRequest implements Handler {
 		this.level = level;
 	}
 
-	handle(request: IncomingMessage): Promise<Response> {
+	handle(request: IncomingMessage): Promise<HandlerResponse> {
 		log[this.level](`[${ request.method }] ${ request.url }`);
 		return Promise.resolve();
 	}
