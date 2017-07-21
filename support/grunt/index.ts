@@ -1,5 +1,6 @@
-const webservTask = require('../../src/tasks/webserv');
 import * as config from './config';
+
+const webservTask = require('../../src/tasks/webserv');
 
 export = function (grunt: IGrunt) {
 	require('load-grunt-tasks')(grunt);

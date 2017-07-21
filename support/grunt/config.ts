@@ -1,11 +1,18 @@
+import * as path from 'path';
+
 export const targetDirectory = '_dist';
 
 export const srcDirectory = '<%= targetDirectory %>/src';
 
 export const testsDirectory = '<%= targetDirectory %>/tests';
 
+export const examplesDirectory = '<%= targetDirectory %>/examples';
+
+export const binDirectory = path.resolve('node_modules/.bin');
+
 export const clean = {
-	build: ['<%= targetDirectory %>']
+	build: ['<%= targetDirectory %>'],
+	js: [ 'src/**/*.js' ]
 };
 
 export const copy = {
@@ -13,26 +20,6 @@ export const copy = {
 		expand: true,
 		src: [ 'package.json', 'README.md', 'LICENSE' ],
 		dest: '<%= srcDirectory %>'
-	}
-};
-
-export const shell = {
-	'build-src': {
-		command: './node_modules/.bin/tsc',
-			options: {
-			execOptions: {
-				cwd: process.cwd()
-			}
-		}
-	},
-
-	'build-tests': {
-		command: './node_modules/.bin/tsc -p tsconfig.tests.json',
-		options: {
-			execOptions: {
-				cwd: process.cwd()
-			}
-		}
 	}
 };
 
@@ -44,6 +31,35 @@ export const intern = {
 			reporters: [
 				'Console', 'LcovHtml'
 			]
+		}
+	}
+};
+
+export const shell = {
+	'build-src': {
+		command: '<%= binDirectory %>/tsc',
+			options: {
+			execOptions: {
+				cwd: process.cwd()
+			}
+		}
+	},
+
+	'build-tests': {
+		command: '<%= binDirectory %>/tsc',
+		options: {
+			execOptions: {
+				cwd: 'tests'
+			}
+		}
+	},
+
+	'build-examples': {
+		command: '<%= binDirectory %>/tsc',
+		options: {
+			execOptions: {
+				cwd: 'examples'
+			}
 		}
 	}
 };

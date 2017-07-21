@@ -13,6 +13,21 @@ Programatic API for creating front-end webservers to support development. Webser
 * Command line interface
 * Grunt support
 
+## Middleware Included
+
+Webserv includes middleware to make it easy to add standard server functionality. 
+
+* Serve Directory
+* Serve File
+* HTTP Headers
+	* Cors Support
+	* No Cache
+* HTTP Responses
+	* 301 Forwarding
+	* 404 Not Found
+* Logging
+* Proxying
+
 ## Usage
 
 ## Programmatic

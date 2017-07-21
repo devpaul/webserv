@@ -1,0 +1,15 @@
+{
+	"extends": "../tsconfig.json",
+	"compilerOptions": {
+		"outDir": "../_dist/examples",
+		"paths": {
+			"*": [
+				"*",
+				"../node_modules"
+			]
+		}
+	},
+	"include": [
+		"./*.ts"
+	]
+}

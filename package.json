@@ -19,7 +19,8 @@
     "url": "https://github.com/devpaul/webserv"
   },
   "scripts": {
-    "sample": "ts-node ./support/sample"
+    "example-basic": "ts-node ./examples/basic",
+    "example": "ts-node ./examples/sample"
   },
   "dependencies": {
     "@types/node": "0.0.2",
@@ -47,10 +48,10 @@
     "mockery": "^2.0.0",
     "shelljs": "^0.7.5",
     "sinon": "^1.17.7",
-    "ts-node": "^2.0.0",
+    "ts-node": "^3.2.1",
     "tslint": "^5.2.0",
     "tslint-sitepen": "^0.1.0",
-    "typescript": "^2.3.3"
+    "typescript": "^2.4"
   },
   "keywords": [
     "server",

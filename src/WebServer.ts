@@ -22,7 +22,7 @@ export interface ServerState {
 	closed: Server<any>['_closed'];
 }
 
-export class Server<T extends Handler> {
+export class Server<T extends Handler = WebApplication> {
 	readonly app: T;
 
 	readonly config: Config;
@@ -101,7 +101,7 @@ export class Server<T extends Handler> {
 		this._server = null;
 	}
 
-	private createServer(): Promise<HttpsServer | HttpsServer> {
+	private createServer(): Promise<HttpServer | HttpsServer> {
 		return new Promise((resolve, reject) => {
 			if (this.type === 'http') {
 				const server = createHttpServer((request: IncomingMessage, response: ServerResponse) => {
@@ -123,7 +123,7 @@ export class Server<T extends Handler> {
 	}
 }
 
-export default class WebServer extends Server<WebApplication> {
+export default class WebServer extends Server {
 	constructor(config: Config = Object.assign({}, DEFAULT_CONFIG)) {
 		super(new WebApplication(), config);
 	}
