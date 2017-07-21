@@ -1,4 +1,4 @@
-import { Handler, Response } from '../handlers/Handler';
+import { Handler, HandlerResponse } from '../handlers/Handler';
 import { statSync, readdir } from 'fs';
 import { parse as parseUrl } from 'url';
 import { join as joinPath } from 'path';
@@ -47,12 +47,12 @@ export default class ServeDirectory implements Handler {
 			'</html>';
 	}
 
-	handle(request: IncomingMessage, response: ServerResponse): Promise<Response> {
+	handle(request: IncomingMessage, response: ServerResponse): Promise<HandlerResponse> {
 		if (response.finished) {
 			return Promise.resolve();
 		}
 
-		return new Promise<Response>((resolve) => {
+		return new Promise<HandlerResponse>((resolve) => {
 			const requestUrl = parseUrl(request.url);
 			const location = joinPath(this.rootDirectory, requestUrl.pathname);
 

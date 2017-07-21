@@ -1,6 +1,6 @@
 import { ServerResponse, IncomingMessage } from 'http';
 
-export type Response = string | void;
+export type HandlerResponse = string | void;
 
 export type HandlerFunction = Handler['handle'];
 
@@ -8,7 +8,7 @@ export type HandlerFunction = Handler['handle'];
  * A stateful or configurable object that handles responding to a http request
  */
 export interface Handler {
-	handle(request: IncomingMessage, response: ServerResponse): Promise<Response>;
+	handle(request: IncomingMessage, response: ServerResponse): Promise<HandlerResponse> | HandlerResponse;
 }
 
 /**

@@ -1,7 +1,7 @@
 /*
  * Functions used to transform request data
  */
-import { Handler, Response, HandlerFunction } from './Handler';
+import { Handler, HandlerResponse, HandlerFunction } from './Handler';
 import { IncomingMessage, ServerResponse } from 'http';
 import { parse as parseUrl, format as formatUrl } from 'url';
 import { overrideWrapper, descriptorWrapper } from '../util/proxies';
@@ -18,7 +18,7 @@ export interface Transform {
  * @return {(request:IncomingMessage, response:ServerResponse)=>Promise<Response>} a transform function
  */
 export function transform(handler: HandlerFunction, transform: Transform): HandlerFunction {
-	return function (request: IncomingMessage, response: ServerResponse): Promise<Response> {
+	return function (request: IncomingMessage, response: ServerResponse): Promise<HandlerResponse> | HandlerResponse {
 		request = transform(request);
 		return handler(request, response);
 	};

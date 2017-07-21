@@ -1,4 +1,4 @@
-import { Response as HandlerResponse } from '../handlers/Handler';
+import { HandlerResponse } from '../handlers/Handler';
 import { IncomingMessage, ServerResponse } from 'http';
 import { log } from '../log';
 import Response from './Response';

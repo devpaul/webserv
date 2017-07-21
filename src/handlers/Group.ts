@@ -1,4 +1,4 @@
-import { Handler, Response, HandlerFunction, isHandlerFunction, isHandler } from './Handler';
+import { Handler, HandlerResponse, HandlerFunction, isHandlerFunction, isHandler } from './Handler';
 import { ServerResponse, IncomingMessage } from 'http';
 import Functional from './Functional';
 
@@ -9,7 +9,7 @@ import Functional from './Functional';
  * skip: skip the remaining middleware in the current group
  * immediate: immediately return the response and skip the rest of the middleware
  */
-export type Directive = Response | 'skip' | 'immediate';
+export type Directive = HandlerResponse | 'skip' | 'immediate';
 
 export type HandlerDefinition = Handler | HandlerFunction | Array<Handler | HandlerFunction>;
 

@@ -18,7 +18,6 @@ setLogLevel('debug');
 function echoRoute(request: IncomingRoute, response: ServerResponse) {
 	response.write(`You said ${ request.params.words }`);
 	response.end();
-	return Promise.resolve();
 }
 
 server.app.middleware.add([

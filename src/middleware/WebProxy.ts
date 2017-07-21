@@ -1,4 +1,4 @@
-import { Handler, Response } from '../handlers/Handler';
+import { Handler, HandlerResponse } from '../handlers/Handler';
 import { IncomingMessage, ServerResponse } from 'http';
 import { log } from '../log';
 const httpProxy = require('http-proxy');
@@ -25,12 +25,12 @@ export default class WebProxy implements Handler {
 
 	onProxyResponse?(proxyResponse: ServerResponse, request: IncomingMessage, response: ServerResponse): void;
 
-	handle(request: IncomingMessage, response: ServerResponse): Promise<Response> {
+	handle(request: IncomingMessage, response: ServerResponse): Promise<HandlerResponse> {
 		if (response.finished) {
 			return Promise.resolve();
 		}
 
-		return new Promise<Response>((resolve) => {
+		return new Promise<HandlerResponse>((resolve) => {
 			if (response.finished) {
 				resolve();
 				return;

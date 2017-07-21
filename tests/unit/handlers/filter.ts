@@ -35,39 +35,30 @@ registerSuite({
 	},
 
 	'#filter() creates a handler with a filter': {
-		'when filter passes; the underlying handler is ran'() {
-			return filter(handlerMethod, passingFilter)(request, response)
-				.then(function () {
-					assert.isTrue(passingFilter.calledOnce);
-					assert.isTrue(handlerMethod.calledOnce);
-				});
-
+		async 'when filter passes; the underlying handler is ran'() {
+			await filter(handlerMethod, passingFilter)(request, response);
+			assert.isTrue(passingFilter.calledOnce);
+			assert.isTrue(handlerMethod.calledOnce);
 		},
 
-		'when filter failes; the underlying handler is not ran'() {
-			return filter(handlerMethod, failingFilter)(request, response)
-				.then(function () {
-					assert.isTrue(failingFilter.calledOnce);
-					assert.isFalse(handlerMethod.called);
-				});
+		async 'when filter failes; the underlying handler is not ran'() {
+			await filter(handlerMethod, failingFilter)(request, response);
+			assert.isTrue(failingFilter.calledOnce);
+			assert.isFalse(handlerMethod.called);
 		}
 	},
 
 	'#wrap()': {
-		'when filter passes; the underlying handler is ran'() {
-			return proxy(handler, passingFilter).handle(request, response)
-				.then(function () {
-					assert.isTrue(passingFilter.calledOnce);
-					assert.isTrue(handlerMethod.called);
-				});
+		async 'when filter passes; the underlying handler is ran'() {
+			await proxy(handler, passingFilter).handle(request, response);
+			assert.isTrue(passingFilter.calledOnce);
+			assert.isTrue(handlerMethod.called);
 		},
 
-		'when filter fails; the underlying handler is not ran'() {
-			return proxy(handler, failingFilter).handle(request, response)
-				.then(function () {
-					assert.isTrue(failingFilter.calledOnce);
-					assert.isFalse(handlerMethod.called);
-				});
+		async 'when filter fails; the underlying handler is not ran'() {
+			await proxy(handler, failingFilter).handle(request, response);
+			assert.isTrue(failingFilter.calledOnce);
+			assert.isFalse(handlerMethod.called);
 		}
 	},
 
