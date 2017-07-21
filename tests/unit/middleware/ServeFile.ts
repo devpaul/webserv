@@ -6,6 +6,7 @@ import { stub, SinonStub } from 'sinon';
 import { IncomingMessage } from 'http';
 import { ServerResponse } from 'http';
 import { IRequire } from 'dojo/loader';
+import { resolve } from 'path';
 
 declare const require: IRequire;
 
@@ -64,7 +65,7 @@ registerSuite({
 			middleware.handle(<IncomingMessage> request, <ServerResponse> response);
 
 			assert.isTrue(sendStub.calledOnce);
-			assert.strictEqual(sendStub.firstCall.args[1], 'root/test/webserv.html');
+			assert.strictEqual(sendStub.firstCall.args[1], resolve(process.cwd(), 'root/test/webserv.html'));
 			assert.isTrue(sendStub().on.calledOnce);
 			sendStub().on.firstCall.args[1]();
 		}
