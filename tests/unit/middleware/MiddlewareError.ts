@@ -1,6 +1,6 @@
 import * as registerSuite from 'intern!object';
 import * as assert from 'intern/chai!assert';
-import MiddlewareError from 'src/MiddlewareError';
+import MiddlewareError from 'src/middleware/MiddlewareError';
 
 registerSuite({
 	construction: {

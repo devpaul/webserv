@@ -7,11 +7,14 @@ import * as filter from './handlers/filter';
 import * as route from './handlers/route';
 import * as transform from './handlers/transform';
 import * as proxies from './util/proxies';
+import WebApplication from './middleware/WebApplication';
+import HttpsServer from './servers/HttpsServer';
+import HttpServer from './servers/HttpServer';
 
 // This index is used to support a node.js require without worrying about `default` values
 
-export { default as WebServer } from './WebServer';
-export { default as WebApplication } from './WebApplication';
+export { default as create } from './commands/createServer';
+export { default as default } from './commands/createServer';
 
 export const handlers = {
 	Group,
@@ -22,9 +25,15 @@ export const handlers = {
 };
 
 export const middleware = {
-	WebProxy,
 	ServeDirectory,
-	ServeFile
+	ServeFile,
+	WebApplication,
+	WebProxy
+};
+
+export const servers = {
+	HttpServer,
+	HttpsServer
 };
 
 export const util = {

@@ -1,6 +1,6 @@
-import { Handler, HandlerResponse } from './handlers/Handler';
+import { Handler, HandlerResponse } from '../handlers/Handler';
 import { ServerResponse, IncomingMessage } from 'http';
-import Group from './handlers/Group';
+import Group from '../handlers/Group';
 import MiddlewareError from './MiddlewareError';
 
 export interface Options {

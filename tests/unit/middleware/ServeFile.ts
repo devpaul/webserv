@@ -25,11 +25,16 @@ registerSuite({
 		mockfs = {
 			statSync: stub()
 		};
+		mockery.deregisterAll();
+		mockery.resetCache();
 		mockery.enable({
+			useCleanCache: true,
+			warnOnReplace: true,
 			warnOnUnregistered: false
 		});
 		mockery.registerMock('send', sendStub);
 		mockery.registerMock('fs', mockfs);
+
 		return new Promise(function (resolve) {
 			require([ require.toUrl('src/middleware/ServeFile') ], function (Module) {
 				Middleware = <any> Module.default;
@@ -62,12 +67,14 @@ registerSuite({
 				isDirectory() { return false; }
 			});
 			const middleware = new Middleware('root');
-			middleware.handle(<IncomingMessage> request, <ServerResponse> response);
+			const promise = middleware.handle(<IncomingMessage> request, <ServerResponse> response);
 
 			assert.isTrue(sendStub.calledOnce);
 			assert.strictEqual(sendStub.firstCall.args[1], resolve(process.cwd(), 'root/test/webserv.html'));
 			assert.isTrue(sendStub().on.calledOnce);
 			sendStub().on.firstCall.args[1]();
+
+			return promise;
 		}
 	}
 });

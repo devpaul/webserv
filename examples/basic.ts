@@ -1,20 +1,33 @@
-import WebServer from '../src/WebServer';
-import ServeFile from '../src/middleware/ServeFile';
-import ServeDirectory from '../src/middleware/ServeDirectory';
-import route from '../src/handlers/route';
 import { noCache } from '../src/middleware/SetHeaders';
+import createServer, { ServerType } from '../src/commands/createServer';
+import LogRequest from '../src/middleware/LogRequest';
 
-const server = new WebServer();
+// Create a http server at http://localhost:8888
+createServer({
+	type: ServerType.HTTP,
+	middleware: [
+		noCache()
+	],
+	directory: './_dist'
+}).then((server) => {
+	server.start()
+		.then(() => {
+			console.log(`started server on ${ server.port }`);
+		});
+});
 
-server.app.middleware.add([
-	route('/*').wrap([
-		noCache(),
-		new ServeFile('./_dist'),
-		new ServeDirectory('./_dist')
-	])
-]);
-
-server.start()
-	.then(function () {
-		console.log(`started server on ${ server.config.port }`);
-	});
+// create a https server at https://localhost:9999
+createServer({
+	type: ServerType.HTTPS,
+	middleware: [
+		new LogRequest(),
+		noCache()
+	],
+	port: 9999,
+	directory: './_dist'
+}).then((server) => {
+	server.start()
+		.then(() => {
+			console.log(`started server on ${ server.port }`);
+		});
+});

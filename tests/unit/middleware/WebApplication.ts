@@ -1,8 +1,8 @@
 import * as registerSuite from 'intern!object';
 import * as assert from 'intern/chai!assert';
-import WebApplication, { Application } from 'src/WebApplication';
+import WebApplication, { Application } from 'src/middleware/WebApplication';
 import * as sinon from 'sinon';
-import { createMockMiddleware, createMockResponse } from './_support/mocks';
+import { createMockMiddleware, createMockResponse } from '../_support/mocks';
 import { Handler } from 'src/handlers/Handler';
 
 registerSuite({

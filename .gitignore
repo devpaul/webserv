@@ -9,3 +9,4 @@ node_modules
 _build
 /_dist/
 html-report
+/package-lock.json
