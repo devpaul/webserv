@@ -1,4 +1,4 @@
-import WebServer from '../src/WebServer';
+import HttpServer from '../src/servers/HttpServer';
 import ServeFile from '../src/middleware/ServeFile';
 import ServeDirectory from '../src/middleware/ServeDirectory';
 import route, { IncomingRoute } from '../src/handlers/route';
@@ -8,8 +8,14 @@ import Forwarder from '../src/middleware/Forwarder';
 import { noCache } from '../src/middleware/SetHeaders';
 import { setLogLevel } from '../src/log';
 import { ServerResponse } from 'http';
+import incomingFiles from '../src/transforms/incomingFiles';
+import WebApplication from '../src/middleware/WebApplication';
+import SaveFiles from '../src/middleware/SaveFiles';
 
-const server = new WebServer();
+const server = new HttpServer({
+	port: 7777
+}, new WebApplication());
+
 const notFound = new NotFound();
 
 // Set logging to debug for more verbose output
@@ -38,8 +44,11 @@ server.app.middleware.add([
 		// If none of the above handlers match; return a 404
 		notFound
 	]),
+	route('/upload').transform(incomingFiles).wrap(new SaveFiles('_uploads', {
+		createUploadDirectory: true
+	})),
 	route('/echo/:words').wrap(echoRoute)
 ]);
 
 server.start();
-console.log(`started server on ${ server.config.port }`);
+console.log(`started server on ${ server.port }`);

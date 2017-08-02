@@ -43,8 +43,8 @@ export function overrideWrapper(target: Object, values: { [ key: string ]: any }
  * @param descriptors a map of descriptors
  * @return a Proxied object where descriptors are overridden by the property descriptor map
  */
-export function descriptorWrapper(target: Object, descriptors: PropertyDescriptorMap = {}) {
-	return new Proxy(target, {
+export function descriptorWrapper<T extends object = object>(target: T, descriptors: PropertyDescriptorMap = {}): T {
+	return new Proxy<T>(target, {
 		get(target: any, property: PropertyKey): any {
 			if (isGetPropertyDescriptor(descriptors[property])) {
 				return descriptors[property].get();
@@ -61,7 +61,7 @@ export function descriptorWrapper(target: Object, descriptors: PropertyDescripto
 				return descriptors[property];
 			}
 
-			return target.getOwnPropertyDescriptor(property);
+			return Object.getOwnPropertyDescriptor(target, property);
 		},
 
 		set(target: any, property: PropertyKey, value: any): boolean {

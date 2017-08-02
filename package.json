@@ -23,12 +23,16 @@
     "example-basic": "ts-node ./examples/basic"
   },
   "dependencies": {
+    "@types/busboy": "^0.2.3",
+    "@types/mkdirp": "^0.5.0",
     "@types/node": "0.0.2",
     "@types/pem": "^1.9.2",
     "@types/winston": "^2.2.0",
+    "busboy": "^0.2.14",
     "commander": "^2.9.0",
     "findup": "^0.1.5",
     "http-proxy": "^1.16.2",
+    "mkdirp": "^0.5.1",
     "path-to-regexp": "^1.7.0",
     "pem": "^1.9.7",
     "send": "^0.14.1",
