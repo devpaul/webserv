@@ -7,6 +7,7 @@ import HttpServer, { HttpConfig } from '../servers/HttpServer';
 import WebApplication from '../middleware/WebApplication';
 import { ServerOptions as HttpsOptions } from 'https';
 import buildCert from './buildCert';
+import { Upgradable } from '../handlers/Handler';
 
 export type MiddlewareFunction = () => HandlerDefinition;
 export type Middleware = HandlerDefinition | MiddlewareFunction;
@@ -23,6 +24,7 @@ export interface Config {
 	timeout?: number;
 	type?: ServerType;
 	httpsOptions?: HttpsOptions;
+	upgrade?: Upgradable;
 }
 
 const DEFAULT_PORT = 8888;
@@ -39,7 +41,8 @@ export default async function (config: Config): Promise<BasicServer> {
 
 	if (!config.type || config.type === ServerType.HTTP) {
 		const httpConfig: HttpConfig = {
-			port
+			port,
+			upgradeHandler: config.upgrade
 		};
 
 		server = new HttpServer(httpConfig, middleware);

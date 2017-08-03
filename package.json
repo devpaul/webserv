@@ -20,10 +20,12 @@
   },
   "scripts": {
     "example": "ts-node ./examples/sample",
-    "example-basic": "ts-node ./examples/basic"
+    "example-basic": "ts-node ./examples/basic",
+    "example-proxy": "ts-node ./examples/proxy"
   },
   "dependencies": {
     "@types/busboy": "^0.2.3",
+    "@types/http-proxy": "^1.12.0",
     "@types/mkdirp": "^0.5.0",
     "@types/node": "0.0.2",
     "@types/pem": "^1.9.2",
