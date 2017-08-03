@@ -1,4 +1,5 @@
 import { ServerResponse, IncomingMessage } from 'http';
+import { Socket } from 'net';
 
 export type HandlerResponse = string | void;
 
@@ -9,6 +10,10 @@ export type HandlerFunction = Handler['handle'];
  */
 export interface Handler {
 	handle(request: IncomingMessage, response: ServerResponse): Promise<HandlerResponse> | HandlerResponse;
+}
+
+export interface Upgradable {
+	upgrade(request: IncomingMessage, socket: Socket, head: Buffer): Promise<void> | void;
 }
 
 /**
