@@ -4,10 +4,12 @@
 		"allowSyntheticDefaultImports": true,
 		"baseUrl": ".",
 		"declaration": true,
+		"downlevelIteration": true,
 		"experimentalDecorators": true,
 		"lib": [
 			"es2015",
-			"es2017.object"
+			"es2017.object",
+			"esnext.asynciterable"
 		],
 		"module": "commonjs",
 		"moduleResolution": "node",

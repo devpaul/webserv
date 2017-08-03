@@ -1,10 +1,6 @@
-/*
- * Functions used to transform request data
- */
-import { Handler, HandlerResponse, HandlerFunction } from './Handler';
+import { Handler, HandlerFunction, HandlerResponse } from './Handler';
 import { IncomingMessage, ServerResponse } from 'http';
-import { parse as parseUrl, format as formatUrl } from 'url';
-import { overrideWrapper, descriptorWrapper } from '../util/proxies';
+import { overrideWrapper } from '../util/proxies';
 
 export interface Transform {
 	(request: IncomingMessage): IncomingMessage;
@@ -35,32 +31,4 @@ export function proxy(handler: Handler, transformFunc: Transform): Handler {
 	return overrideWrapper(handler, {
 		handle: transform(handler.handle.bind(handler), transformFunc)
 	});
-}
-
-/**
- * A helper transform used to change the pathname of the url
- *
- * @param match text to match
- * @param replace text to replace
- * @return a function that transforms an IncomingMessage
- */
-export function relativeUrl(match: string, replace: string = ''): Transform {
-	return function (request: IncomingMessage) {
-		return descriptorWrapper(request, {
-			originalUrl: {
-				get() {
-					return request.url;
-				}
-			},
-			url: {
-				get() {
-					const requestUrl = parseUrl(request.url);
-					if (requestUrl.path.indexOf(match) === 0) {
-						requestUrl.path = requestUrl.pathname = replace + requestUrl.path.substring(match.length) || '/';
-					}
-					return formatUrl(requestUrl);
-				}
-			}
-		});
-	};
 }

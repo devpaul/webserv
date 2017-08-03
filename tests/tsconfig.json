@@ -7,7 +7,8 @@
 			"es2015",
 			"dom",
 			"es2015.symbol",
-			"es2015.proxy"
+			"es2015.proxy",
+			"esnext.asynciterable"
 		],
 		"module": "umd",
 		"moduleResolution": "node",

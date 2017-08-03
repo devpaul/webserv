@@ -10,6 +10,8 @@ import * as proxies from './util/proxies';
 import WebApplication from './middleware/WebApplication';
 import HttpsServer from './servers/HttpsServer';
 import HttpServer from './servers/HttpServer';
+import incomingFiles from './transforms/incomingFiles';
+import relativeUrl from './transforms/relativeUrl';
 
 // This index is used to support a node.js require without worrying about `default` values
 
@@ -34,6 +36,11 @@ export const middleware = {
 export const servers = {
 	HttpServer,
 	HttpsServer
+};
+
+export const transforms = {
+	incomingFiles,
+	relativeUrl
 };
 
 export const util = {
