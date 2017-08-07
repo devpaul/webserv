@@ -21,6 +21,7 @@ export interface Config {
 	directory?: string;
 	middleware?: Middleware;
 	port?: string | number;
+	start?: boolean;
 	timeout?: number;
 	type?: ServerType;
 	httpsOptions?: HttpsOptions;
@@ -80,7 +81,7 @@ export default async function (config: Config): Promise<BasicServer> {
 		server.app.timeout = config.timeout;
 	}
 
-	return server;
+	return config.start ? server.start().then(() => server) : server;
 }
 
 function isMiddlewareFunction(value: any): value is MiddlewareFunction {
