@@ -42,7 +42,8 @@ export const loaders = {
 export const reporters = [ 'Console' ];
 
 export const suites = [
-	'tests/unit/all'
+	'tests/unit/all',
+	'tests/integration/all'
 ];
 
 export const functionalSuites: string[] = [];

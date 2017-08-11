@@ -17,43 +17,33 @@ const send = require('send');
  * ```
  */
 export default class ServeFile implements Handler {
-	public rootDirectory: string;
+	readonly basePath: string;
 
-	public searchDefaults: string[];
+	readonly isFile: boolean;
+
+	readonly searchDefaults: string[];
 
 	/**
-	 * @param rootDirectory the base directory to be used to find files
+	 * @param basePath the base directory to be used to find files
 	 * @param searchDefaults when a directory is passed, search for these files in the provided order
 	 */
-	constructor(rootDirectory: string = process.cwd(), searchDefaults: string[] = [ 'index.html' ]) {
-		this.rootDirectory = rootDirectory;
-		this.searchDefaults = searchDefaults;
+	constructor(basePath: string = process.cwd(), searchDefaults: string[] = [ 'index.html' ]) {
+		this.basePath = basePath;
+		this.isFile = statSync(this.basePath).isFile();
+		this.searchDefaults = this.isFile ? searchDefaults : [];
 	}
 
-	handle(request: IncomingMessage, response: ServerResponse): Promise<HandlerResponse> {
+	handle(request: IncomingMessage, response: ServerResponse) {
 		if (response.finished) {
-			return Promise.resolve();
+			return;
 		}
 
-		return new Promise<HandlerResponse>((resolve) => {
-			const requestUrl = parseUrl(request.url);
-			const path = resolvePath(joinPath(this.rootDirectory, requestUrl.pathname));
-			const location = this.mapToLocalFile(path, true);
-
-			if (location) {
-				log.debug(`ServeFile: serving file "${ location }"`);
-				send(request, location)
-					.on('end', function () {
-						response.end();
-						resolve('immediate');
-					})
-					.pipe(response);
-			}
-			else {
-				log.debug(`ServeFile: "${ location } does not exist`);
-				resolve();
-			}
-		});
+		if (this.isFile) {
+			return this.serveFile(request, response);
+		}
+		else {
+			return this.serveFileFromDirectory(request, response);
+		}
 	}
 
 	protected mapToLocalFile(location: string, handleDirectories: boolean = false): string | null {
@@ -81,5 +71,34 @@ export default class ServeFile implements Handler {
 				return location;
 			}
 		}
+	}
+
+	private serveFile(request: IncomingMessage, response: ServerResponse, location = resolvePath(this.basePath)) {
+		return new Promise<HandlerResponse>((resolve, reject) => {
+			log.debug(`ServeFile: serving file "${ location }"`);
+			send(request, location)
+				.on('end', function () {
+					response.end();
+					resolve('immediate');
+				})
+				.on('error', reject)
+				.pipe(response);
+		});
+	}
+
+	private serveFileFromDirectory(request: IncomingMessage, response: ServerResponse) {
+		return new Promise<HandlerResponse>((resolve) => {
+			const requestUrl = parseUrl(request.url);
+			const path = resolvePath(joinPath(this.basePath, requestUrl.pathname));
+			const location = this.mapToLocalFile(path, true);
+
+			if (location) {
+				return this.serveFile(request, response, location);
+			}
+			else {
+				log.debug(`ServeFile: "${ location } does not exist`);
+				resolve();
+			}
+		});
 	}
 }
