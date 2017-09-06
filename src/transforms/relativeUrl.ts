@@ -22,7 +22,8 @@ export default function relativeUrl(match: string, replace: string = ''): Transf
 				get() {
 					const requestUrl = parseUrl(request.url);
 					if (requestUrl.path.indexOf(match) === 0) {
-						requestUrl.path = requestUrl.pathname = replace + requestUrl.path.substring(match.length) || '/';
+						requestUrl.pathname = replace + requestUrl.pathname.substring(match.length) || '/';
+						requestUrl.path = requestUrl.pathname + requestUrl.search;
 					}
 					return formatUrl(requestUrl);
 				}
