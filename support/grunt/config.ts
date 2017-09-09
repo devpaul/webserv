@@ -20,6 +20,13 @@ export const copy = {
 		expand: true,
 		src: [ 'package.json', 'README.md', 'LICENSE' ],
 		dest: '<%= srcDirectory %>'
+	},
+
+	testAssets: {
+		expand: true,
+		cwd: 'tests',
+		src: [ '**/*', '!**/*.ts' ],
+		dest: '<%= testsDirectory %>'
 	}
 };
 

@@ -12,5 +12,5 @@ export = function (grunt: IGrunt) {
 	grunt.registerTask('build', [ 'shell:build-src', 'copy:packageFiles' ]);
 	grunt.registerTask('ci', [ 'dev' ]);
 	grunt.registerTask('dev', [ 'clean', 'tslint', 'build', 'test' ]);
-	grunt.registerTask('test', [ 'shell:build-tests', 'intern' ]);
+	grunt.registerTask('test', [ 'shell:build-tests', 'copy:testAssets', 'intern' ]);
 };

@@ -8,6 +8,7 @@ import WebApplication from '../middleware/WebApplication';
 import { ServerOptions as HttpsOptions } from 'https';
 import buildCert from './buildCert';
 import { Upgradable } from '../handlers/Handler';
+import { setLogLevel } from '../log';
 
 export type MiddlewareFunction = () => HandlerDefinition;
 export type Middleware = HandlerDefinition | MiddlewareFunction;
@@ -18,6 +19,7 @@ export enum ServerType {
 }
 
 export interface Config {
+	debugLevel?: string;
 	directory?: string;
 	middleware?: Middleware;
 	port?: string | number;
@@ -39,6 +41,10 @@ export default async function (config: Config): Promise<BasicServer> {
 	const port = config.port ? typeof config.port === 'string' ? parseInt(config.port, 10) : config.port : DEFAULT_PORT;
 	const middleware = new WebApplication();
 	let server: BasicServer;
+
+	if (config.debugLevel) {
+		setLogLevel(config.debugLevel);
+	}
 
 	if (!config.type || config.type === ServerType.HTTP) {
 		const httpConfig: HttpConfig = {

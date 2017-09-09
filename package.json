@@ -37,7 +37,7 @@
     "mkdirp": "^0.5.1",
     "path-to-regexp": "^1.7.0",
     "pem": "^1.9.7",
-    "send": "^0.14.1",
+    "send": "^0.15.4",
     "winston": "^2.3.1"
   },
   "devDependencies": {

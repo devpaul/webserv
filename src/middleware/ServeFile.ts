@@ -1,7 +1,7 @@
 import { Handler, HandlerResponse } from '../handlers/Handler';
 import { statSync } from 'fs';
 import { parse as parseUrl } from 'url';
-import { join as joinPath, resolve as resolvePath } from 'path';
+import { join as joinPath, relative, resolve as resolvePath } from 'path';
 import { IncomingMessage, ServerResponse } from 'http';
 import { log } from '../log';
 const send = require('send');
@@ -74,10 +74,14 @@ export default class ServeFile implements Handler {
 	}
 
 	private serveFile(request: IncomingMessage, response: ServerResponse, location = resolvePath(this.basePath)) {
+		const file = relative(location, this.basePath);
+		console.log(this.basePath, location, file);
 		return new Promise<HandlerResponse>((resolve, reject) => {
 			log.debug(`ServeFile: serving file "${ location }"`);
-			send(request, location)
-				.on('end', function () {
+			send(request, file, {
+				dotfiles: 'deny',
+				root: this.basePath
+			}).on('end', function () {
 					response.end();
 					resolve('immediate');
 				})
@@ -90,6 +94,7 @@ export default class ServeFile implements Handler {
 		return new Promise<HandlerResponse>((resolve) => {
 			const requestUrl = parseUrl(request.url);
 			const path = resolvePath(joinPath(this.basePath, requestUrl.pathname));
+			console.log('path', path);
 			const location = this.mapToLocalFile(path, true);
 
 			if (location) {
