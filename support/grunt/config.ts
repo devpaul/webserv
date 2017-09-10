@@ -68,6 +68,18 @@ export const shell = {
 				cwd: 'examples'
 			}
 		}
+	},
+
+	intern: {
+		command: '<%= binDirectory %>/intern',
+		options: {
+			execOptions: {
+				cwd: process.cwd(),
+				env: {
+					'NODE_PATH': '_dist'
+				}
+			}
+		}
 	}
 };
 

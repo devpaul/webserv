@@ -1,0 +1,14 @@
+{
+	"description": "Run unit and integration tests on Node",
+
+	"suites": [
+		"_dist/tests/unit/**/*.js",
+		"_dist/tests/integration/**/*.js",
+		"!_support"
+	],
+
+	"reporters": {
+		"name": "runner",
+		"options": { "hideSkipped": true, "hidePassed": false }
+	}
+}

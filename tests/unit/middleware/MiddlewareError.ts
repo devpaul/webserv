@@ -1,8 +1,8 @@
-import * as registerSuite from 'intern!object';
-import * as assert from 'intern/chai!assert';
+import { assert } from 'chai';
+import registerSuite from 'intern/lib/interfaces/object';
 import MiddlewareError from 'src/middleware/MiddlewareError';
 
-registerSuite({
+registerSuite('src/middleware/MiddlewareError', {
 	construction: {
 		'default'() {
 			const error = new MiddlewareError('error');

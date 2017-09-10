@@ -1,14 +1,12 @@
-import * as registerSuite from 'intern!object';
-import * as assert from 'intern/chai!assert';
+import { assert } from 'chai';
+import registerSuite from 'intern/lib/interfaces/object';
 import ServeFile from 'src/middleware/ServeFile';
 import * as mockery from 'mockery';
 import { stub, SinonStub } from 'sinon';
 import { IncomingMessage } from 'http';
 import { ServerResponse } from 'http';
-import { IRequire } from 'dojo/loader';
 import { resolve } from 'path';
-
-declare const require: IRequire;
+import { loadMockModule } from '../_support/mocks';
 
 // tslint:disable
 let Middleware: typeof ServeFile;
@@ -17,30 +15,16 @@ let mockfs: {
 	statSync: SinonStub
 };
 
-registerSuite({
-	name: 'src/middleware/ServeFile',
-
-	setup() {
+registerSuite('src/middleware/ServeFile', {
+	async before() {
 		sendStub = <any> stub();
 		mockfs = {
 			statSync: stub()
 		};
-		mockery.deregisterAll();
-		mockery.resetCache();
-		mockery.enable({
-			useCleanCache: true,
-			warnOnReplace: true,
-			warnOnUnregistered: false
+		Middleware = await loadMockModule('src/middleware/ServeFile', {
+			send: sendStub,
+			fs: mockfs
 		});
-		mockery.registerMock('send', sendStub);
-		mockery.registerMock('fs', mockfs);
-
-		return new Promise(function (resolve) {
-			require([ require.toUrl('src/middleware/ServeFile') ], function (Module) {
-				Middleware = <any> Module.default;
-				resolve();
-			});
-		})
 	},
 
 	beforeEach() {
@@ -51,30 +35,33 @@ registerSuite({
 		mockfs.statSync.reset();
 	},
 
-	teardown() {
+	after() {
 		mockery.disable();
 	},
 
-	handle: {
-		path() {
-			const request: Partial<IncomingMessage> = {
-				url: 'http://localhost:1234/test/webserv.html?query=param1&queryparam=2'
-			};
-			const response: Partial<ServerResponse> = {
-				end: stub()
-			};
-			mockfs.statSync.returns({
-				isDirectory() { return false; }
-			});
-			const middleware = new Middleware('root');
-			const promise = middleware.handle(<IncomingMessage> request, <ServerResponse> response);
+	tests: {
+		handle: {
+			path() {
+				const request: Partial<IncomingMessage> = {
+					url: 'http://localhost:1234/test/webserv.html?query=param1&queryparam=2'
+				};
+				const response: Partial<ServerResponse> = {
+					end: stub()
+				};
+				mockfs.statSync.returns({
+					isDirectory() { return false; },
+					isFile() { return true }
+				});
+				const middleware = new Middleware('root');
+				const promise = middleware.handle(<IncomingMessage> request, <ServerResponse> response);
 
-			assert.isTrue(sendStub.calledOnce);
-			assert.strictEqual(sendStub.firstCall.args[1], resolve(process.cwd(), 'root/test/webserv.html'));
-			assert.isTrue(sendStub().on.calledOnce);
-			sendStub().on.firstCall.args[1]();
+				assert.isTrue(sendStub.calledOnce);
+				assert.strictEqual(sendStub.firstCall.args[1], resolve(process.cwd(), 'root/test/webserv.html'));
+				assert.isTrue(sendStub().on.calledOnce);
+				sendStub().on.firstCall.args[1]();
 
-			return promise;
+				return promise;
+			}
 		}
 	}
 });

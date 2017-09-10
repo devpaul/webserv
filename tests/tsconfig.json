@@ -1,8 +1,7 @@
 {
 	"version": "2.4.0",
-	"extends": "../tsconfig.json",
 	"compilerOptions": {
-		"baseUrl": ".",
+		"baseUrl": "..",
 		"lib": [
 			"es2015",
 			"dom",
@@ -16,15 +15,15 @@
 		"removeComments": true,
 		"paths": {
 			"src/*": [
-				"../_dist/src/*"
+				"_dist/src/*"
 			]
 		},
-		"target": "ES6"
+		"target": "ES6",
+		"types": [ "intern" ]
 	},
-	"files": [
-		"../node_modules/intern/typings/intern/intern.d.ts"
-	],
+	"extends": "../tsconfig.json",
 	"include": [
-		"./**/*.ts"
+		"./unit/**/*.ts",
+		"./integration/**/*.ts"
 	]
 }
