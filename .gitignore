@@ -10,3 +10,4 @@ _build
 /_dist/
 html-report
 /package-lock.json
+coverage

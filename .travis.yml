@@ -8,3 +8,8 @@ cache:
 before_install:
     - npm install -g grunt-cli
 script: grunt ci
+deploy:
+	provider: script
+	script: ./node_modules/.bin/codecov
+	on:
+		branch: master
