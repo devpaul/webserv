@@ -1,16 +1,26 @@
 {
 	"description": "Run unit and integration tests on Node",
 
-	"bail": true,
+	"coverage": [
+		"_dist/src/**/*.js"
+	],
+
+	"reporters": [
+		{
+			"name": "runner",
+			"options": {
+				"hideSkipped": true,
+				"hidePassed": true
+			}
+		},
+		{
+			"name": "lcov"
+		}
+	],
 
 	"suites": [
 		"_dist/tests/unit/**/*.js",
 		"_dist/tests/integration/**/*.js",
 		"!_support"
-	],
-
-	"reporters": {
-		"name": "runner",
-		"options": { "hideSkipped": true, "hidePassed": true }
-	}
+	]
 }
