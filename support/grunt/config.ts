@@ -20,6 +20,13 @@ export const copy = {
 		expand: true,
 		src: [ 'package.json', 'README.md', 'LICENSE' ],
 		dest: '<%= srcDirectory %>'
+	},
+
+	testAssets: {
+		expand: true,
+		cwd: 'tests',
+		src: [ '**/*', '!**/*.ts' ],
+		dest: '<%= testsDirectory %>'
 	}
 };
 
@@ -59,6 +66,18 @@ export const shell = {
 		options: {
 			execOptions: {
 				cwd: 'examples'
+			}
+		}
+	},
+
+	intern: {
+		command: '<%= binDirectory %>/intern',
+		options: {
+			execOptions: {
+				cwd: process.cwd(),
+				env: {
+					'NODE_PATH': '_dist'
+				}
 			}
 		}
 	}

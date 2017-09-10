@@ -1,6 +1,4 @@
 import Group, { HandlerDefinition } from '../handlers/Group';
-import ServeFile from '../middleware/ServeFile';
-import ServeDirectory from '../middleware/ServeDirectory';
 import { BasicServer } from '../servers/BasicServer';
 import HttpsServer, { HttpsConfig } from '../servers/HttpsServer';
 import HttpServer, { HttpConfig } from '../servers/HttpServer';
@@ -8,6 +6,8 @@ import WebApplication from '../middleware/WebApplication';
 import { ServerOptions as HttpsOptions } from 'https';
 import buildCert from './buildCert';
 import { Upgradable } from '../handlers/Handler';
+import { setLogLevel } from '../log';
+import ServePath from '../middleware/ServePath';
 
 export type MiddlewareFunction = () => HandlerDefinition;
 export type Middleware = HandlerDefinition | MiddlewareFunction;
@@ -18,6 +18,7 @@ export enum ServerType {
 }
 
 export interface Config {
+	debugLevel?: string;
 	directory?: string;
 	middleware?: Middleware;
 	port?: string | number;
@@ -39,6 +40,10 @@ export default async function (config: Config): Promise<BasicServer> {
 	const port = config.port ? typeof config.port === 'string' ? parseInt(config.port, 10) : config.port : DEFAULT_PORT;
 	const middleware = new WebApplication();
 	let server: BasicServer;
+
+	if (config.debugLevel) {
+		setLogLevel(config.debugLevel);
+	}
 
 	if (!config.type || config.type === ServerType.HTTP) {
 		const httpConfig: HttpConfig = {
@@ -72,8 +77,9 @@ export default async function (config: Config): Promise<BasicServer> {
 
 	if (config.directory) {
 		server.app.middleware.add(new Group([
-			new ServeFile(config.directory),
-			new ServeDirectory(config.directory)
+			new ServePath({
+				basePath: config.directory
+			})
 		]));
 	}
 

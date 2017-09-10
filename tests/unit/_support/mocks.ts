@@ -3,9 +3,6 @@ import { spy, stub } from 'sinon';
 import { Handler } from 'src/handlers/Handler';
 import { IncomingMessage } from 'http';
 import * as mockery from 'mockery';
-import { IRequire } from 'dojo/loader';
-
-declare const require: IRequire;
 
 export async function loadMockModule<T = any>(mid: string, mocks: {
 	[ key: string ]: any
@@ -22,12 +19,8 @@ export async function loadMockModule<T = any>(mid: string, mocks: {
 		mockery.registerMock(key, mocks[key]);
 	}
 
-	return new Promise<T>(function (resolve) {
-		require([ require.toUrl(mid) ], function (module) {
-			console.log(useDefault, module);
-			resolve( useDefault ? module.default : module );
-		});
-	});
+	const mod = require(mid);
+	return useDefault ? mod.default : mod;
 }
 
 export function cleanupMockModules() {
@@ -69,4 +62,16 @@ export function createMockServer() {
 
 		on: stub()
 	};
+}
+
+export function createMockSend() {
+	const pipeStub = stub();
+	const onStub = stub();
+	const sendStub = stub();
+	(<any> sendStub).on = onStub;
+	(<any> sendStub).pipe = pipeStub;
+	onStub.returns(sendStub);
+	sendStub.returns(sendStub);
+
+	return sendStub;
 }

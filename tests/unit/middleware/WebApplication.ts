@@ -1,11 +1,11 @@
-import * as registerSuite from 'intern!object';
-import * as assert from 'intern/chai!assert';
+import { assert } from 'chai';
+import registerSuite from 'intern/lib/interfaces/object';
 import WebApplication, { Application } from 'src/middleware/WebApplication';
 import * as sinon from 'sinon';
 import { createMockMiddleware, createMockResponse } from '../_support/mocks';
 import { Handler } from 'src/handlers/Handler';
 
-registerSuite({
+registerSuite('src/middleware/WebApplication', {
 	construction: {
 		'default'() {
 			const app = new WebApplication();

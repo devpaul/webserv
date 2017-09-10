@@ -1,12 +1,10 @@
-import * as registerSuite from 'intern!object';
-import * as assert from 'intern/chai!assert';
+import { assert } from 'chai';
+import registerSuite from 'intern/lib/interfaces/object';
 import { transform, proxy as transformProxy } from 'src/handlers/transform';
 import { createMockRequest, createMockResponse } from '../_support/mocks';
 import * as sinon from 'sinon';
 
-registerSuite({
-	name: 'src/transform',
-
+registerSuite('src/handlers/transform', {
 	transform() {
 		const request = createMockRequest();
 		const response = createMockResponse();

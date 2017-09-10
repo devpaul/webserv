@@ -1,10 +1,8 @@
-import * as registerSuite from 'intern!object';
-import * as assert from 'intern/chai!assert';
+import { assert } from 'chai';
+import registerSuite from 'intern/lib/interfaces/object';
 import BufferedResponse from 'src/util/BufferedResponse';
 
-registerSuite({
-	name: 'src/util/BufferedResponse',
-
+registerSuite('src/util/BufferedResponse', {
 	add: {
 		async 'add an item'() {
 			const expected = Symbol();
