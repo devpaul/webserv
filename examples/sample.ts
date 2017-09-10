@@ -1,16 +1,15 @@
 import HttpServer from '../src/servers/HttpServer';
-import ServeFile from '../src/middleware/ServeFile';
-import ServeDirectory from '../src/middleware/ServeDirectory';
 import route, { IncomingRoute } from '../src/handlers/route';
 import NotFound from '../src/middleware/NotFound';
 import LogRequest from '../src/middleware/LogRequest';
 import Forwarder from '../src/middleware/Forwarder';
 import { noCache } from '../src/middleware/SetHeaders';
 import { setLogLevel } from '../src/log';
-import { ServerResponse } from 'http';
+import { IncomingMessage, ServerResponse } from 'http';
 import incomingFiles from '../src/transforms/incomingFiles';
 import WebApplication from '../src/middleware/WebApplication';
 import SaveFiles from '../src/middleware/SaveFiles';
+import ServePath from '../src/middleware/ServePath';
 
 const server = new HttpServer({
 	port: 7777
@@ -26,6 +25,29 @@ function echoRoute(request: IncomingRoute, response: ServerResponse) {
 	response.end();
 }
 
+function landingPage(request: IncomingMessage, response: ServerResponse) {
+	if (response.finished) {
+		return;
+	}
+
+	response.end(`<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Welcome</title>
+</head>
+<body>
+<ul>
+	<li><a href="/dist">Serve Path</a></li>
+	<li><a href="/forward">Forwarding</a></li>
+	<li><a href="/upload">Upload</a></li>
+	<li><a href="/echo/hello_world">Echo parameters</a></li>
+</ul>
+</body>
+</html>
+`);
+}
+
 server.app.middleware.add([
 	// Log requests to the console
 	new LogRequest(),
@@ -37,17 +59,16 @@ server.app.middleware.add([
 	route('/dist(.*)').wrap([
 		// ensure the content isn't cached
 		noCache(),
-		// If a matching file exists in _dist; serve it
-		new ServeFile('./_dist'),
-		// Otherwise if the request is a directory; list the contents
-		new ServeDirectory('./_dist'),
+		// If a matching file exists in _dist; serve it or list directory contents
+		new ServePath({ basePath: './_dist' }),
 		// If none of the above handlers match; return a 404
 		notFound
 	]),
 	route('/upload').transform(incomingFiles).wrap(new SaveFiles('_uploads', {
 		createUploadDirectory: true
 	})),
-	route('/echo/:words').wrap(echoRoute)
+	route('/echo/:words').wrap(echoRoute),
+	route('/').wrap(landingPage)
 ]);
 
 server.start();
