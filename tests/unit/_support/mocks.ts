@@ -63,3 +63,15 @@ export function createMockServer() {
 		on: stub()
 	};
 }
+
+export function createMockSend() {
+	const pipeStub = stub();
+	const onStub = stub();
+	const sendStub = stub();
+	(<any> sendStub).on = onStub;
+	(<any> sendStub).pipe = pipeStub;
+	onStub.returns(sendStub);
+	sendStub.returns(sendStub);
+
+	return sendStub;
+}

@@ -1,37 +1,34 @@
 import { assert } from 'chai';
 import registerSuite from 'intern/lib/interfaces/object';
-import ServeFile from 'src/middleware/ServeFile';
 import * as mockery from 'mockery';
-import { stub, SinonStub } from 'sinon';
-import { IncomingMessage } from 'http';
-import { ServerResponse } from 'http';
-import { resolve } from 'path';
-import { loadMockModule } from '../_support/mocks';
+import { SinonStub, stub } from 'sinon';
+import { IncomingMessage, ServerResponse } from 'http';
+import { createMockSend, loadMockModule } from '../_support/mocks';
+import ServePath from 'src/middleware/ServePath';
 
 // tslint:disable
-let Middleware: typeof ServeFile;
+let Middleware: typeof ServePath;
 let sendStub: SinonStub;
 let mockfs: {
 	statSync: SinonStub
 };
 
-registerSuite('src/middleware/ServeFile', {
+registerSuite('src/middleware/ServePath', {
 	async before() {
-		sendStub = <any> stub();
+		sendStub = createMockSend();
 		mockfs = {
 			statSync: stub()
 		};
-		Middleware = await loadMockModule('src/middleware/ServeFile', {
+		Middleware = await loadMockModule('src/middleware/ServePath', {
 			send: sendStub,
 			fs: mockfs
 		});
 	},
 
-	beforeEach() {
+	afterEach() {
 		sendStub.reset();
-		sendStub.returns({
-			on: stub().returns( { pipe: stub() })
-		});
+		(<any> sendStub).on.reset();
+		(<any> sendStub).pipe.reset();
 		mockfs.statSync.reset();
 	},
 
@@ -41,7 +38,7 @@ registerSuite('src/middleware/ServeFile', {
 
 	tests: {
 		handle: {
-			path() {
+			'serving a file always returns the file'() {
 				const request: Partial<IncomingMessage> = {
 					url: 'http://localhost:1234/test/webserv.html?query=param1&queryparam=2'
 				};
@@ -52,12 +49,14 @@ registerSuite('src/middleware/ServeFile', {
 					isDirectory() { return false; },
 					isFile() { return true }
 				});
-				const middleware = new Middleware('root');
+				const middleware = new Middleware({
+					basePath: 'root'
+				});
 				const promise = middleware.handle(<IncomingMessage> request, <ServerResponse> response);
 
 				assert.isTrue(sendStub.calledOnce);
-				assert.strictEqual(sendStub.firstCall.args[1], resolve(process.cwd(), 'root/test/webserv.html'));
-				assert.isTrue(sendStub().on.calledOnce);
+				assert.strictEqual(sendStub.firstCall.args[1], '');
+				assert.isTrue(sendStub().on.called);
 				sendStub().on.firstCall.args[1]();
 
 				return promise;

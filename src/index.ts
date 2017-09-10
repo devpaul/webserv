@@ -1,7 +1,6 @@
 import Group from './handlers/Group';
 import Functional from './handlers/Functional';
-import ServeFile from './middleware/ServeFile';
-import ServeDirectory from './middleware/ServeDirectory';
+import ServePath from './middleware/ServePath';
 import WebProxy from './middleware/WebProxy';
 import * as filter from './handlers/filter';
 import * as route from './handlers/route';
@@ -27,8 +26,7 @@ export const handlers = {
 };
 
 export const middleware = {
-	ServeDirectory,
-	ServeFile,
+	ServePath,
 	WebApplication,
 	WebProxy
 };

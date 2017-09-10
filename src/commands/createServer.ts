@@ -1,6 +1,4 @@
 import Group, { HandlerDefinition } from '../handlers/Group';
-import ServeFile from '../middleware/ServeFile';
-import ServeDirectory from '../middleware/ServeDirectory';
 import { BasicServer } from '../servers/BasicServer';
 import HttpsServer, { HttpsConfig } from '../servers/HttpsServer';
 import HttpServer, { HttpConfig } from '../servers/HttpServer';
@@ -9,6 +7,7 @@ import { ServerOptions as HttpsOptions } from 'https';
 import buildCert from './buildCert';
 import { Upgradable } from '../handlers/Handler';
 import { setLogLevel } from '../log';
+import ServePath from '../middleware/ServePath';
 
 export type MiddlewareFunction = () => HandlerDefinition;
 export type Middleware = HandlerDefinition | MiddlewareFunction;
@@ -78,8 +77,9 @@ export default async function (config: Config): Promise<BasicServer> {
 
 	if (config.directory) {
 		server.app.middleware.add(new Group([
-			new ServeFile(config.directory),
-			new ServeDirectory(config.directory)
+			new ServePath({
+				basePath: config.directory
+			})
 		]));
 	}
 

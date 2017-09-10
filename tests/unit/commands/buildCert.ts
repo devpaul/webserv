@@ -14,7 +14,6 @@ registerSuite('src/commands/buildCert', {
 				createCertificate
 			}
 		});
-		console.log(command);
 	},
 
 	beforeEach() {
