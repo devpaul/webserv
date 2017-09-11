@@ -23,26 +23,13 @@ async function assertTestHtml(directory: string, request: RequestOptions) {
 	}, request);
 
 	const incomingMessage = await fetch(request);
-	const html = await toString(incomingMessage);
-
-	assert.include(html, 'test');
+	return await toString(incomingMessage);
 }
 
 async function assertHttpError(directory: string, request: RequestOptions, statusCode: string): Promise<any> {
-	server = await createServer({
-		debugLevel,
-		directory,
-		start: true
-	});
-	request = Object.assign({
-		hostname: 'localhost',
-		port: server.port
-	}, request);
-
-	return fetch(request)
+	return assertTestHtml(directory, request)
 		.then(assert.fail, (error: Error) => {
 			assert.include(error.message, statusCode);
-			return;
 		});
 }
 
@@ -55,18 +42,33 @@ registerSuite('integration: ServePath', {
 
 	tests: {
 		'serve a single file'() {
-			return assertTestHtml(join(root, 'test.html'), {});
+			return assertTestHtml(join(root, 'test.html'), {})
+				.then((html) => {
+					assert.include(html, 'test');
+				});
 		},
 
 		'serve files from a directory'() {
 			return assertTestHtml(root, {
 				path: '/test.html'
+			}).then((html) => {
+				assert.include(html, 'test');
 			});
 		},
 
 		async 'ignore query strings'() {
 			return assertTestHtml(root, {
 				path: '/test.html?hello=there'
+			}).then((html) => {
+				assert.include(html, 'test');
+			});
+		},
+
+		async 'serve files from child directory'() {
+			return assertTestHtml(root, {
+				path: '/directory/index.html'
+			}).then((html) => {
+				assert.include(html, 'Title');
 			});
 		},
 

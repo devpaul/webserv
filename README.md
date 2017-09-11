@@ -35,9 +35,10 @@ Webserv comes with [middleware](https://github.com/devpaul/webserv/tree/master/s
 
 ## Configuration
 
-Most common usage can be handled with the [createServer]() command. It accepts an options object and returns a `Promise`
-that provides a reference to the created server. More working examples can be found in the 
-[examples](https://github.com/devpaul/webserv/tree/master/examples) directory.
+Most common usage can be handled with the 
+[createServer](https://github.com/devpaul/webserv/blob/master/src/commands/createServer.ts#L20-L30) command. It accepts
+an options object and returns a `Promise` that provides a reference to the created server. More working examples can be 
+found in the [examples](https://github.com/devpaul/webserv/tree/master/examples) directory.
 
 ```typescript
 import createServer, { ServerType } from 'webserv/commands/createServer';

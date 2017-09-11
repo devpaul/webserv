@@ -22,6 +22,7 @@ export interface ServePathOptions {
 }
 
 function listFileContents(request: IncomingMessage, response: ServerResponse, basePath: string) {
+	const url = parseUrl((<any> request).originalUrl || (<any> request).url).pathname;
 	const directory = parseUrl(request.url).pathname;
 	const path = join(basePath, directory);
 
@@ -32,7 +33,7 @@ function listFileContents(request: IncomingMessage, response: ServerResponse, ba
 			}
 
 			const fileLinks = files.map((file) => {
-				return `<a href="${ join(directory, file) }">${ file }</a>`;
+				return `<a href="${ join(url, file) }">${ file }</a>`;
 			}).join('<br>');
 
 			response.write(
