@@ -10,18 +10,26 @@ import ServePath from 'src/middleware/ServePath';
 let Middleware: typeof ServePath;
 let sendStub: SinonStub;
 let mockfs: {
-	statSync: SinonStub
+	existsSync: SinonStub;
+	readdir: SinonStub;
+	statSync: SinonStub;
+};
+
+const request: Partial<IncomingMessage> = {
+	url: 'http://localhost:1234/test/webserv.html?query=param1&queryparam=2'
 };
 
 registerSuite('src/middleware/ServePath', {
 	async before() {
 		sendStub = createMockSend();
 		mockfs = {
+			existsSync: stub(),
+			readdir: stub(),
 			statSync: stub()
 		};
 		Middleware = await loadMockModule('src/middleware/ServePath', {
-			send: sendStub,
-			fs: mockfs
+			fs: mockfs,
+			send: sendStub
 		});
 	},
 
@@ -30,6 +38,8 @@ registerSuite('src/middleware/ServePath', {
 		(<any> sendStub).on.reset();
 		(<any> sendStub).pipe.reset();
 		mockfs.statSync.reset();
+		mockfs.existsSync.reset();
+		mockfs.readdir.reset();
 	},
 
 	after() {
@@ -37,18 +47,26 @@ registerSuite('src/middleware/ServePath', {
 	},
 
 	tests: {
+		constructor: {
+			'string options parameter'() {
+				mockfs.statSync.returns({
+					isFile() { return true }
+				});
+				const middleware = new Middleware('test');
+				assert.strictEqual(middleware.basePath, 'test');
+			}
+		},
+
 		handle: {
-			'serving a file always returns the file'() {
-				const request: Partial<IncomingMessage> = {
-					url: 'http://localhost:1234/test/webserv.html?query=param1&queryparam=2'
-				};
+			'basePath is a file; only serves file'() {
 				const response: Partial<ServerResponse> = {
+					finished: false,
 					end: stub()
 				};
 				mockfs.statSync.returns({
-					isDirectory() { return false; },
 					isFile() { return true }
 				});
+				mockfs.existsSync.returns(true);
 				const middleware = new Middleware({
 					basePath: 'root'
 				});
@@ -58,6 +76,84 @@ registerSuite('src/middleware/ServePath', {
 				assert.strictEqual(sendStub.firstCall.args[1], '');
 				assert.isTrue(sendStub().on.called);
 				sendStub().on.firstCall.args[1]();
+
+				return promise;
+			},
+
+			'response is finished; returns immediately'() {
+				const response: Partial<ServerResponse> = {
+					finished: true
+				};
+				mockfs.statSync.returns({
+					isFile() { return false }
+				});
+				const middleware = new Middleware({ basePath: 'root' });
+				const promise = middleware.handle(<IncomingMessage> request, <ServerResponse> response);
+
+				assert.isFalse(sendStub.called);
+				return promise;
+			},
+
+			'target file does not exists; returns immediately'() {
+				const response: Partial<ServerResponse> = {
+					finished: false
+				};
+				mockfs.statSync.returns({
+					isFile() { return false }
+				});
+				mockfs.existsSync.returns(false);
+				const middleware = new Middleware({ basePath: 'root' });
+				const promise = middleware.handle(<IncomingMessage> request, <ServerResponse> response);
+
+				assert.isFalse(sendStub.called);
+				return promise;
+			},
+
+			'on error; rejects'() {
+				const response: Partial<ServerResponse> = {
+					finished: false,
+					end: stub()
+				};
+				mockfs.statSync.returns({
+					isFile() { return true }
+				});
+				mockfs.existsSync.returns(true);
+				const middleware = new Middleware({
+					basePath: 'root'
+				});
+				const promise = middleware.handle(<IncomingMessage> request, <ServerResponse> response);
+
+				assert.isTrue(sendStub.calledOnce);
+				assert.strictEqual(sendStub.firstCall.args[1], '');
+				assert.isTrue(sendStub().on.called);
+				sendStub().on.secondCall.args[1]();
+
+				return promise.then(assert.fail, () => { /* expected */ });
+			},
+
+			'serve directory; lists contents'() {
+				const writeStub = stub();
+				const response: Partial<ServerResponse> = {
+					finished: false,
+					end: stub(),
+					write: writeStub
+				};
+				mockfs.statSync.returns({
+					isFile() { return false }
+				});
+				mockfs.existsSync.returns(true);
+				const middleware = new Middleware({
+					basePath: 'root'
+				});
+				const promise = middleware.handle(<IncomingMessage> request, <ServerResponse> response);
+
+				assert.isTrue(sendStub.calledOnce);
+				assert.strictEqual(sendStub.firstCall.args[1], 'test/webserv.html');
+				assert.isTrue(sendStub().on.called);
+				sendStub().on.thirdCall.args[1](response);
+				assert.isTrue(mockfs.readdir.calledOnce);
+				mockfs.readdir.firstCall.args[1](null, [ 'file' ]);
+				assert.include(writeStub.firstCall.args[0], 'test');
 
 				return promise;
 			}
