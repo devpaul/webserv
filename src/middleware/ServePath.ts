@@ -1,5 +1,5 @@
 import { Handler, HandlerResponse } from '../handlers/Handler';
-import { readdir, statSync } from 'fs';
+import { existsSync, readdir, statSync } from 'fs';
 import { parse as parseUrl } from 'url';
 import { join, relative } from 'path';
 import { IncomingMessage, ServerResponse } from 'http';
@@ -73,7 +73,10 @@ export default class ServePath implements Handler {
 
 	readonly searchDefaults: string[];
 
-	constructor(options: ServePathOptions = {}) {
+	constructor(options: ServePathOptions | string = {}) {
+		if (typeof options === 'string') {
+			options = { basePath: options };
+		}
 		const {
 			basePath = process.cwd(),
 			searchDefaults = [ 'index.html' ],
@@ -87,11 +90,10 @@ export default class ServePath implements Handler {
 	}
 
 	handle(request: IncomingMessage, response: ServerResponse) {
-		if (response.finished) {
+		const path = this.isFile ? '' : relative(this.basePath, join(this.basePath, parseUrl(request.url).pathname));
+		if (response.finished || !existsSync(join(this.basePath, path))) {
 			return;
 		}
-
-		const path = this.isFile ? '' : relative(this.basePath, join(this.basePath, parseUrl(request.url).pathname));
 
 		return new Promise<HandlerResponse>((resolve, reject) => {
 			log.debug(`ServePath: serving file "${ path }"`);
