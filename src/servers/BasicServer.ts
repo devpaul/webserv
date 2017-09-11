@@ -1,6 +1,7 @@
 import { Handler } from '../handlers/Handler';
 import WebApplication from '../middleware/WebApplication';
 import { EventEmitter } from 'events';
+import { log } from '../log';
 
 export enum ServerState {
 	LISTENING = 'listening',
@@ -18,11 +19,14 @@ export abstract class BasicServer<T extends Handler = WebApplication> extends Ev
 
 	protected _state: ServerState = ServerState.NEW;
 
+	private handles: { remove(): void }[] = [];
+
 	constructor(
 		handler: T
 	) {
 		super();
 		this.app = handler;
+		this.addListeners();
 	}
 
 	get state(): ServerState {
@@ -31,10 +35,34 @@ export abstract class BasicServer<T extends Handler = WebApplication> extends Ev
 
 	abstract start(): Promise<ServerState>;
 
-	abstract stop(): Promise<void>;
+	async stop(): Promise<void> {
+		while (this.handles.length) {
+			const handle = this.handles.pop();
+			handle.remove();
+		}
+	}
+
+	protected addListeners() {
+		[ 'SIGINT', 'SIGTERM' ].forEach((signal) => {
+			const handler = () => {
+				this.onSignal('SIGINT');
+			};
+			this.handles.push({
+				remove() {
+					process.removeListener(signal, handler);
+				}
+			});
+			process.on(signal, handler);
+		});
+	}
 
 	protected setState(state: ServerState) {
 		this._state = state;
 		this.emit('StateChange', state);
+	}
+
+	protected onSignal(signal: string) {
+		log.info(`received ${ signal } signal. Stopping server.`);
+		this.stop();
 	}
 }
