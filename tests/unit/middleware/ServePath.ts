@@ -5,6 +5,7 @@ import { SinonStub, stub } from 'sinon';
 import { IncomingMessage, ServerResponse } from 'http';
 import { createMockSend, loadMockModule } from '../_support/mocks';
 import ServePath from 'src/middleware/ServePath';
+import { sep } from 'path';
 
 // tslint:disable
 let Middleware: typeof ServePath;
@@ -148,7 +149,7 @@ registerSuite('src/middleware/ServePath', {
 				const promise = middleware.handle(<IncomingMessage> request, <ServerResponse> response);
 
 				assert.isTrue(sendStub.calledOnce);
-				assert.strictEqual(sendStub.firstCall.args[1], 'test/webserv.html');
+				assert.strictEqual(sendStub.firstCall.args[1], `test${ sep }webserv.html`);
 				assert.isTrue(sendStub().on.called);
 				sendStub().on.thirdCall.args[1](response);
 				assert.isTrue(mockfs.readdir.calledOnce);
