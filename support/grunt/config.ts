@@ -93,6 +93,11 @@ export const tslint = {
 };
 
 export const webserv = {
+	nonWaiting: {
+		port: '8890',
+		directory: '.',
+		wait: false
+	},
 	server: {
 		port: '8889',
 			directory: '.',
