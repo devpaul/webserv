@@ -64,6 +64,7 @@ export default class HttpServer<T extends Handler = WebApplication> extends Basi
 	}
 
 	async stop() {
+		super.stop();
 		if (this._server) {
 			this._server.close();
 		}
