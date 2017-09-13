@@ -62,7 +62,7 @@ export abstract class BasicServer<T extends Handler = WebApplication> extends Ev
 	}
 
 	protected onSignal(signal: string) {
-		log.info(`received ${ signal } signal. Stopping server.`);
+		log.info(`received ${ signal } signal. Stopping server on ${ this.port }.`);
 		this.stop();
 	}
 }
