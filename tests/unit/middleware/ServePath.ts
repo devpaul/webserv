@@ -5,6 +5,7 @@ import { SinonStub, stub } from 'sinon';
 import { IncomingMessage, ServerResponse } from 'http';
 import { createMockSend, loadMockModule } from '../_support/mocks';
 import ServePath from 'src/middleware/ServePath';
+import sep from 'path';
 
 // tslint:disable
 let Middleware: typeof ServePath;
@@ -145,7 +146,7 @@ registerSuite('src/middleware/ServePath', {
 				});
 				const promise = middleware.handle(<IncomingMessage> request, <ServerResponse> response);
 
-				assertFileSent('root/test/index.html');
+				assertFileSent(`root${ sep }test${ sep }index.html`);
 				return promise;
 			},
 
@@ -160,7 +161,7 @@ registerSuite('src/middleware/ServePath', {
 				});
 				const promise = middleware.handle(<IncomingMessage> request, <ServerResponse> response);
 
-				assertFileSent('root/test/webserv.html');
+				assertFileSent(`root${ sep }test${ sep }webserv.html`);
 				return promise;
 			}
 		}
