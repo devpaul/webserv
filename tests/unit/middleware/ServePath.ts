@@ -15,10 +15,15 @@ let mockfs: {
 	readdir: SinonStub;
 	statSync: SinonStub;
 };
+let response: Partial<ServerResponse>;
+let request: Partial<IncomingMessage>;
 
-const request: Partial<IncomingMessage> = {
-	url: 'http://localhost:1234/test/webserv.html?query=param1&queryparam=2'
-};
+function assertFileSent(path: string) {
+	assert.isTrue(sendStub.calledOnce);
+	assert.strictEqual(sendStub.firstCall.args[1], path);
+	(<any> sendStub).on.firstCall.args[1]();
+	assert.isTrue((<SinonStub> response.end).calledOnce);
+}
 
 registerSuite('src/middleware/ServePath', {
 	async before() {
@@ -32,6 +37,18 @@ registerSuite('src/middleware/ServePath', {
 			fs: mockfs,
 			send: sendStub
 		});
+	},
+
+	beforeEach() {
+		request = {
+			url: 'http://localhost:1234/test/webserv.html?query=param1&queryparam=2'
+		};
+		response = {
+			end: stub(),
+			finished: false,
+			setHeader: stub(),
+			write: stub(),
+		};
 	},
 
 	afterEach() {
@@ -59,35 +76,8 @@ registerSuite('src/middleware/ServePath', {
 		},
 
 		handle: {
-			'basePath is a file; only serves file'() {
-				const response: Partial<ServerResponse> = {
-					finished: false,
-					end: stub()
-				};
-				mockfs.statSync.returns({
-					isFile() { return true }
-				});
-				mockfs.existsSync.returns(true);
-				const middleware = new Middleware({
-					basePath: 'root'
-				});
-				const promise = middleware.handle(<IncomingMessage> request, <ServerResponse> response);
-
-				assert.isTrue(sendStub.calledOnce);
-				assert.strictEqual(sendStub.firstCall.args[1], '');
-				assert.isTrue(sendStub().on.called);
-				sendStub().on.firstCall.args[1]();
-
-				return promise;
-			},
-
 			'response is finished; returns immediately'() {
-				const response: Partial<ServerResponse> = {
-					finished: true
-				};
-				mockfs.statSync.returns({
-					isFile() { return false }
-				});
+				response.finished = true;
 				const middleware = new Middleware({ basePath: 'root' });
 				const promise = middleware.handle(<IncomingMessage> request, <ServerResponse> response);
 
@@ -96,12 +86,6 @@ registerSuite('src/middleware/ServePath', {
 			},
 
 			'target file does not exists; returns immediately'() {
-				const response: Partial<ServerResponse> = {
-					finished: false
-				};
-				mockfs.statSync.returns({
-					isFile() { return false }
-				});
 				mockfs.existsSync.returns(false);
 				const middleware = new Middleware({ basePath: 'root' });
 				const promise = middleware.handle(<IncomingMessage> request, <ServerResponse> response);
@@ -110,37 +94,11 @@ registerSuite('src/middleware/ServePath', {
 				return promise;
 			},
 
-			'on error; rejects'() {
-				const response: Partial<ServerResponse> = {
-					finished: false,
-					end: stub()
-				};
-				mockfs.statSync.returns({
-					isFile() { return true }
-				});
-				mockfs.existsSync.returns(true);
-				const middleware = new Middleware({
-					basePath: 'root'
-				});
-				const promise = middleware.handle(<IncomingMessage> request, <ServerResponse> response);
-
-				assert.isTrue(sendStub.calledOnce);
-				assert.strictEqual(sendStub.firstCall.args[1], '');
-				assert.isTrue(sendStub().on.called);
-				sendStub().on.secondCall.args[1]();
-
-				return promise.then(assert.fail, () => { /* expected */ });
-			},
-
 			'serve directory; lists contents'() {
-				const writeStub = stub();
-				const response: Partial<ServerResponse> = {
-					finished: false,
-					end: stub(),
-					write: writeStub
-				};
+				request.url = 'http://example.org/test/';
 				mockfs.statSync.returns({
-					isFile() { return false }
+					isDirectory() { return true; },
+					isFile() { return false; }
 				});
 				mockfs.existsSync.returns(true);
 				const middleware = new Middleware({
@@ -148,14 +106,62 @@ registerSuite('src/middleware/ServePath', {
 				});
 				const promise = middleware.handle(<IncomingMessage> request, <ServerResponse> response);
 
-				assert.isTrue(sendStub.calledOnce);
-				assert.strictEqual(sendStub.firstCall.args[1], `test${ sep }webserv.html`);
-				assert.isTrue(sendStub().on.called);
-				sendStub().on.thirdCall.args[1](response);
+				assert.isFalse(sendStub.calledOnce);
 				assert.isTrue(mockfs.readdir.calledOnce);
 				mockfs.readdir.firstCall.args[1](null, [ 'file' ]);
-				assert.include(writeStub.firstCall.args[0], 'test');
+				assert.include((<SinonStub> response.write).firstCall.args[0], 'test');
 
+				return promise;
+			},
+
+			'missing trailing slash; redirects'() {
+				request.url = 'http://example.org/test';
+				mockfs.statSync.returns({
+					isDirectory() { return true; },
+					isFile() { return false; }
+				});
+				mockfs.existsSync.returns(true);
+				const middleware = new Middleware({
+					basePath: 'root'
+				});
+				const promise = middleware.handle(<IncomingMessage> request, <ServerResponse> response);
+
+				assert.isFalse(sendStub.calledOnce);
+				assert.isFalse(mockfs.readdir.calledOnce);
+				assert.strictEqual(response.statusCode, 301);
+				assert.strictEqual((<SinonStub> response.setHeader).firstCall.args[1], request.url + '/');
+
+				return promise;
+			},
+
+			'directory with default file; serves file'() {
+				request.url = 'http://example.org/test/';
+				mockfs.statSync.returns({
+					isDirectory() { return true; },
+					isFile() { return true; }
+				});
+				mockfs.existsSync.returns(true);
+				const middleware = new Middleware({
+					basePath: 'root'
+				});
+				const promise = middleware.handle(<IncomingMessage> request, <ServerResponse> response);
+
+				assertFileSent(`root${ sep }test${ sep }index.html`);
+				return promise;
+			},
+
+			'file url; serves file'() {
+				mockfs.statSync.returns({
+					isDirectory() { return false; },
+					isFile() { return true; }
+				});
+				mockfs.existsSync.returns(true);
+				const middleware = new Middleware({
+					basePath: 'root'
+				});
+				const promise = middleware.handle(<IncomingMessage> request, <ServerResponse> response);
+
+				assertFileSent(`root${ sep }test${ sep }webserv.html`);
 				return promise;
 			}
 		}

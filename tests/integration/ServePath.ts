@@ -41,13 +41,6 @@ registerSuite('integration: ServePath', {
 	},
 
 	tests: {
-		'serve a single file'() {
-			return assertTestHtml(join(root, 'test.html'), {})
-				.then((html) => {
-					assert.include(html, 'test');
-				});
-		},
-
 		'serve files from a directory'() {
 			return assertTestHtml(root, {
 				path: '/test.html'

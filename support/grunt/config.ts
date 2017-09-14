@@ -1,4 +1,4 @@
-import * as path from 'path';
+import { resolve } from 'path';
 
 export const targetDirectory = '_dist';
 
@@ -8,7 +8,7 @@ export const testsDirectory = '<%= targetDirectory %>/tests';
 
 export const examplesDirectory = '<%= targetDirectory %>/examples';
 
-export const binDirectory = path.resolve('node_modules/.bin');
+export const binDirectory = resolve('node_modules/.bin');
 
 export const clean = {
 	build: ['<%= targetDirectory %>'],
@@ -94,14 +94,15 @@ export const tslint = {
 
 export const webserv = {
 	nonWaiting: {
+		debugLevel: 'debug',
 		port: '8890',
-		directory: '.',
+		directory: resolve(__dirname, '../../tests/integration/assets'),
 		wait: false
 	},
 	server: {
 		port: '8889',
-			directory: '.',
-			middleware() {
+		directory: '.',
+		middleware() {
 			return [
 				function (req: any) {
 					console.log(`REQUEST ${ req.url }`);
