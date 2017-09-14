@@ -5,7 +5,7 @@ import { SinonStub, stub } from 'sinon';
 import { IncomingMessage, ServerResponse } from 'http';
 import { createMockSend, loadMockModule } from '../_support/mocks';
 import ServePath from 'src/middleware/ServePath';
-import sep from 'path';
+import { sep } from 'path';
 
 // tslint:disable
 let Middleware: typeof ServePath;
