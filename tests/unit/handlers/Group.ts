@@ -4,6 +4,7 @@ import Group from 'src/handlers/Group';
 import { createMockResponse, createMockRequest } from '../_support/mocks';
 import * as sinon from 'sinon';
 import Functional from 'src/handlers/Functional';
+import { HandlerResponse } from 'src/handlers/Handler';
 
 registerSuite('src/handlers/Group', {
 	tests: {
@@ -111,7 +112,7 @@ registerSuite('src/handlers/Group', {
 				const group = new Group(handlers);
 
 				return group.handle(request, response)
-					.then(function (directive: string) {
+					.then(function (directive: HandlerResponse) {
 						for (let i = 0; i < 2; i++) {
 							const handler = handlers[0];
 							assert.isTrue(handler.calledOnce);
@@ -133,7 +134,7 @@ registerSuite('src/handlers/Group', {
 				const group = new Group(handlers);
 
 				return group.handle(request, response)
-					.then(function (directive: string) {
+					.then(function (directive: HandlerResponse) {
 						for (let i = 0; i < 2; i++) {
 							const handler = handlers[0];
 							assert.isTrue(handler.calledOnce);
