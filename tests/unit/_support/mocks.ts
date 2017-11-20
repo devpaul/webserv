@@ -52,7 +52,7 @@ export function createMockRequest(): IncomingMessage {
 	return <any> request;
 }
 
-export function createMockServer() {
+export function createMockServer(): any {
 	return {
 		close: stub(),
 
@@ -64,7 +64,7 @@ export function createMockServer() {
 	};
 }
 
-export function createMockSend() {
+export function createMockSend(): any {
 	const pipeStub = stub();
 	const onStub = stub();
 	const sendStub = stub();

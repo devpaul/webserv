@@ -10,8 +10,8 @@ import {
  * @param values a map of values to return
  * @return a Proxied object where values in the values object are returned instead of an object's own values
  */
-export function overrideWrapper(target: Object, values: { [ key: string ]: any } = {}) {
-	return new Proxy(target, {
+export function overrideWrapper<T extends object = object>(target: T, values: { [ key: string ]: any } = {}) {
+	return new Proxy<T>(target, {
 		get(target: any, property: PropertyKey): any {
 			if (property in values) {
 				return values[property];

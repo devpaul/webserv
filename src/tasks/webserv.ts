@@ -3,6 +3,7 @@ import IMultiTask = grunt.task.IMultiTask;
 import { log } from '../log';
 import { inspect } from 'util';
 import { BasicServer, ServerState } from '../servers/BasicServer';
+import ITask = grunt.task.ITask;
 
 const servers: BasicServer[] = [];
 
@@ -47,7 +48,7 @@ export = function (grunt: IGrunt) {
 			}, onFail);
 	});
 
-	grunt.registerTask('stopServers', function (this: IMultiTask<Config>) {
+	grunt.registerTask('stopServers', function (this: ITask) {
 		const done = this.async();
 
 		Promise.all(servers.map(server => {

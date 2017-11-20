@@ -53,7 +53,7 @@
     "grunt-contrib-copy": "^1.0.0",
     "grunt-shell": "^2.1.0",
     "grunt-tslint": "^5.0.1",
-    "intern": "^4.0.0-alpha.15",
+    "intern": "^4",
     "load-grunt-tasks": "^3.5.2",
     "mockery": "^2.0.0",
     "shelljs": "^0.7.5",
@@ -61,7 +61,7 @@
     "ts-node": "^3.2.1",
     "tslint": "^5.2.0",
     "tslint-sitepen": "^0.1.0",
-    "typescript": "^2.4"
+    "typescript": "^2.6"
   },
   "keywords": [
     "server",
