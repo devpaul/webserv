@@ -1,4 +1,3 @@
-import { HandlerResponse } from '../handlers/Handler';
 import { IncomingMessage, ServerResponse } from 'http';
 import { log } from '../log';
 import Response from './Response';
@@ -8,10 +7,13 @@ import Response from './Response';
  */
 export default class NotFound extends Response {
 	constructor(message: string = 'Not Found') {
-		super(404, null, message);
+		super({
+			message,
+			statusCode: 404
+		});
 	}
 
-	handle(request: IncomingMessage, response: ServerResponse): Promise<HandlerResponse> {
+	handle(request: IncomingMessage, response: ServerResponse) {
 		log.debug(`Not Found: ${ request.url }`);
 		return super.handle(request, response);
 	}
