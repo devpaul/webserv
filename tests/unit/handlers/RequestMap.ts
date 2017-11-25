@@ -1,7 +1,7 @@
 import { assert } from 'chai';
 import registerSuite from 'intern/lib/interfaces/object';
 import { stub } from 'sinon';
-import RequestMap from '../../../src/handlers/RequestMap';
+import RequestMap from 'src/handlers/RequestMap';
 import { createMockRequest, createMockResponse } from '../_support/mocks';
 
 registerSuite('src/handlers/map', {
