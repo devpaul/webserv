@@ -21,7 +21,8 @@
   "scripts": {
     "example": "ts-node ./examples/sample",
     "example-basic": "ts-node ./examples/basic",
-    "example-proxy": "ts-node ./examples/proxy"
+    "example-proxy": "ts-node ./examples/proxy",
+    "example-upload": "ts-node ./examples/upload"
   },
   "dependencies": {
     "@types/busboy": "^0.2.3",

@@ -5,6 +5,7 @@ import { join } from 'path';
 import { IncomingMessage, ServerResponse } from 'http';
 import { log } from '../log';
 import * as send from 'send';
+import { htmlTemplate } from '../util/templates';
 
 export interface ServePathOptions {
 	/**
@@ -38,18 +39,7 @@ function listFileContents(request: IncomingMessage, response: ServerResponse, ta
 				return `<a href="${ join(url, file) }">${ file }</a>`;
 			}).join('<br>');
 
-			response.write(
-`<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>Title</title>
-</head>
-<body>
-	${ fileLinks }
-</body>
-</html>`);
-
+			response.write(htmlTemplate(fileLinks));
 			response.end();
 			resolve();
 		});

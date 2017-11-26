@@ -11,3 +11,4 @@ _build
 html-report
 /package-lock.json
 coverage
+/examples/_uploads/

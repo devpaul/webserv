@@ -6,9 +6,7 @@ import Forwarder from '../src/middleware/Forwarder';
 import { noCache } from '../src/middleware/SetHeaders';
 import { setLogLevel } from '../src/log';
 import { IncomingMessage, ServerResponse } from 'http';
-import incomingFiles from '../src/transforms/incomingFiles';
 import WebApplication from '../src/middleware/WebApplication';
-import SaveFiles from '../src/middleware/SaveFiles';
 import ServePath from '../src/middleware/ServePath';
 
 const server = new HttpServer({
@@ -40,7 +38,6 @@ function landingPage(request: IncomingMessage, response: ServerResponse) {
 <ul>
 	<li><a href="/dist">Serve Path</a></li>
 	<li><a href="/forward">Forwarding</a></li>
-	<li><a href="/upload">Upload</a></li>
 	<li><a href="/echo/hello_world">Echo parameters</a></li>
 </ul>
 </body>
@@ -64,9 +61,6 @@ server.app.middleware.add([
 		// If none of the above handlers match; return a 404
 		notFound
 	]),
-	route('/upload').transform(incomingFiles).wrap(new SaveFiles('_uploads', {
-		createUploadDirectory: true
-	})),
 	route('/echo/:words').wrap(echoRoute),
 	route('/').wrap(landingPage)
 ]);

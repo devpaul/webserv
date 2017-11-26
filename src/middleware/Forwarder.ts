@@ -1,4 +1,3 @@
-import { HandlerResponse } from '../handlers/Handler';
 import { IncomingMessage, ServerResponse } from 'http';
 import { log } from '../log';
 import Response from './Response';
@@ -10,11 +9,14 @@ export default class Forwarder extends Response {
 	location: string;
 
 	constructor(location: string) {
-		super(301, { 'Location': location });
+		super({
+			header: { Location: location },
+			statusCode: 301
+		});
 		this.location = location;
 	}
 
-	handle(request: IncomingMessage, response: ServerResponse): Promise<HandlerResponse> {
+	handle(request: IncomingMessage, response: ServerResponse) {
 		log.debug(`Forwarding ${ request.url } to ${ this.location }`);
 		return super.handle(request, response);
 	}
