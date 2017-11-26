@@ -75,3 +75,7 @@ export function createMockSend(): any {
 
 	return sendStub;
 }
+
+export class MockHandler implements Handler {
+	handle = (<any> stub());
+}

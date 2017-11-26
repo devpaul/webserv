@@ -38,6 +38,8 @@ export function contentNegotiator(request: IncomingMessage, map: Map<string, Han
 			}
 		}
 	}
+
+	return map.get('*/*');
 }
 
 /**
@@ -78,12 +80,12 @@ export default class Branch implements Handler {
 	/**
 	 * A map of handlers mapped to a key condition
 	 */
-	map: ConditionMap;
+	protected map: ConditionMap;
 
 	/**
 	 * Resolves values to a single mapped handler
 	 */
-	resolver: Resolver;
+	protected resolver: Resolver;
 
 	constructor(config: Config) {
 		const {
