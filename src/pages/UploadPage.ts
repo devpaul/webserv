@@ -1,4 +1,4 @@
-import Response from 'src/middleware/Response';
+import Response from '../middleware/Response';
 import { htmlTemplate } from '../util/templates';
 
 function form() {

@@ -31,3 +31,15 @@ export function isHandler(value: any): value is Handler {
 export function isHandlerFunction(value: any): value is HandlerFunction {
 	return typeof value === 'function';
 }
+
+/**
+ * Calls a handler or handler function and returns its result
+ */
+export function call(handler: Handler | HandlerFunction | undefined, request: IncomingMessage, response: ServerResponse) {
+	if (isHandler(handler)) {
+		return handler.handle(request, response);
+	}
+	else if (isHandlerFunction(handler)) {
+		return handler(request, response);
+	}
+}

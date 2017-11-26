@@ -12,7 +12,7 @@ export interface Config {
 	allowOverwrite?: boolean;
 	createUploadDirectory?: boolean;
 	directory: string;
-	uploadResponse?: UploadFile['uploadResponse'];
+	uploadResponse?: SaveFiles['uploadResponse'];
 }
 
 function defaultUploadResponse(files: string[], failed: string[]) {
@@ -26,7 +26,7 @@ function defaultUploadResponse(files: string[], failed: string[]) {
 	}
 }
 
-export default class UploadFile implements Handler {
+export default class SaveFiles implements Handler {
 	readonly allowOverwrite: boolean;
 
 	readonly createUploadDirectory: boolean;
@@ -74,6 +74,10 @@ export default class UploadFile implements Handler {
 				}
 			}
 		}
+		else {
+			log.warn('request contains no files property. Was the incomingFiles transform applied?');
+		}
+
 		response.write(this.uploadResponse(files, failed));
 		response.end();
 	}
