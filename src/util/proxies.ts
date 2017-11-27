@@ -57,11 +57,23 @@ export function descriptorWrapper<T extends object = object>(target: T, descript
 		},
 
 		getOwnPropertyDescriptor(target: any, property: PropertyKey): PropertyDescriptor {
+			const descriptor = Object.getOwnPropertyDescriptor(target, property);
+
 			if (isPropertyDescriptor(descriptors[property])) {
-				return descriptors[property];
+				const override = descriptors[property];
+				const {
+					configurable = true,
+					enumerable = true,
+					writable = true
+				} = descriptor || {};
+				return Object.assign({
+					configurable,
+					enumerable,
+					writable
+				}, override);
 			}
 
-			return Object.getOwnPropertyDescriptor(target, property);
+			return descriptor;
 		},
 
 		set(target: any, property: PropertyKey, value: any): boolean {

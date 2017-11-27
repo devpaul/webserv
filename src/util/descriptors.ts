@@ -9,7 +9,7 @@ export function isPropertyDescriptor(descriptor: any): descriptor is PropertyDes
  * @return if the passed value is a property descriptor that returns a value
  */
 export function isDataDescriptor(descriptor: any): boolean {
-	return descriptor && descriptor.value;
+	return Boolean(descriptor && descriptor.hasOwnProperty('value'));
 }
 
 /**
@@ -23,12 +23,12 @@ export function isAccessorDescriptor(descriptor: any): boolean {
  * @return if the passed value is a property descriptor with a getter
  */
 export function isGetPropertyDescriptor(descriptor: any): boolean {
-	return descriptor && descriptor.get && typeof descriptor.get === 'function';
+	return Boolean(descriptor && descriptor.get && typeof descriptor.get === 'function');
 }
 
 /**
  * @return if the passed value is a property descriptor with a setter
  */
 export function isSetPropertyDescriptor(descriptor: any): boolean {
-	return descriptor && descriptor.set && typeof descriptor.set === 'function';
+	return Boolean(descriptor && descriptor.set && typeof descriptor.set === 'function');
 }
