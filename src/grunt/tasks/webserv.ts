@@ -1,8 +1,8 @@
-import createServer, { Config } from '../commands/createServer';
+import createServer, { Config } from '../../configuration/createServer';
 import IMultiTask = grunt.task.IMultiTask;
-import { log } from '../log';
+import { log } from '../../core/log';
 import { inspect } from 'util';
-import { BasicServer, ServerState } from '../servers/BasicServer';
+import { BasicServer, ServerState } from '../../core/servers/BasicServer';
 import ITask = grunt.task.ITask;
 
 const servers: BasicServer[] = [];

@@ -2,9 +2,9 @@ import { Handler } from '../handlers/Handler';
 import { createServer as createHttpsServer, Server, ServerOptions as HttpsOptions } from 'https';
 import WebApplication from '../middleware/WebApplication';
 import { BasicServer, ServerState } from './BasicServer';
-import { ServerType } from '../commands/createServer';
 import { IncomingMessage, ServerResponse } from 'http';
 import { log } from '../log';
+import { ServerType } from '../interface';
 
 export interface HttpsConfig extends HttpsOptions {
 	port: number;

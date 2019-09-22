@@ -12,7 +12,7 @@ import {
  */
 export function overrideWrapper<T extends object = object>(target: T, values: { [ key: string ]: any } = {}) {
 	return new Proxy<T>(target, {
-		get(target: any, property: PropertyKey): any {
+		get(target: any, property: string): any {
 			if (property in values) {
 				return values[property];
 			}
@@ -20,7 +20,7 @@ export function overrideWrapper<T extends object = object>(target: T, values: { 
 			return target[property];
 		},
 
-		set(target: any, property: PropertyKey, value: any): boolean {
+		set(target: any, property: string, value: any): boolean {
 			if (property in values) {
 				values[property] = value;
 			}
@@ -45,7 +45,7 @@ export function overrideWrapper<T extends object = object>(target: T, values: { 
  */
 export function descriptorWrapper<T extends object = object>(target: T, descriptors: PropertyDescriptorMap = {}): T {
 	return new Proxy<T>(target, {
-		get(target: any, property: PropertyKey): any {
+		get(target: any, property: string): any {
 			if (isGetPropertyDescriptor(descriptors[property])) {
 				return descriptors[property].get();
 			}
@@ -56,7 +56,7 @@ export function descriptorWrapper<T extends object = object>(target: T, descript
 			return target[property];
 		},
 
-		getOwnPropertyDescriptor(target: any, property: PropertyKey): PropertyDescriptor {
+		getOwnPropertyDescriptor(target: any, property: string): PropertyDescriptor {
 			const descriptor = Object.getOwnPropertyDescriptor(target, property);
 
 			if (isPropertyDescriptor(descriptors[property])) {
@@ -76,7 +76,7 @@ export function descriptorWrapper<T extends object = object>(target: T, descript
 			return descriptor;
 		},
 
-		set(target: any, property: PropertyKey, value: any): boolean {
+		set(target: any, property: string, value: any): boolean {
 			if (isSetPropertyDescriptor(descriptors[property])) {
 				descriptors[property].set(value);
 			}

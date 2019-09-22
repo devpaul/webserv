@@ -43,7 +43,7 @@ export abstract class BasicServer<T extends Handler = WebApplication> extends Ev
 	}
 
 	protected addListeners() {
-		[ 'SIGINT', 'SIGTERM' ].forEach((signal) => {
+		([ 'SIGINT', 'SIGTERM' ] as NodeJS.Signals[]).forEach((signal) => {
 			const handler = () => {
 				this.onSignal('SIGINT');
 			};

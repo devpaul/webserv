@@ -1,8 +1,8 @@
 {
   "name": "webserv",
   "author": "Paul Shannon <pshannon@sitepen.com>",
-  "version": "0.13.0-pre",
-  "description": "Programmatically create a frontend web-server for development",
+  "version": "1.0.0-pre",
+  "description": "a quick, flexible, fully typed development server",
   "license": "MPL-2.0",
   "bin": {
     "webserv": "bin/webserv.js"
@@ -19,19 +19,15 @@
     "url": "https://github.com/devpaul/webserv"
   },
   "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc -w",
+    "test": "intern",
     "example": "ts-node ./examples/sample",
     "example-basic": "ts-node ./examples/basic",
     "example-proxy": "ts-node ./examples/proxy",
     "example-upload": "ts-node ./examples/upload"
   },
   "dependencies": {
-    "@types/busboy": "^0.2.3",
-    "@types/http-proxy": "^1.12.0",
-    "@types/mkdirp": "^0.5.0",
-    "@types/node": "0.0.2",
-    "@types/pem": "^1.9.2",
-    "@types/send": "^0.14.3",
-    "@types/winston": "^2.2.0",
     "busboy": "^0.2.14",
     "commander": "^2.9.0",
     "findup": "^0.1.5",
@@ -43,6 +39,13 @@
     "winston": "^2.3.1"
   },
   "devDependencies": {
+    "@types/busboy": "^0.2.3",
+    "@types/http-proxy": "^1.12.0",
+    "@types/mkdirp": "^0.5.0",
+    "@types/node": "12.7.5",
+    "@types/pem": "^1.9.2",
+    "@types/send": "^0.14.3",
+    "@types/winston": "^2.2.0",
     "@types/commander": "^2.3.31",
     "@types/grunt": "^0.4.21",
     "@types/mockery": "^1.4.29",

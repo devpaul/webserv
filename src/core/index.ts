@@ -12,11 +12,6 @@ import HttpServer from './servers/HttpServer';
 import incomingFiles from './transforms/incomingFiles';
 import relativeUrl from './transforms/relativeUrl';
 
-// This index is used to support a node.js require without worrying about `default` values
-
-export { default as create } from './commands/createServer';
-export { default as default } from './commands/createServer';
-
 export const handlers = {
 	Group,
 	Functional,

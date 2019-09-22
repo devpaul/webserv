@@ -7,108 +7,57 @@
 
 Programatic API for creating front-end webservers to support development. Webserv was built to provide a complete
 	and simple way for front-end engineers develop decoupled from the backend.
-	
+
 ## Features
 
-* Fully typed API
-* Configuration driven
 * Command line interface
+* Configuration driven
+* Fully typed, programmatic API
 * Grunt support
-
-## Middleware Included
-
-Webserv comes with [middleware](https://github.com/devpaul/webserv/tree/master/src/middleware) to make it easy to add standard server functionality. 
-
-* Serve Directory
-* Serve File
-* Upload Files
-* HTTP Headers
-	* Cors Support
-	* No Cache
-* HTTP Responses
-	* 301 Forwarding
-	* 404 Not Found
-* Logging
-* Proxying
-
-## Usage
-
-## Configuration
-
-Most common usage can be handled with the 
-[createServer](https://github.com/devpaul/webserv/blob/master/src/commands/createServer.ts#L20-L30) command. It accepts
-an options object and returns a `Promise` that provides a reference to the created server. More working examples can be 
-found in the [examples](https://github.com/devpaul/webserv/tree/master/examples) directory.
-
-```typescript
-import createServer, { ServerType } from 'webserv/commands/createServer';
-import { noCache } from 'webserv/middleware/SetHeaders';
-
-
-createServer({
-	// global debug level for webserv
-	debugLevel: 'debug',
-	// serve files from this directory
-	directory: process.cwd(),
-	// additional middleware to handle requests
-	middleware: [ 
-   		noCache(),
-	],
-	// listen on this port (default 8888)
-	port: 9999,
-	// immediately start the server after its created
-	start: true,
-	// the type of server to create (http or https)
-	type: ServerType.HTTPS
-});
-```
-
-## Programmatic
-
-Programmatic usage is useful when describing the routes, filters, and transforms that direct requests to your 
-middleware. Let's start a new server that servers files from a directory and proxies requests through to a parent 
-server.
-
-```typescript
-import HttpServer from 'webserv/HttpServer';
-import ServePath from 'webserv/middleware/ServePath';
-import Proxy from 'webserv/middleware/Proxy';
-import WebApplication from 'webserv/WebApplication';
-import route from 'webserv/handlers/route';
-
-const server = new HttpServer({ port: 7777 }, new WebApplication());
-server.app.middleware.add([
-	route('/dist(.*)').wrap(new ServePath('./_dist')),
-	new Proxy('https://devpaul.com')
-]);
-server.start()
-	.then(function () {
-		console.log(`started server on ${ server.config.port }`);
-	})
-```
-
-## Grunt
-
-Webserv's grunt usage simply passes options directly to `createServer`.
-
-```javascript
-{
-	webserv: {
-		options: {
-			port: number, // defaults to 8888
-			directory: string // if present, host the directory
-			middleware: Handler[] // array of middleware
-		}
-	}
-}
-```
 
 ## Command Line
 
-WebServ offers a very basic command-line usage at this time. Simply install webserv globally (`npm i webserv -g`)
+WebServ offers a very basic command-line usage. Simply install webserv globally (`npm i webserv -g`)
 and type `webserv` on the command line to serve files and directories from your current directory.
 
-## Examples
+### Command Line options
 
-Example usage is available in the [examples](https://github.com/devpaul/webserv/tree/master/examples) directory. Run 
-them using `ts-node` or via `package.json` scripts.
+**-c, --config**: selects a configuration file
+
+When using a configuration file `webserv` will not serve the current directory by default.
+
+```
+webserv -c webserv.json
+```
+
+**-f, --folder**: serves this folder
+
+```
+webserv -f ./dist
+```
+
+When launched `webserv` will automatically look a file named `webserv.ts`, `webserv.js`, or `webserv.json` in the current directory.
+
+**-m, --mode**: use `http` or `https` (defaults to http)
+
+```
+webserv -m https
+```
+
+**-p, --port**: sets the port to use (defaults to 8888)
+
+```
+webserv -p 8000
+```
+
+**--proxy**: create a proxy to an external url
+
+```
+webserv --proxy "https://example.com"
+```
+
+**-s, --server**: starts a server defined in the configuration
+
+```
+webserv -s myproxy
+```

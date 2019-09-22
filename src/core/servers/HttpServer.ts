@@ -2,9 +2,9 @@ import { Handler, Upgradable } from '../handlers/Handler';
 import { createServer as createHttpServer, IncomingMessage, Server, ServerResponse } from 'http';
 import WebApplication from '../middleware/WebApplication';
 import { BasicServer, ServerState } from './BasicServer';
-import { ServerType } from '../commands/createServer';
 import { log } from '../log';
 import { Socket } from 'net';
+import { ServerType } from '../interface';
 
 export interface HttpConfig {
 	port: number;

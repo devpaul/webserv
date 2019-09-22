@@ -1,4 +1,4 @@
-import createServer, { ServerType } from './commands/createServer';
+import createServer, { ServerType } from '../configuration/createServer';
 
 /**
  * Basic CLI support used to start a server that serves files and a directory index of the current directory

@@ -1,13 +1,13 @@
-import Group, { HandlerDefinition } from '../handlers/Group';
-import { BasicServer } from '../servers/BasicServer';
-import HttpsServer, { HttpsConfig } from '../servers/HttpsServer';
-import HttpServer, { HttpConfig } from '../servers/HttpServer';
-import WebApplication from '../middleware/WebApplication';
+import Group, { HandlerDefinition } from '../core/handlers/Group';
+import { BasicServer } from '../core/servers/BasicServer';
+import HttpsServer, { HttpsConfig } from '../core/servers/HttpsServer';
+import HttpServer, { HttpConfig } from '../core/servers/HttpServer';
+import WebApplication from '../core/middleware/WebApplication';
 import { ServerOptions as HttpsOptions } from 'https';
-import buildCert from './buildCert';
-import { Upgradable } from '../handlers/Handler';
-import { setLogLevel } from '../log';
-import ServePath from '../middleware/ServePath';
+import buildCert from '../core/commands/buildCert';
+import { Upgradable } from '../core/handlers/Handler';
+import { setLogLevel } from '../core/log';
+import ServePath from '../core/middleware/ServePath';
 
 export type MiddlewareFunction = () => HandlerDefinition;
 export type Middleware = HandlerDefinition | MiddlewareFunction;

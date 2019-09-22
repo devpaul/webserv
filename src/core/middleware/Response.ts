@@ -1,5 +1,5 @@
 import { Handler } from '../handlers/Handler';
-import { IncomingMessage, ServerResponse } from 'http';
+import { IncomingMessage, ServerResponse, OutgoingHttpHeaders } from 'http';
 
 export interface Config {
 	header?: Response['header'];
@@ -11,7 +11,7 @@ export interface Config {
  * Middleware to return a http response
  */
 export default class Response implements Handler {
-	header: object;
+	header: OutgoingHttpHeaders;
 
 	message?: string | Buffer;
 

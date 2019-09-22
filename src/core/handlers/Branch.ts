@@ -93,12 +93,16 @@ export default class Branch implements Handler {
 			resolver
 		} = config;
 
-		this.map = new Map(Array.from(Object.entries(map).map(([ key, handler ]) => {
+		this.map = new Map();
+		for (const [key, handler] of Object.entries(map)) {
 			if (isHandlerFunction(handler)) {
-				return [ key, new Functional(handler) ];
+				this.map.set(key, new Functional(handler));
 			}
-			return [ key, handler ];
-		})));
+			else {
+				this.map.set(key, handler);
+			}
+		}
+
 		this.resolver = resolver;
 	}
 
