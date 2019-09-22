@@ -1,4 +1,4 @@
-import { Config } from "./createServer";
+import { Config } from './createServer';
 
 // TODO implement a file loader
 export function loadConfiguration(path?: string, server?: string): Config {

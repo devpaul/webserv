@@ -40,11 +40,10 @@ const argv = yargs
 	.option('showConfig', {
 		describe: 'prints the config to the console before starting',
 		type: 'boolean'
-	})
-	.argv;
+	}).argv;
 
 const config: Config = {
-	... (argv.config ? loadConfiguration(argv.config, argv.server) : {}),
+	...(argv.config ? loadConfiguration(argv.config, argv.server) : {}),
 	port: argv.port,
 	type: argv.mode === 'https' ? ServerType.HTTPS : ServerType.HTTP
 };
@@ -57,16 +56,12 @@ if (argv.proxy) {
 		changeOrigin: true,
 		ws: true
 	});
-	config.middleware = [ wsProxy ];
+	config.middleware = [wsProxy];
 	config.upgrade = wsProxy;
-}
-else if (!argv.folder) {
+} else if (!argv.folder) {
 	config.directory = process.cwd();
 }
 
-/**
- * Basic CLI support used to start a server that serves files and a directory index of the current directory
- */
 export async function run() {
 	if (argv.showConfig) {
 		console.log(config);
@@ -78,7 +73,7 @@ export async function run() {
 
 run().catch((err: Error) => {
 	console.error('failed to start webserv');
-	console.error(`reason: ${ err.message }`);
+	console.error(`reason: ${err.message}`);
 	console.error(err.stack);
 	process.exitCode = 1;
 	process.exit();
