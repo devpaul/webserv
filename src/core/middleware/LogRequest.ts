@@ -14,7 +14,7 @@ export default class LogRequest implements Handler {
 	}
 
 	handle(request: IncomingMessage): Promise<HandlerResponse> {
-		log[this.level](`[${ request.method }] ${ request.url }`);
+		log[this.level](`[${request.method}] ${request.url}`);
 		return Promise.resolve();
 	}
 }

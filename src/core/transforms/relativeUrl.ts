@@ -11,7 +11,7 @@ import { parse as parseUrl, format as formatUrl } from 'url';
  * @return a function that transforms an IncomingMessage
  */
 export default function relativeUrl(match: string, replace: string = ''): Transform {
-	return function (request: IncomingMessage) {
+	return function(request: IncomingMessage) {
 		return descriptorWrapper(request, {
 			originalUrl: {
 				get() {

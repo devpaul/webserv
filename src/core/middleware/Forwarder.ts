@@ -17,7 +17,7 @@ export default class Forwarder extends Response {
 	}
 
 	handle(request: IncomingMessage, response: ServerResponse) {
-		log.debug(`Forwarding ${ request.url } to ${ this.location }`);
+		log.debug(`Forwarding ${request.url} to ${this.location}`);
 		return super.handle(request, response);
 	}
 }

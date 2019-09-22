@@ -28,15 +28,14 @@ export class Application<T extends Handler> implements Handler {
 	}
 
 	handle(request: IncomingMessage, response: ServerResponse): Promise<HandlerResponse> {
-		return Promise.race([
-			this.promiseTimeout(),
-			this.middleware.handle(request, response)
-		]).then(() => {
-			return this.postProcessing(request, response);
-		}).catch((error: Error) => {
-			// Send our errors to the error handler
-			return this.errorHandler(request, response, error);
-		});
+		return Promise.race([this.promiseTimeout(), this.middleware.handle(request, response)])
+			.then(() => {
+				return this.postProcessing(request, response);
+			})
+			.catch((error: Error) => {
+				// Send our errors to the error handler
+				return this.errorHandler(request, response, error);
+			});
 	}
 
 	protected postProcessing(_request: IncomingMessage, response: ServerResponse) {
@@ -48,7 +47,7 @@ export class Application<T extends Handler> implements Handler {
 	protected errorHandler(_request: IncomingMessage, response: ServerResponse, error: Error): Promise<string> {
 		return new Promise((resolve) => {
 			const message = this.statusResponse(response.statusCode, error);
-			response.statusCode = (<MiddlewareError> error).statusCode || 500;
+			response.statusCode = (<MiddlewareError>error).statusCode || 500;
 			response.end(message, resolve);
 		});
 	}
@@ -59,9 +58,9 @@ export class Application<T extends Handler> implements Handler {
 	}
 
 	protected promiseTimeout(timeout: number = this.timeout): Promise<void> {
-		return new Promise<void>(function (_resolve, reject) {
-			setTimeout(function () {
-				reject(new MiddlewareError(`Response timeout of ${ timeout } reached.`));
+		return new Promise<void>(function(_resolve, reject) {
+			setTimeout(function() {
+				reject(new MiddlewareError(`Response timeout of ${timeout} reached.`));
 			}, timeout);
 		});
 	}

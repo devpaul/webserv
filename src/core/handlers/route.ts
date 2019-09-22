@@ -21,7 +21,7 @@ export class Route {
 	protected stack: Array<(handler: Handler) => Handler> = [];
 
 	filter(filter: Filter): this {
-		this.stack.unshift(function (handler) {
+		this.stack.unshift(function(handler) {
 			return filterProxy(handler, filter);
 		});
 		return this;
@@ -32,7 +32,7 @@ export class Route {
 	}
 
 	transform(func: Transform): this {
-		this.stack.unshift(function (handler) {
+		this.stack.unshift(function(handler) {
 			return transformProxy(handler, func);
 		});
 		return this;
@@ -41,8 +41,7 @@ export class Route {
 	wrap(handler: RouteHandler): Handler {
 		if (Array.isArray(handler)) {
 			handler = new Group(handler);
-		}
-		else if (isHandlerFunction(handler)) {
+		} else if (isHandlerFunction(handler)) {
 			handler = new Functional(handler);
 		}
 
@@ -54,7 +53,7 @@ export class Route {
 }
 
 export interface IncomingRoute extends IncomingMessage {
-	params: { [ key: string ]: string | string[] };
+	params: { [key: string]: string | string[] };
 }
 
 /**
@@ -67,54 +66,56 @@ export interface IncomingRoute extends IncomingMessage {
 function stringRoute(route: Route, filter: string) {
 	const keys: Key[] = [];
 	const regex = pathToRegexp(filter, keys);
-	log.info(`Created regexp ${ regex } to match ${ filter }`);
+	log.info(`Created regexp ${regex} to match ${filter}`);
 	log.debug('route keys', keys);
 	const routeMatch = Symbol();
 
-	return route.transform((request: IncomingMessage) => {
-		const url = parse(request.url);
-		const match = regex.exec(url.pathname);
+	return route
+		.transform((request: IncomingMessage) => {
+			const url = parse(request.url);
+			const match = regex.exec(url.pathname);
 
-		if (!match) {
-			return request;
-		}
+			if (!match) {
+				return request;
+			}
 
-		return overrideWrapper(request, {
-			[routeMatch]: match
-		});
-	}).filter((request: IncomingMessage) => {
-		return !!(<any> request)[routeMatch];
-	}).transform((request: IncomingMessage) => {
-		const params: any = {};
-		const matches = (<any> request)[routeMatch];
+			return overrideWrapper(request, {
+				[routeMatch]: match
+			});
+		})
+		.filter((request: IncomingMessage) => {
+			return !!(<any>request)[routeMatch];
+		})
+		.transform((request: IncomingMessage) => {
+			const params: any = {};
+			const matches = (<any>request)[routeMatch];
 
-		for (let i = 0; i < keys.length; i++) {
-			const key = keys[i];
-			const match = matches[i + 1];
-			if (match) {
-				params[key.name] = decodeURIComponent(match);
-				if (key.repeat) {
-					params[key.name] = params[key.name].split(key.delimiter);
+			for (let i = 0; i < keys.length; i++) {
+				const key = keys[i];
+				const match = matches[i + 1];
+				if (match) {
+					params[key.name] = decodeURIComponent(match);
+					if (key.repeat) {
+						params[key.name] = params[key.name].split(key.delimiter);
+					}
 				}
 			}
-		}
 
-		// add relative mapping transform if last key is .* or '/' if no keys
-		const originalUrl = request.url;
-		const url = parse(request.url);
-		if (keys.length === 0) {
-			url.pathname = '/';
-		}
-		else if (keys[keys.length - 1].pattern === '.*') {
-			url.pathname = matches[matches.length - 1] || '/';
-		}
+			// add relative mapping transform if last key is .* or '/' if no keys
+			const originalUrl = request.url;
+			const url = parse(request.url);
+			if (keys.length === 0) {
+				url.pathname = '/';
+			} else if (keys[keys.length - 1].pattern === '.*') {
+				url.pathname = matches[matches.length - 1] || '/';
+			}
 
-		return overrideWrapper(request, {
-			originalUrl,
-			params,
-			url: format(url)
+			return overrideWrapper(request, {
+				originalUrl,
+				params,
+				url: format(url)
+			});
 		});
-	});
 }
 
 /**
@@ -127,8 +128,7 @@ export default function route(filter?: Filter): Route {
 
 	if (typeof filter === 'string') {
 		stringRoute(route, filter);
-	}
-	else if (filter) {
+	} else if (filter) {
 		route.filter(filter);
 	}
 

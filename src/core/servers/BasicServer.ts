@@ -21,9 +21,7 @@ export abstract class BasicServer<T extends Handler = WebApplication> extends Ev
 
 	private handles: { remove(): void }[] = [];
 
-	constructor(
-		handler: T
-	) {
+	constructor(handler: T) {
 		super();
 		this.app = handler;
 		this.addListeners();
@@ -43,7 +41,7 @@ export abstract class BasicServer<T extends Handler = WebApplication> extends Ev
 	}
 
 	protected addListeners() {
-		([ 'SIGINT', 'SIGTERM' ] as NodeJS.Signals[]).forEach((signal) => {
+		(['SIGINT', 'SIGTERM'] as NodeJS.Signals[]).forEach((signal) => {
 			const handler = () => {
 				this.onSignal('SIGINT');
 			};
@@ -62,7 +60,7 @@ export abstract class BasicServer<T extends Handler = WebApplication> extends Ev
 	}
 
 	protected onSignal(signal: string) {
-		log.info(`received ${ signal } signal. Stopping server on ${ this.port }.`);
+		log.info(`received ${signal} signal. Stopping server on ${this.port}.`);
 		this.stop();
 	}
 }

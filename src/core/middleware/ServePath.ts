@@ -27,7 +27,7 @@ export interface ServePathOptions {
 }
 
 function listFileContents(request: IncomingMessage, response: ServerResponse, target: string) {
-	const url = parseUrl((<any> request).originalUrl || (<any> request).url).pathname;
+	const url = parseUrl((<any>request).originalUrl || (<any>request).url).pathname;
 
 	return new Promise((resolve) => {
 		readdir(target, (err, files) => {
@@ -35,9 +35,11 @@ function listFileContents(request: IncomingMessage, response: ServerResponse, ta
 				throw err;
 			}
 
-			const fileLinks = files.map((file) => {
-				return `<a href="${ join(url, file) }">${ file }</a>`;
-			}).join('<br>');
+			const fileLinks = files
+				.map((file) => {
+					return `<a href="${join(url, file)}">${file}</a>`;
+				})
+				.join('<br>');
 
 			response.write(htmlTemplate(fileLinks));
 			response.end();
@@ -71,7 +73,7 @@ export default class ServePath implements Handler {
 		}
 		const {
 			basePath = process.cwd(),
-			searchDefaults = [ 'index.html' ],
+			searchDefaults = ['index.html'],
 			directoryHandler = listFileContents,
 			trailingSlash = true
 		} = options;
@@ -89,7 +91,7 @@ export default class ServePath implements Handler {
 			return;
 		}
 		if (path.indexOf(this.basePath) === -1) {
-			log.debug(`Attempted to access ${ path } from ${ this.basePath } with ${ request.url }`);
+			log.debug(`Attempted to access ${path} from ${this.basePath} with ${request.url}`);
 			return this.forbidden(response);
 		}
 
@@ -102,15 +104,14 @@ export default class ServePath implements Handler {
 
 			const search = this.findDefaultFile(path);
 			return search ? this.sendFile(request, response, search) : this.listDirectory(request, response, path);
-		}
-		else {
+		} else {
 			return this.sendFile(request, response, path);
 		}
 	}
 
 	protected async listDirectory(request: IncomingMessage, response: ServerResponse, target: string) {
 		if (this.directoryHandler) {
-			log.debug(`handling directory contents for ${ target }`);
+			log.debug(`handling directory contents for ${target}`);
 			await this.directoryHandler(request, response, target);
 		}
 	}
@@ -128,7 +129,7 @@ export default class ServePath implements Handler {
 		response.statusCode = 301;
 		response.setHeader('Location', url + '/');
 		response.end();
-		log.debug(`Redirecting ${ url } => ${ url }/`);
+		log.debug(`Redirecting ${url} => ${url}/`);
 	}
 
 	protected forbidden(response: ServerResponse) {
@@ -138,12 +139,12 @@ export default class ServePath implements Handler {
 
 	protected async sendFile(request: IncomingMessage, response: ServerResponse, target: string) {
 		return new Promise<HandlerResponse>((resolve, reject) => {
-			log.debug(`ServePath: serving file "${ target }"`);
+			log.debug(`ServePath: serving file "${target}"`);
 			send(request, target, {
 				dotfiles: 'deny',
 				index: false
 			})
-				.on('end', function () {
+				.on('end', function() {
 					response.end();
 					resolve();
 				})

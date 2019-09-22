@@ -14,7 +14,7 @@ export default class NotFound extends Response {
 	}
 
 	handle(request: IncomingMessage, response: ServerResponse) {
-		log.debug(`Not Found: ${ request.url }`);
+		log.debug(`Not Found: ${request.url}`);
 		return super.handle(request, response);
 	}
 }

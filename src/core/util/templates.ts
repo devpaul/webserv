@@ -2,10 +2,10 @@ export function htmlTemplate(body: string, title: string = '') {
 	return `
 <html>
 <head>
-	<title>${ title }</title>
+	<title>${title}</title>
 </head>
 <body>
-	${ body }
+	${body}
 </form>
 </body>
 </html>

@@ -2,7 +2,8 @@ import Response from '../middleware/Response';
 import { htmlTemplate } from '../util/templates';
 
 function form() {
-	return htmlTemplate(`
+	return htmlTemplate(
+		`
 <form method="post" enctype="multipart/form-data">
 <p>
 	<input type="file" name="uploadedFiles" multiple>
@@ -10,7 +11,9 @@ function form() {
 <p>
 	<input type="submit" value="Upload file">
 </p>
-	`, 'Upload File');
+	`,
+		'Upload File'
+	);
 }
 
 export default class UploadPage extends Response {

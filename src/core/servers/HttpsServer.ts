@@ -17,10 +17,7 @@ export default class HttpsServer<T extends Handler = WebApplication> extends Bas
 
 	private _config: HttpsOptions;
 
-	constructor(
-		config: HttpsConfig,
-		handler: T
-	) {
+	constructor(config: HttpsConfig, handler: T) {
 		super(handler);
 		this.port = config.port;
 		this._config = config;
@@ -34,7 +31,7 @@ export default class HttpsServer<T extends Handler = WebApplication> extends Bas
 		if (this.state === ServerState.NEW) {
 			this.setState(ServerState.STARTING);
 
-			const server = this._server = this.createServer();
+			const server = (this._server = this.createServer());
 
 			server.on('close', () => {
 				this._server = null;
@@ -42,7 +39,7 @@ export default class HttpsServer<T extends Handler = WebApplication> extends Bas
 			});
 
 			server.on('error', (error: Error) => {
-				log.error(`Server error: ${ error }`);
+				log.error(`Server error: ${error}`);
 			});
 
 			await new Promise((resolve) => {

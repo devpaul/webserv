@@ -27,7 +27,7 @@ export declare type Filter = string | RegExp | FilterFunction | FilterObject;
 export function filter(handler: HandlerFunction, filter: Filter): HandlerFunction {
 	let filterFunction: FilterFunction = createFilter(filter);
 
-	return function (request: IncomingMessage, response: ServerResponse): Promise<HandlerResponse> | HandlerResponse {
+	return function(request: IncomingMessage, response: ServerResponse): Promise<HandlerResponse> | HandlerResponse {
 		if (!filterFunction(request)) {
 			return Promise.resolve();
 		}
@@ -68,11 +68,11 @@ export function method(method: string): FilterFunction {
  *
  * @param filters a series of filters to be combined
  */
-export function first(... filters: Filter[]): FilterFunction {
+export function first(...filters: Filter[]): FilterFunction {
 	const filterFunctions = filters.map(createFilter);
 
-	return function (request: IncomingMessage): boolean {
-		return filterFunctions.some(function (filter) {
+	return function(request: IncomingMessage): boolean {
+		return filterFunctions.some(function(filter) {
 			return filter(request);
 		});
 	};
@@ -84,11 +84,11 @@ export function first(... filters: Filter[]): FilterFunction {
  *
  * @param filters a series of filters to be combined
  */
-export function every(... filters: Filter[]): FilterFunction {
+export function every(...filters: Filter[]): FilterFunction {
 	const filterFunctions = filters.map(createFilter);
 
-	return function (request: IncomingMessage): boolean {
-		return filterFunctions.every(function (filter) {
+	return function(request: IncomingMessage): boolean {
+		return filterFunctions.every(function(filter) {
 			return filter(request);
 		});
 	};
@@ -100,17 +100,13 @@ export function every(... filters: Filter[]): FilterFunction {
 export function createFilter(filter: Filter): FilterFunction {
 	if (typeof filter === 'string') {
 		return filterStringRoute(filter);
-	}
-	else if (filter instanceof RegExp) {
+	} else if (filter instanceof RegExp) {
 		return filterRegexRoute(filter);
-	}
-	else if (typeof filter === 'function') {
-		return <FilterFunction> filter;
-	}
-	else if (typeof filter === 'object' && filter) {
-		return filterObject(<FilterObject> filter);
-	}
-	else {
+	} else if (typeof filter === 'function') {
+		return <FilterFunction>filter;
+	} else if (typeof filter === 'object' && filter) {
+		return filterObject(<FilterObject>filter);
+	} else {
 		throw new Error('invalid filter');
 	}
 }
@@ -119,7 +115,7 @@ export function createFilter(filter: Filter): FilterFunction {
  * create a filter function from a string match
  */
 function filterStringRoute(match: string): FilterFunction {
-	return function (request: IncomingMessage): boolean {
+	return function(request: IncomingMessage): boolean {
 		// TODO make this more robust
 		const url = parseUrl(request.url);
 		return url.pathname.indexOf(match) === 0;
@@ -130,7 +126,7 @@ function filterStringRoute(match: string): FilterFunction {
  * create a filter function from a regular expression
  */
 function filterRegexRoute(match: RegExp): FilterFunction {
-	return function (request: IncomingMessage): boolean {
+	return function(request: IncomingMessage): boolean {
 		const url = parseUrl(request.url);
 		return match.test(url.pathname);
 	};
@@ -140,10 +136,10 @@ function filterRegexRoute(match: RegExp): FilterFunction {
  * create a filter function from an object whose keys will be compared against the incoming message
  */
 function filterObject(match: FilterObject): FilterFunction {
-	return function (request: IncomingMessage): boolean {
+	return function(request: IncomingMessage): boolean {
 		// TODO add deep matching for non-primitives
 		for (let key in match) {
-			if ((<any> match)[key] !== (<any> request)[key]) {
+			if ((<any>match)[key] !== (<any>request)[key]) {
 				return false;
 			}
 		}

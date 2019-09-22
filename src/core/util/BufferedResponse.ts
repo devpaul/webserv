@@ -59,8 +59,7 @@ export default class BufferedResponse<T> {
 			if (this.data.length > notifier.offset) {
 				notifier.resolve(this.data[notifier.offset]);
 				this.notifiers.slice(i, 1);
-			}
-			else if (this.done) {
+			} else if (this.done) {
 				notifier.resolve(DONE);
 				this.notifiers.slice(i, 1);
 			}

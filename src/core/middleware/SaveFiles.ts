@@ -17,11 +17,10 @@ export interface Config {
 
 function defaultUploadResponse(files: string[], failed: string[]) {
 	if (files.length || failed.length) {
-		const uploaded = files.map(file => `<p>Saved: ${ file }</p>`).join('\n');
-		const notUploaded = failed.map(file => `<p>Failed: ${ file }</p>`).join('\n');
+		const uploaded = files.map((file) => `<p>Saved: ${file}</p>`).join('\n');
+		const notUploaded = failed.map((file) => `<p>Failed: ${file}</p>`).join('\n');
 		return htmlTemplate(uploaded + notUploaded);
-	}
-	else {
+	} else {
 		return htmlTemplate('No files uploaded');
 	}
 }
@@ -64,17 +63,15 @@ export default class SaveFiles implements Handler {
 
 				if (this.allowOverwrite || !fs.existsSync(absoluteFilename)) {
 					file.pipe(fs.createWriteStream(absoluteFilename));
-					log.info(`Saved ${ filename } to ${ absoluteFilename }`);
+					log.info(`Saved ${filename} to ${absoluteFilename}`);
 					files.push(filename);
-				}
-				else {
+				} else {
 					file.resume();
-					log.warn(`File already exists! ${ absoluteFilename }`);
+					log.warn(`File already exists! ${absoluteFilename}`);
 					failed.push(filename);
 				}
 			}
-		}
-		else {
+		} else {
 			log.warn('request contains no files property. Was the incomingFiles transform applied?');
 		}
 

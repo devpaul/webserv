@@ -2,7 +2,7 @@ import { Handler, HandlerResponse } from '../handlers/Handler';
 import { IncomingMessage, ServerResponse } from 'http';
 
 export interface Headers {
-	[ key: string ]: string;
+	[key: string]: string;
 }
 
 /**
@@ -18,8 +18,7 @@ export default class SetHeaders implements Handler {
 			this.headers = {
 				[header]: value
 			};
-		}
-		else {
+		} else {
 			this.headers = header;
 		}
 	}
@@ -35,8 +34,15 @@ export default class SetHeaders implements Handler {
 /**
  * http Cache-Control methods
  */
-export type CacheMethods = 'must-revalidate' | 'no-cache' | 'no-store' | 'no-transform' | 'public' | 'private' |
-	'proxy-revalidate' | string;
+export type CacheMethods =
+	| 'must-revalidate'
+	| 'no-cache'
+	| 'no-store'
+	| 'no-transform'
+	| 'public'
+	| 'private'
+	| 'proxy-revalidate'
+	| string;
 
 /**
  * @param cacheMethod the type of Cache-Control to set on the http response

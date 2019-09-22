@@ -10,7 +10,7 @@ export interface Resolver {
 }
 
 export interface Config {
-	map: { [ key: string ]: Handler | HandlerFunction };
+	map: { [key: string]: Handler | HandlerFunction };
 	resolver: Resolver;
 }
 
@@ -28,10 +28,10 @@ export function contentNegotiator(request: IncomingMessage, map: Map<string, Han
 			return map.get(value);
 		}
 
-		const [ type, subtype ] = value.split('/');
+		const [type, subtype] = value.split('/');
 		if (subtype === '*') {
 			for (let accept of map.keys()) {
-				const [ acceptType ] = accept.split('/');
+				const [acceptType] = accept.split('/');
 				if (acceptType === type) {
 					return map.get(accept);
 				}
@@ -47,7 +47,7 @@ export function contentNegotiator(request: IncomingMessage, map: Map<string, Han
  * If a "default" key is defined in the map then it will be returned when no match exists
  */
 export function headerResolver(name: string) {
-	const resolver: Resolver = function (request: IncomingMessage, map: ConditionMap) {
+	const resolver: Resolver = function(request: IncomingMessage, map: ConditionMap) {
 		const value: any = request.headers[name];
 
 		if (typeof value === 'string' && map.has(value)) {
@@ -88,17 +88,13 @@ export default class Branch implements Handler {
 	protected resolver: Resolver;
 
 	constructor(config: Config) {
-		const {
-			map,
-			resolver
-		} = config;
+		const { map, resolver } = config;
 
 		this.map = new Map();
 		for (const [key, handler] of Object.entries(map)) {
 			if (isHandlerFunction(handler)) {
 				this.map.set(key, new Functional(handler));
-			}
-			else {
+			} else {
 				this.map.set(key, handler);
 			}
 		}

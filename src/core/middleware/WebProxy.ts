@@ -43,10 +43,14 @@ export default class WebProxy implements Handler, Upgradable {
 	 * Handle error conditions
 	 */
 	onError(err: Error) {
-		log.error(`Proxy failed: ${ err.message }`);
+		log.error(`Proxy failed: ${err.message}`);
 	}
 
-	protected onProxyCallback(error: Error, request: IncomingMessage, response: ServerResponse): Promise<HandlerResponse> {
+	protected onProxyCallback(
+		error: Error,
+		request: IncomingMessage,
+		response: ServerResponse
+	): Promise<HandlerResponse> {
 		if (error) {
 			log.error(error.message);
 			return Promise.reject(error);
@@ -56,14 +60,29 @@ export default class WebProxy implements Handler, Upgradable {
 	/**
 	 * Modify the request before proxy data is sent
 	 */
-	protected onProxyRequest?(proxyRequest: ClientRequest, request: IncomingMessage, response: ServerResponse, options: ServerOptions): void;
+	protected onProxyRequest?(
+		proxyRequest: ClientRequest,
+		request: IncomingMessage,
+		response: ServerResponse,
+		options: ServerOptions
+	): void;
 
 	/**
 	 * Modify the response before proxy data is provided to the client
 	 */
-	protected onProxyResponse?(proxyResponse: IncomingMessage, request: IncomingMessage, response: ServerResponse): void;
+	protected onProxyResponse?(
+		proxyResponse: IncomingMessage,
+		request: IncomingMessage,
+		response: ServerResponse
+	): void;
 
-	onWebsocketRequest?(proxyRequest: ClientRequest, request: IncomingMessage, socket: Socket, options: ServerOptions, head: any): void;
+	onWebsocketRequest?(
+		proxyRequest: ClientRequest,
+		request: IncomingMessage,
+		socket: Socket,
+		options: ServerOptions,
+		head: any
+	): void;
 
 	handle(request: IncomingMessage, response: ServerResponse): Promise<HandlerResponse> {
 		if (response.finished) {
@@ -71,18 +90,18 @@ export default class WebProxy implements Handler, Upgradable {
 		}
 
 		return new Promise<HandlerResponse>((resolve) => {
-			log.debug(`proxying to ${ request.url }`);
+			log.debug(`proxying to ${request.url}`);
 
 			const proxy = this.ensureServer();
 
-			proxy.web(request, response, { }, (error, request, result) => {
+			proxy.web(request, response, {}, (error, request, result) => {
 				resolve(this.onProxyCallback(error, request, result));
 			});
 		});
 	}
 
 	upgrade(request: IncomingMessage, socket: Socket, head: Buffer): void | Promise<void> {
-		log.debug(`Upgrade request for proxied "${ this.baseUrl }"`);
+		log.debug(`Upgrade request for proxied "${this.baseUrl}"`);
 
 		socket.on('close', () => {
 			log.debug('Socket closed');
@@ -99,9 +118,12 @@ export default class WebProxy implements Handler, Upgradable {
 			return this.proxy;
 		}
 
-		const options = Object.assign({
-			target: this.baseUrl
-		}, this.options);
+		const options = Object.assign(
+			{
+				target: this.baseUrl
+			},
+			this.options
+		);
 
 		this.proxy = HttpProxy.createProxyServer(options);
 
@@ -109,24 +131,44 @@ export default class WebProxy implements Handler, Upgradable {
 			this.onError(err);
 		});
 
-		this.proxy.on('proxyRes', (proxyResponse: IncomingMessage, request: IncomingMessage, response: ServerResponse) => {
-			if (this.onProxyResponse) {
-				this.onProxyResponse(proxyResponse, request, response);
+		this.proxy.on(
+			'proxyRes',
+			(proxyResponse: IncomingMessage, request: IncomingMessage, response: ServerResponse) => {
+				if (this.onProxyResponse) {
+					this.onProxyResponse(proxyResponse, request, response);
+				}
 			}
-		});
+		);
 
-		this.proxy.on('proxyReq', (proxyRequest: ClientRequest, request: IncomingMessage, response: ServerResponse, options: ServerOptions) => {
-			if (this.onProxyRequest) {
-				this.onProxyRequest(proxyRequest, request, response, options);
+		this.proxy.on(
+			'proxyReq',
+			(
+				proxyRequest: ClientRequest,
+				request: IncomingMessage,
+				response: ServerResponse,
+				options: ServerOptions
+			) => {
+				if (this.onProxyRequest) {
+					this.onProxyRequest(proxyRequest, request, response, options);
+				}
 			}
-		});
+		);
 
-		this.proxy.on('proxyReqWs', (proxyRequest: ClientRequest, request: IncomingMessage, socket: Socket, options: ServerOptions, head: any) => {
-			log.debug(`WebSocket request ${ head }`);
-			if (this.onWebsocketRequest) {
-				this.onWebsocketRequest(proxyRequest, request, socket, options, head);
+		this.proxy.on(
+			'proxyReqWs',
+			(
+				proxyRequest: ClientRequest,
+				request: IncomingMessage,
+				socket: Socket,
+				options: ServerOptions,
+				head: any
+			) => {
+				log.debug(`WebSocket request ${head}`);
+				if (this.onWebsocketRequest) {
+					this.onWebsocketRequest(proxyRequest, request, socket, options, head);
+				}
 			}
-		});
+		);
 
 		return this.proxy;
 	}

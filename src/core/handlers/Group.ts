@@ -30,14 +30,11 @@ export default class Group implements Handler {
 	add(handler: HandlerDefinition): this {
 		if (Array.isArray(handler)) {
 			handler.forEach(this.add.bind(this));
-		}
-		else if (isHandlerFunction(handler)) {
+		} else if (isHandlerFunction(handler)) {
 			this.handlers.push(new Functional(handler));
-		}
-		else if (isHandler(handler)) {
+		} else if (isHandler(handler)) {
 			this.handlers.push(handler);
-		}
-		else {
+		} else {
 			throw new Error('Unrecognized type');
 		}
 
@@ -45,14 +42,13 @@ export default class Group implements Handler {
 	}
 
 	handle(request: IncomingMessage, response: ServerResponse): Promise<Directive> {
-		return this.processHandlers(request, response)
-			.then(function (result: any) {
-				// Filter all but the immediate return directive; if we didn't then 'skip' would be passed out
-				// potentially to a parent Group
-				if (result === 'immediate') {
-					return 'immediate';
-				}
-			});
+		return this.processHandlers(request, response).then(function(result: any) {
+			// Filter all but the immediate return directive; if we didn't then 'skip' would be passed out
+			// potentially to a parent Group
+			if (result === 'immediate') {
+				return 'immediate';
+			}
+		});
 	}
 
 	private async processHandlers(request: IncomingMessage, response: ServerResponse): Promise<Directive> {

@@ -21,7 +21,7 @@
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc -w",
-    "pretty": "prettier --write",
+    "pretty": "prettier --write ./src/**",
     "test": "intern",
     "example": "ts-node ./examples/sample",
     "example-basic": "ts-node ./examples/basic",

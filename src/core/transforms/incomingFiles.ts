@@ -22,7 +22,7 @@ function setupBuffer(request: IncomingMessage): BufferedResponse<IncomingFile> {
 	const buffer: BufferedResponse<IncomingFile> = new BufferedResponse<IncomingFile>();
 
 	busboy.on('file', (fieldName, file, filename, encoding, mimeType) => {
-		log.info(`Uploaded file: ${ filename }, encoding ${ encoding }, mimetype: ${ mimeType }`);
+		log.info(`Uploaded file: ${filename}, encoding ${encoding}, mimetype: ${mimeType}`);
 		buffer.add({
 			fieldName,
 			file,
@@ -44,7 +44,7 @@ function setupBuffer(request: IncomingMessage): BufferedResponse<IncomingFile> {
 /**
  * Creates a files property on the incoming request with any files being uploaded
  */
-const incomingFiles: Transform = function (request: IncomingMessage): IncomingMessage  {
+const incomingFiles: Transform = function(request: IncomingMessage): IncomingMessage {
 	let buffer: BufferedResponse<IncomingFile>;
 
 	if (request.method === 'POST') {
