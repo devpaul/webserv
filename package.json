@@ -21,6 +21,7 @@
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc -w",
+    "pretty": "prettier --write",
     "test": "intern",
     "example": "ts-node ./examples/sample",
     "example-basic": "ts-node ./examples/basic",
@@ -36,20 +37,22 @@
     "path-to-regexp": "^1.7.0",
     "pem": "^1.9.7",
     "send": "^0.15.4",
-    "winston": "^2.3.1"
+    "winston": "^2.3.1",
+    "yargs": "^14.0.0"
   },
   "devDependencies": {
     "@types/busboy": "^0.2.3",
+    "@types/commander": "^2.3.31",
+    "@types/grunt": "^0.4.21",
     "@types/http-proxy": "^1.12.0",
     "@types/mkdirp": "^0.5.0",
+    "@types/mockery": "^1.4.29",
     "@types/node": "12.7.5",
     "@types/pem": "^1.9.2",
     "@types/send": "^0.14.3",
-    "@types/winston": "^2.2.0",
-    "@types/commander": "^2.3.31",
-    "@types/grunt": "^0.4.21",
-    "@types/mockery": "^1.4.29",
     "@types/sinon": "^1.16.36",
+    "@types/winston": "^2.2.0",
+    "@types/yargs": "^13.0.2",
     "codecov": "^2.3.0",
     "grunt": "^1.0.1",
     "grunt-cli": "^1.2.0",
@@ -58,14 +61,14 @@
     "grunt-shell": "^2.1.0",
     "grunt-tslint": "^5.0.1",
     "intern": "^4",
+    "lint-staged": "^9.2.5",
     "load-grunt-tasks": "^3.5.2",
     "mockery": "^2.0.0",
+    "prettier": "^1.18.2",
     "shelljs": "^0.7.5",
     "sinon": "^1.17.7",
-    "ts-node": "^3.2.1",
-    "tslint": "^5.2.0",
-    "tslint-sitepen": "^0.1.0",
-    "typescript": "^2.6"
+    "ts-node": "^8.4.1",
+    "typescript": "^3.4"
   },
   "keywords": [
     "server",
@@ -74,5 +77,19 @@
     "https",
     "devserver",
     "development"
-  ]
+  ],
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "prettier": {
+    "singleQuote": true,
+    "tabWidth": 4,
+    "useTabs": true,
+    "parser": "typescript",
+    "printWidth": 120,
+    "arrowParens": "always"
+  }
 }
