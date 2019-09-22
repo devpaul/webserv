@@ -11,7 +11,7 @@
 			"es2017.object",
 			"esnext.asynciterable"
 		],
-		"module": "commonjs",
+		"module": "umd",
 		"moduleResolution": "node",
 		"noImplicitReturns": false,
 		"noUnusedLocals": true,
