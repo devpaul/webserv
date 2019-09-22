@@ -1,12 +1,13 @@
-import { noCache } from '../src/middleware/SetHeaders';
-import createServer, { ServerType } from '../src/commands/createServer';
-import Branch, { methodResolver } from '../src/handlers/Branch';
-import SaveFiles from '../src/middleware/SaveFiles';
-import UploadPage from '../src/pages/UploadPage';
-import NotFound from '../src/middleware/NotFound';
-import route from '../src/handlers/route';
-import incomingFiles from '../src/transforms/incomingFiles';
+import { noCache } from '../src/core/middleware/SetHeaders';
+import createServer from '../src/configuration/createServer';
+import Branch, { methodResolver } from '../src/core/handlers/Branch';
+import SaveFiles from '../src/core/middleware/SaveFiles';
+import UploadPage from '../src/core/pages/UploadPage';
+import NotFound from '../src/core/middleware/NotFound';
+import route from '../src/core/handlers/route';
+import incomingFiles from '../src/core/transforms/incomingFiles';
 import { join } from 'path';
+import { ServerType } from 'src/core/interface';
 
 // Create a http server at http://localhost:8888
 createServer({

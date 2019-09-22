@@ -1,13 +1,13 @@
-import HttpServer from '../src/servers/HttpServer';
-import route, { IncomingRoute } from '../src/handlers/route';
-import NotFound from '../src/middleware/NotFound';
-import LogRequest from '../src/middleware/LogRequest';
-import Forwarder from '../src/middleware/Forwarder';
-import { noCache } from '../src/middleware/SetHeaders';
-import { setLogLevel } from '../src/log';
+import HttpServer from '../src/core/servers/HttpServer';
+import route, { IncomingRoute } from '../src/core/handlers/route';
+import NotFound from '../src/core/middleware/NotFound';
+import LogRequest from '../src/core/middleware/LogRequest';
+import Forwarder from '../src/core/middleware/Forwarder';
+import { noCache } from '../src/core/middleware/SetHeaders';
+import { setLogLevel } from '../src/core/log';
 import { IncomingMessage, ServerResponse } from 'http';
-import WebApplication from '../src/middleware/WebApplication';
-import ServePath from '../src/middleware/ServePath';
+import WebApplication from '../src/core/middleware/WebApplication';
+import ServePath from '../src/core/middleware/ServePath';
 
 const server = new HttpServer({
 	port: 7777

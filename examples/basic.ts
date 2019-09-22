@@ -1,6 +1,7 @@
-import { noCache } from '../src/middleware/SetHeaders';
-import createServer, { ServerType } from '../src/commands/createServer';
-import LogRequest from '../src/middleware/LogRequest';
+import { noCache } from '../src/core/middleware/SetHeaders';
+import createServer from '../src/configuration/createServer';
+import LogRequest from '../src/core/middleware/LogRequest';
+import { ServerType } from 'src/core/interface';
 
 // Create a http server at http://localhost:8888
 createServer({

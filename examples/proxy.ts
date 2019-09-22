@@ -1,6 +1,6 @@
-import createServer from '../src/commands/createServer';
-import WebProxy from '../src/middleware/WebProxy';
-import { setLogLevel } from '../src/log';
+import createServer from '../src/configuration/createServer';
+import WebProxy from '../src/core/middleware/WebProxy';
+import { setLogLevel } from '../src/core/log';
 
 setLogLevel('debug');
 
