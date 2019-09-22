@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 
-import createServer, { ServerType, Config } from '../configuration/createServer';
+import createServer, { Config } from '../configuration/createServer';
 import * as yargs from 'yargs';
 import { join } from 'path';
 import WebProxy from '../core/middleware/WebProxy';
 import { loadConfiguration } from '../configuration/loader';
+import { ServerType } from 'src/core/interface';
 
 const argv = yargs
 	.option('config', {

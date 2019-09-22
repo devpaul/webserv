@@ -8,14 +8,10 @@ import buildCert from '../core/commands/buildCert';
 import { Upgradable } from '../core/handlers/Handler';
 import { setLogLevel } from '../core/log';
 import ServePath from '../core/middleware/ServePath';
+import { ServerType } from 'src/core/interface';
 
 export type MiddlewareFunction = () => HandlerDefinition;
 export type Middleware = HandlerDefinition | MiddlewareFunction;
-
-export enum ServerType {
-	HTTP = 'http',
-	HTTPS = 'https'
-}
 
 export interface Config {
 	debugLevel?: string;
