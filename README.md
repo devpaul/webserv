@@ -46,7 +46,7 @@ webserv -l
 webserv -p 8000
 ```
 
-**-t {crud, proxy, file, upload} [options]**: start a predefined server type
+**-t {crud, file, log, proxy, upload} [options]**: start a predefined server type
 
 *Create a basic CRUD server*
 
@@ -70,4 +70,12 @@ webserv -t file ./dist
 
 ```
 webserv -t upload ./files
+```
+
+*Create a log server*
+
+A log server logs all request to the console and returns 200
+
+```
+webserv -t log
 ```

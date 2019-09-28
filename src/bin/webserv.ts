@@ -8,6 +8,7 @@ import { route } from '../core/routes/route';
 import { body } from '../core/processors/body.processor';
 import { uploadRoute } from '../core/routes/upload.route';
 import { crudRoute } from '../core/routes/crud.route';
+import { response } from '../core/middleware/response';
 
 const argv = yargs
 	.options('log', {
@@ -65,6 +66,12 @@ export async function start() {
 		case 'upload':
 			const directory = String(argv.type[1]);
 			app.routes.push(uploadRoute({ directory }));
+			break;
+		case 'log':
+			if (!argv.log) {
+				app.before.push(body({}), logRequest({ logBody: true }));
+			}
+			app.routes.push(route({ middleware: response({ statusCode: 200 }) }));
 			break;
 		default:
 			app.routes.push(fileBrowser({}));
