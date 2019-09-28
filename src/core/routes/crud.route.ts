@@ -26,7 +26,7 @@ export function crudRoute({ data }: CrudProperties) {
 		middleware: [
 			route({
 				guards: [ method.get() ],
-				middleware: (request) => {
+				middleware: () => {
 					return store;
 				}
 			}),
@@ -43,20 +43,20 @@ export function crudRoute({ data }: CrudProperties) {
 				}
 			}),
 			route({
-				guards: [ method.get('/id/{id}') ],
+				guards: [ method.get('/id/:id') ],
 				middleware: (request) => {
 					const { params } = getParams(request, 'params');
-					if (params.id) {
+					if (params.id && store[params.id]) {
 						return store[params.id];
 					}
 					throw new HttpError(HttpStatus.NotFound);
 				}
 			}),
 			route({
-				guards: [ method.delete('/id/{id}') ],
+				guards: [ method.delete('/id/:id') ],
 				middleware: (request) => {
 					const { params } = getParams(request, 'params');
-					if (params.id) {
+					if (params.id && store[params.id]) {
 						const record = store[params.id];
 						delete store[params.id];
 						return record;

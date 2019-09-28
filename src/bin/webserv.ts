@@ -7,6 +7,7 @@ import { proxyRoute } from '../core/routes/proxy.route';
 import { route } from '../core/routes/route';
 import { body } from '../core/processors/body.processor';
 import { uploadRoute } from '../core/routes/upload.route';
+import { crudRoute } from '../core/routes/crud.route';
 
 const argv = yargs
 	.options('log', {
@@ -39,7 +40,8 @@ export async function start() {
 	}
 
 	switch (argv.type[0]) {
-		case 'cors':
+		case 'crud':
+			app.routes.push(crudRoute({}));
 			break;
 		case 'proxy': {
 			const target = String(argv.type[1]);
