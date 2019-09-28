@@ -1,16 +1,16 @@
-import { GuardFactory } from "../interface";
+import { GuardFactory } from '../interface';
 import { parse as parseUrl } from 'url';
 import * as pathToRegexp from 'path-to-regexp';
 import { Key } from 'path-to-regexp';
-import { log } from "../log";
-import { updateRequest } from "../util/request";
+import { log } from '../log';
+import { updateRequest } from '../util/request';
 
 export interface PathGuardProperties {
 	match: RegExp | string;
 }
 
 export interface Params {
-	[ key: string ]: string;
+	[key: string]: string;
 }
 
 export const routeMatch = Symbol();
@@ -62,11 +62,11 @@ export const pathGuard: GuardFactory<PathGuardProperties> = ({ match }) => {
 				});
 			}
 			return !!result;
-		}
+		};
 	}
 
 	return (request) => {
 		const url = parseUrl(request.url);
 		return match.test(url.pathname);
 	};
-}
+};

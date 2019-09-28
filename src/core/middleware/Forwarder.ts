@@ -1,6 +1,6 @@
-import { MiddlewareFactory } from "../interface";
-import { log } from "../log";
-import { response } from "./response";
+import { MiddlewareFactory } from '../interface';
+import { log } from '../log';
+import { response } from './response';
 
 export interface ForwarderProperties {
 	location: string;
@@ -15,5 +15,5 @@ export const forwarder: MiddlewareFactory<ForwarderProperties> = ({ location }) 
 	return (request, response) => {
 		log.debug(`Forwarding ${request.url} to ${location}`);
 		responseHandler(request, response);
-	}
+	};
 };

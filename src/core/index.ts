@@ -36,7 +36,7 @@ export const guards = {
 	method: methodGuard,
 	path: pathGuard,
 	some: some,
-	... method
+	...method
 };
 
 export const middleware = {
@@ -57,7 +57,7 @@ export const processors = {
 	header: header,
 	log: log,
 	noCache: noCache
-}
+};
 
 export const routes = {
 	crud: crudRoute,
@@ -70,13 +70,13 @@ export const routes = {
 export const servers = {
 	http: startHttpServer,
 	https: startHttpsServer
-}
+};
 
 export const transforms = {
 	accept: acceptTransform,
 	json: jsonTransform,
 	text: textTransform
-}
+};
 
 export const upgrades = {
 	proxy: proxyUpgrade
@@ -86,4 +86,4 @@ export const util = {
 	contentNegotiator: contentNegotiator,
 	createProxy: createProxy,
 	createRequest: createRequestHandler
-}
+};

@@ -1,4 +1,4 @@
-import { ProcessFactory } from "../interface";
+import { ProcessFactory } from '../interface';
 import { json, OptionsJson } from 'body-parser';
 
 export const body: ProcessFactory<OptionsJson> = (options) => {
@@ -8,6 +8,6 @@ export const body: ProcessFactory<OptionsJson> = (options) => {
 			bodyParser(request, response, (err) => {
 				err ? reject(err) : resolve();
 			});
-		})
+		});
 	};
-}
+};

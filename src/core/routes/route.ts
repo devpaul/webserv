@@ -18,13 +18,13 @@ export interface Route {
 
 export type RouteFactory = (options: RouteProperties) => Route;
 
-export const route: RouteFactory = ({ before = [], guards = [], middleware: action, transforms = [], after = []}) => {
+export const route: RouteFactory = ({ before = [], guards = [], middleware: action, transforms = [], after = [] }) => {
 	const middleware = Array.isArray(action) ? subroute({ routes: action }) : action;
 	async function test(request: IncomingMessage, response: ServerResponse) {
 		for (let process of before) {
 			await process(request, response);
 		}
-		return guards.every(guard => guard(request));
+		return guards.every((guard) => guard(request));
 	}
 
 	async function run(request: IncomingMessage, response: ServerResponse) {
@@ -46,5 +46,5 @@ export const route: RouteFactory = ({ before = [], guards = [], middleware: acti
 	return {
 		test,
 		run
-	}
-}
+	};
+};

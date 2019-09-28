@@ -13,8 +13,8 @@ export const some: GuardFactory<SomeProperties> = ({ guards }) => {
 			}
 		}
 		return false;
-	}
-}
+	};
+};
 
 export const every: GuardFactory<SomeProperties> = ({ guards }) => {
 	return (request: IncomingMessage) => {
@@ -24,5 +24,5 @@ export const every: GuardFactory<SomeProperties> = ({ guards }) => {
 			}
 		}
 		return true;
-	}
-}
+	};
+};

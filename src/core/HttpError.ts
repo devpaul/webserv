@@ -1,4 +1,4 @@
-import { MiddlewareResult } from "./interface";
+import { MiddlewareResult } from './interface';
 
 export const enum HttpStatus {
 	Continue = 100,
@@ -67,10 +67,7 @@ export const enum HttpStatus {
 }
 
 export class HttpError {
-	constructor(
-		public readonly statusCode: HttpStatus,
-		public readonly message?: MiddlewareResult
-	) { }
+	constructor(public readonly statusCode: HttpStatus, public readonly message?: MiddlewareResult) {}
 }
 
 export function isHttpError(value: any): value is HttpError {

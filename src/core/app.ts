@@ -16,20 +16,18 @@ export function createRequestHandler(route: Route, errorHandler?: ErrorRequestHa
 			if (await route.test(request, response)) {
 				await route.run(request, response);
 			}
-		}
-		catch (e) {
+		} catch (e) {
 			if (errorHandler) {
 				errorHandler(e, response);
-			}
-			else {
+			} else {
 				throw e;
 			}
 		}
-	}
+	};
 }
 
 export type HttpConfig = Omit<StartHttpConfig, 'onRequest' | 'onUpgrade'>;
-export type HttpsConfig = Omit<StartHttpsConfig, 'onRequest' | 'onUpgrade'>
+export type HttpsConfig = Omit<StartHttpsConfig, 'onRequest' | 'onUpgrade'>;
 
 export class App {
 	readonly before: Process[] = [];
@@ -58,8 +56,7 @@ export class App {
 			if (isHttpError(e)) {
 				response.statusCode = e.statusCode;
 				response.end();
-			}
-			else {
+			} else {
 				throw e;
 			}
 		});
@@ -67,32 +64,30 @@ export class App {
 			if (this.upgrader) {
 				this.upgrader(request, socket, head);
 			}
-		}
+		};
 		if (type === 'http') {
 			this.controls = startHttpServer({
-				... config,
+				...config,
 				onRequest,
 				onUpgrade
 			});
-		}
-		else if (type === 'https') {
+		} else if (type === 'https') {
 			this.controls = startHttpsServer({
-				... config,
+				...config,
 				onRequest,
 				onUpgrade
 			});
-		}
-		else {
+		} else {
 			log.error(`Unknown server type: ${type}`);
 		}
 
 		if (this.controls) {
 			this.controls.then((controls) => {
-				log.info(`Server started on ${config.port}`)
+				log.info(`Server started on ${config.port}`);
 				controls.closed.then(() => {
 					log.debug('Server stopped');
 				});
-			})
+			});
 		}
 
 		return this.controls;

@@ -1,6 +1,6 @@
-import { UpgraderFactory } from "../interface";
-import { log } from "../log";
-import Server = require("http-proxy");
+import { UpgraderFactory } from '../interface';
+import { log } from '../log';
+import Server = require('http-proxy');
 
 export interface ProxyProperties {
 	baseUrl: string;
@@ -18,5 +18,5 @@ export const proxyUpgrade: UpgraderFactory<ProxyProperties> = ({ baseUrl, proxy 
 			log.debug('Socket connect');
 		});
 		proxy.ws(request, socket, head);
-	}
-}
+	};
+};

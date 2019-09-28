@@ -6,12 +6,12 @@ import { HttpError, HttpStatus } from '../HttpError';
 import { body } from '../processors/body.processor';
 
 export interface CrudProperties {
-	data?: { [ key: string ]: any };
+	data?: { [key: string]: any };
 }
 
 interface Record {
 	id: string;
-	[ key: string ]: any
+	[key: string]: any;
 }
 
 function isRecord(value: any): value is Record {
@@ -19,31 +19,30 @@ function isRecord(value: any): value is Record {
 }
 
 export function crudRoute({ data }: CrudProperties) {
-	const store: { [ key: string ]: any } = data || {};
+	const store: { [key: string]: any } = data || {};
 
 	return route({
-		before: [ body({}) ],
+		before: [body({})],
 		middleware: [
 			route({
-				guards: [ method.get() ],
+				guards: [method.get()],
 				middleware: () => {
 					return store;
 				}
 			}),
 			route({
-				guards: [ method.post() ],
+				guards: [method.post()],
 				middleware: (request) => {
-					const { body } = getParams(request, 'body')
+					const { body } = getParams(request, 'body');
 					if (isRecord(body)) {
 						store[body.id] = body;
-					}
-					else {
+					} else {
 						throw new HttpError(HttpStatus.BadRequest);
 					}
 				}
 			}),
 			route({
-				guards: [ method.get('/id/:id') ],
+				guards: [method.get('/id/:id')],
 				middleware: (request) => {
 					const { params } = getParams(request, 'params');
 					if (params.id && store[params.id]) {
@@ -53,7 +52,7 @@ export function crudRoute({ data }: CrudProperties) {
 				}
 			}),
 			route({
-				guards: [ method.delete('/id/:id') ],
+				guards: [method.delete('/id/:id')],
 				middleware: (request) => {
 					const { params } = getParams(request, 'params');
 					if (params.id && store[params.id]) {
@@ -65,20 +64,20 @@ export function crudRoute({ data }: CrudProperties) {
 				}
 			}),
 			route({
-				guards: [ method.put() ],
+				guards: [method.put()],
 				middleware: (request) => {
 					const { body } = getParams(request, 'body');
 					if (isRecord(body)) {
 						store[body.id] = {
-							... store[body.id],
-							... body
-						}
+							...store[body.id],
+							...body
+						};
 						return store[body.id];
 					}
 					throw new HttpError(HttpStatus.NotFound);
 				}
 			})
 		],
-		transforms: [ jsonTransform ]
+		transforms: [jsonTransform]
 	});
 }

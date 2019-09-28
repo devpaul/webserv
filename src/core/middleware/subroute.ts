@@ -14,5 +14,5 @@ export const subroute: MiddlewareFactory<SubrouteProperties> = ({ routes }) => {
 			}
 		}
 		throw new HttpError(HttpStatus.NotFound);
-	}
-}
+	};
+};

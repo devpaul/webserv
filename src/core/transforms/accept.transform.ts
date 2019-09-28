@@ -1,8 +1,8 @@
-import { Transform } from "../interface";
-import { jsonTransform } from "./json.transform";
+import { Transform } from '../interface';
+import { jsonTransform } from './json.transform';
 
 export interface AcceptProperties {
-	[ match: string ]: Transform;
+	[match: string]: Transform;
 }
 
 export const acceptTransform: Transform = (result, request, response) => {
@@ -11,4 +11,4 @@ export const acceptTransform: Transform = (result, request, response) => {
 		// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept
 	}
 	jsonTransform(result, request, response);
-}
+};

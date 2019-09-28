@@ -30,9 +30,13 @@ export async function startServer<T extends Server = Server>(config: ServerConfi
 		});
 	});
 
-	server.on('error', config.onError || ((error: Error) => {
-		log.error(`Server error: ${error}`);
-	}));
+	server.on(
+		'error',
+		config.onError ||
+			((error: Error) => {
+				log.error(`Server error: ${error}`);
+			})
+	);
 
 	if (config.onUpgrade) {
 		server.on('upgrade', (request: IncomingMessage, socket: Socket, head: Buffer) => {

@@ -7,4 +7,4 @@ export const textTransform: Transform = async (result, request, response) => {
 	response.setHeader('content-type', 'text/html');
 
 	response.end(result && typeof result === 'string' ? result : JSON.stringify(result));
-}
+};

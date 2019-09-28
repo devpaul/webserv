@@ -1,8 +1,8 @@
-import { ServerOptions, createProxyServer } from "http-proxy";
-import { ClientRequest, IncomingMessage, ServerResponse } from "http";
-import { Socket } from "net";
-import { log } from "../log";
-import Server = require("http-proxy");
+import { ServerOptions, createProxyServer } from 'http-proxy';
+import { ClientRequest, IncomingMessage, ServerResponse } from 'http';
+import { Socket } from 'net';
+import { log } from '../log';
+import Server = require('http-proxy');
 
 export interface CreateProxyOptions extends ServerOptions {
 	target: string;
@@ -13,11 +13,7 @@ export interface CreateProxyOptions extends ServerOptions {
 		response: ServerResponse,
 		options: ServerOptions
 	): void;
-	onProxyResponse?(
-		proxyResponse: IncomingMessage,
-		request: IncomingMessage,
-		response: ServerResponse
-	): void;
+	onProxyResponse?(proxyResponse: IncomingMessage, request: IncomingMessage, response: ServerResponse): void;
 	onWebsocketRequest?(
 		proxyRequest: ClientRequest,
 		request: IncomingMessage,
@@ -32,39 +28,25 @@ function defaultErrorHandler(err: Error) {
 }
 
 export function createProxy(options: CreateProxyOptions): Server {
-	const { onError = defaultErrorHandler, onProxyResponse, onProxyRequest, onWebsocketRequest, ... config } = options;
+	const { onError = defaultErrorHandler, onProxyResponse, onProxyRequest, onWebsocketRequest, ...config } = options;
 	const proxy = createProxyServer(config);
 
 	proxy.on('error', onError);
 
-	proxy.on(
-		'proxyRes',
-		(proxyResponse: IncomingMessage, request: IncomingMessage, response: ServerResponse) => {
-			onProxyResponse && onProxyResponse(proxyResponse, request, response);
-		}
-	);
+	proxy.on('proxyRes', (proxyResponse: IncomingMessage, request: IncomingMessage, response: ServerResponse) => {
+		onProxyResponse && onProxyResponse(proxyResponse, request, response);
+	});
 
 	proxy.on(
 		'proxyReq',
-		(
-			proxyRequest: ClientRequest,
-			request: IncomingMessage,
-			response: ServerResponse,
-			options: ServerOptions
-		) => {
+		(proxyRequest: ClientRequest, request: IncomingMessage, response: ServerResponse, options: ServerOptions) => {
 			onProxyRequest && onProxyRequest(proxyRequest, request, response, options);
 		}
 	);
 
 	proxy.on(
 		'proxyReqWs',
-		(
-			proxyRequest: ClientRequest,
-			request: IncomingMessage,
-			socket: Socket,
-			options: ServerOptions,
-			head: any
-		) => {
+		(proxyRequest: ClientRequest, request: IncomingMessage, socket: Socket, options: ServerOptions, head: any) => {
 			log.debug(`WebSocket request ${head}`);
 			onWebsocketRequest && onWebsocketRequest(proxyRequest, request, socket, options, head);
 		}

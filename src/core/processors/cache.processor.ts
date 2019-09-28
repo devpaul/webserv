@@ -1,5 +1,5 @@
-import { ProcessFactory } from "../interface";
-import { header } from "./header.processor";
+import { ProcessFactory } from '../interface';
+import { header } from './header.processor';
 
 export type CacheMethods =
 	| 'must-revalidate'
@@ -16,7 +16,7 @@ export interface CacheProperties {
 }
 
 export const cache: ProcessFactory<CacheProperties> = ({ cacheMethod }) => {
-	return header({ 'Cache-Control': cacheMethod })
-}
+	return header({ 'Cache-Control': cacheMethod });
+};
 
 export const noCache = cache({ cacheMethod: 'no-cache' });

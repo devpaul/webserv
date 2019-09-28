@@ -1,8 +1,8 @@
-import { Transform } from "../interface";
-import { getParams } from "../util/request";
-import { parse } from "url";
-import { join } from "path";
-import { htmlTemplate } from "../util/htmlTemplate";
+import { Transform } from '../interface';
+import { getParams } from '../util/request';
+import { parse } from 'url';
+import { join } from 'path';
+import { htmlTemplate } from '../util/htmlTemplate';
 
 interface Directory {
 	directory: string;
@@ -10,7 +10,7 @@ interface Directory {
 }
 
 function isDirectoryResult(result: any): result is Directory {
-	return (result && typeof result === 'object' && result.directory && result.files);
+	return result && typeof result === 'object' && result.directory && result.files;
 }
 
 export const directoryTransform: Transform = (result, request, response) => {
@@ -28,4 +28,4 @@ export const directoryTransform: Transform = (result, request, response) => {
 		.join('<br>');
 	response.write(htmlTemplate('Directory listing', fileLinks));
 	response.end();
-}
+};

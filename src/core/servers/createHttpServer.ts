@@ -12,14 +12,14 @@ export function createHttpServer(config: HttpConfig) {
 		const server = createServer(config.onRequest);
 		config.timeout && server.setTimeout(config.timeout);
 		return Promise.resolve(server);
-	}
+	};
 }
 
 export type StartHttpConfig = Omit<ServerConfig, 'createServer'> & HttpConfig;
 
 export function startHttpServer(config: StartHttpConfig) {
 	return startServer({
-		... config,
+		...config,
 		createServer: createHttpServer(config)
 	});
 }

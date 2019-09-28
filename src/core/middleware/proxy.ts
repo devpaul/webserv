@@ -1,17 +1,13 @@
-import { MiddlewareFactory } from "../interface";
-import { createProxy } from "../util/createProxy";
-import Server = require("http-proxy");
-import { log } from "../log";
-import { IncomingMessage, ServerResponse } from "http";
+import { MiddlewareFactory } from '../interface';
+import { createProxy } from '../util/createProxy';
+import Server = require('http-proxy');
+import { log } from '../log';
+import { IncomingMessage, ServerResponse } from 'http';
 
 export interface ProxyProperties {
 	baseUrl: string;
 	proxy?: Server;
-	onProxyCallback?(
-		error: Error,
-		request: IncomingMessage,
-		response: ServerResponse
-	): Promise<void>
+	onProxyCallback?(error: Error, request: IncomingMessage, response: ServerResponse): Promise<void>;
 }
 
 function defaultProxyCallback(error: Error) {
@@ -21,7 +17,11 @@ function defaultProxyCallback(error: Error) {
 	}
 }
 
-export const proxy: MiddlewareFactory<ProxyProperties> = ({ proxy, baseUrl, onProxyCallback = defaultProxyCallback }) => {
+export const proxy: MiddlewareFactory<ProxyProperties> = ({
+	proxy,
+	baseUrl,
+	onProxyCallback = defaultProxyCallback
+}) => {
 	proxy = proxy || createProxy({ target: baseUrl });
 
 	return (request, response) => {
@@ -36,5 +36,5 @@ export const proxy: MiddlewareFactory<ProxyProperties> = ({ proxy, baseUrl, onPr
 				resolve(onProxyCallback(error, request, result));
 			});
 		});
-	}
-}
+	};
+};

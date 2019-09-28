@@ -44,24 +44,28 @@ export async function start() {
 		case 'crud':
 			app.routes.push(crudRoute({}));
 			break;
-		case 'proxy': {
-			const target = String(argv.type[1]);
-			const proxy = proxyRoute({
-				target,
-				changeOrigin: true,
-				followRedirects: false,
-				ws: true
-			 });
-			app.routes.push(route({
-				middleware: proxy.middleware
-			}))
-			app.upgrader = proxy.upgrader;
-		}
+		case 'proxy':
+			{
+				const target = String(argv.type[1]);
+				const proxy = proxyRoute({
+					target,
+					changeOrigin: true,
+					followRedirects: false,
+					ws: true
+				});
+				app.routes.push(
+					route({
+						middleware: proxy.middleware
+					})
+				);
+				app.upgrader = proxy.upgrader;
+			}
 			break;
-		case 'file': {
-			const basePath = String(argv.type[1] || process.cwd());
-			app.routes.push(fileBrowser({ basePath }));
-		}
+		case 'file':
+			{
+				const basePath = String(argv.type[1] || process.cwd());
+				app.routes.push(fileBrowser({ basePath }));
+			}
 			break;
 		case 'upload':
 			const directory = String(argv.type[1]);

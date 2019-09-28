@@ -21,14 +21,14 @@ export function createHttpsServer(config: HttpsConfig) {
 		const server = createServer(httpsOptions, config.onRequest);
 		config.timeout && server.setTimeout(config.timeout);
 		return server;
-	}
+	};
 }
 
 export type StartHttpsConfig = Omit<ServerConfig, 'createServer'> & HttpsConfig;
 
 export function startHttpsServer(config: StartHttpsConfig) {
 	return startServer({
-		... config,
+		...config,
 		createServer: createHttpsServer(config)
 	});
 }

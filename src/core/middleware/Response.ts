@@ -12,4 +12,4 @@ export const response: MiddlewareFactory<ResponseProperties> = ({ header, status
 		response.writeHead(statusCode, header);
 		response.end(message);
 	};
-}
+};

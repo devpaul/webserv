@@ -1,12 +1,12 @@
-import { GuardFactory } from "../interface";
-import { IncomingHttpHeaders } from "http";
+import { GuardFactory } from '../interface';
+import { IncomingHttpHeaders } from 'http';
 
-type HeaderGuardProperties<K extends IncomingHttpHeaders = IncomingHttpHeaders> ={
+type HeaderGuardProperties<K extends IncomingHttpHeaders = IncomingHttpHeaders> = {
 	[P in keyof K]: string;
-}
+};
 
 export const headerGuard: GuardFactory<HeaderGuardProperties> = (headers) => {
-	const list = Object.entries(headers).map(_ => _.map(String.prototype.toLowerCase));
+	const list = Object.entries(headers).map((_) => _.map(String.prototype.toLowerCase));
 
 	return (request) => {
 		for (let [name, value] of list) {
@@ -16,5 +16,5 @@ export const headerGuard: GuardFactory<HeaderGuardProperties> = (headers) => {
 		}
 
 		return true;
-	}
-}
+	};
+};

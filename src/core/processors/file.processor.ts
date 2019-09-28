@@ -54,7 +54,7 @@ export const fileProcessor: Process = (request) => {
 			configurable: true
 		});
 	}
-}
+};
 
 export interface IncomingFiles extends IncomingMessage {
 	files(): AsyncIterableIterator<IncomingFile>;

@@ -13,7 +13,11 @@ export interface SaveFilesProperties {
 	directory: string;
 }
 
-export const saveFiles: MiddlewareFactory<SaveFilesProperties> = ({ allowOverwrite = false, createUploadDirectory = false, directory }) => {
+export const saveFiles: MiddlewareFactory<SaveFilesProperties> = ({
+	allowOverwrite = false,
+	createUploadDirectory = false,
+	directory
+}) => {
 	const uploadDirectory = resolvePath(directory);
 	if (createUploadDirectory) {
 		mkdirp.sync(uploadDirectory);
@@ -50,4 +54,4 @@ export const saveFiles: MiddlewareFactory<SaveFilesProperties> = ({ allowOverwri
 			failed
 		};
 	};
-}
+};

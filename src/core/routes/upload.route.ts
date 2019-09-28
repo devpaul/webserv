@@ -26,19 +26,22 @@ function isFileUploadResult(value: any): value is FileUploadResult {
 
 export const fileUploadTransform: Transform = (result, _request, response) => {
 	if (isFileUploadResult(result)) {
-		const successful = result.files.map(file => `<li>${file}</li>`);
-		const failed = result.failed.map(file => `<li>${file}</li>`);
+		const successful = result.files.map((file) => `<li>${file}</li>`);
+		const failed = result.failed.map((file) => `<li>${file}</li>`);
 		const body = `
 		<div>
 			<h1>Successfully Uploaded</h1>
 			<ul>${successful}</ul>
 		</div>
-		${ (failed.length) ? `
+		${
+			failed.length
+				? `
 			<div>
 				<h1>Failed</h1>
 				<ul>${failed}</ul>
 			</div>
-			` : ''
+			`
+				: ''
 		}`;
 		const html = htmlTemplate('Upload Complete', body);
 		response.write(html);
@@ -50,20 +53,20 @@ export const uploadRoute = (options: SaveFilesProperties) => {
 	return route({
 		middleware: [
 			route({
-				before: [ fileProcessor ],
-				guards: [ method.post() ],
+				before: [fileProcessor],
+				guards: [method.post()],
 				middleware: saveFiles(options),
-				transforms: [ fileUploadTransform ]
+				transforms: [fileUploadTransform]
 			}),
 			route({
-				guards: [ method.get('/list') ],
+				guards: [method.get('/list')],
 				middleware: serve({ basePath: options.directory }),
-				transforms: [ directoryTransform ]
+				transforms: [directoryTransform]
 			}),
 			route({
-				guards: [ method.get() ],
+				guards: [method.get()],
 				middleware: serve({ basePath: join(__dirname, 'pages', 'upload.html') })
 			})
 		]
 	});
-}
+};

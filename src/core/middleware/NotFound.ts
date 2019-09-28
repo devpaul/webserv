@@ -1,6 +1,6 @@
-import { MiddlewareFactory } from "../interface";
-import { log } from "../log";
-import { response } from "./response";
+import { MiddlewareFactory } from '../interface';
+import { log } from '../log';
+import { response } from './response';
 
 export const notFound: MiddlewareFactory = () => {
 	const responseHandler = response({
@@ -11,5 +11,5 @@ export const notFound: MiddlewareFactory = () => {
 	return (request, response) => {
 		log.debug(`Not Found: ${request.url}`);
 		responseHandler(request, response);
-	}
+	};
 };

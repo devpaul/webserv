@@ -1,4 +1,4 @@
-import { Transform } from "../interface";
+import { Transform } from '../interface';
 
 export const jsonTransform: Transform = (result, _request, response) => {
 	if (!response.statusCode) {
@@ -7,4 +7,4 @@ export const jsonTransform: Transform = (result, _request, response) => {
 	response.setHeader('content-type', 'application/json');
 
 	response.end(result && JSON.stringify(result));
-}
+};

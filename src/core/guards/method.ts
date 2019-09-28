@@ -1,6 +1,6 @@
-import { GuardFactory, HttpMethod } from "../interface";
-import { every } from "./logic";
-import { pathGuard } from "./path";
+import { GuardFactory, HttpMethod } from '../interface';
+import { every } from './logic';
+import { pathGuard } from './path';
 
 export interface MethodGuardProperties {
 	method: HttpMethod;
@@ -9,17 +9,17 @@ export interface MethodGuardProperties {
 export const methodGuard: GuardFactory<MethodGuardProperties> = ({ method }) => {
 	return (request) => {
 		return request.method.toLowerCase() === method;
-	}
-}
+	};
+};
 
 const routeGuard = (method: HttpMethod) => {
 	return (path: string = '/') => {
 		if (path) {
-			return every({ guards: [ methodGuard({ method }), pathGuard({ match: path })]})
+			return every({ guards: [methodGuard({ method }), pathGuard({ match: path })] });
 		}
 		return methodGuard({ method });
-	}
-}
+	};
+};
 
 export const method = {
 	get: routeGuard('get'),

@@ -1,7 +1,7 @@
-import { ProcessFactory } from "../interface";
-import { NPMLoggingLevel } from "winston";
+import { ProcessFactory } from '../interface';
+import { NPMLoggingLevel } from 'winston';
 import { log as consoleLog } from '../log';
-import { getParams } from "../util/request";
+import { getParams } from '../util/request';
 
 export interface LogProperties {
 	level?: NPMLoggingLevel;
@@ -20,15 +20,15 @@ export const log: ProcessFactory<LogResponseProperties> = (options) => {
 		requestLogger(request, response);
 		responseLogger(request, response);
 	};
-}
+};
 
 export const logResponse: ProcessFactory<LogResponseProperties> = ({ level = 'info', logIncomplete = false }) => {
 	return (request, response) => {
 		if (response.finished || logIncomplete) {
-			consoleLog[level](`[${request.method} ${response.finished ? response.statusCode : 'Not finished' }]`);
+			consoleLog[level](`[${request.method} ${response.finished ? response.statusCode : 'Not finished'}]`);
 		}
-	}
-}
+	};
+};
 
 export const logRequest: ProcessFactory<LogProperties> = ({ level = 'info', logBody = false }) => {
 	return (request) => {
@@ -37,7 +37,7 @@ export const logRequest: ProcessFactory<LogProperties> = ({ level = 'info', logB
 
 		if (logBody && method !== 'GET') {
 			const { body } = getParams(request, 'body');
-			body && consoleLog[level](`body: ${ JSON.stringify(body)}`);
+			body && consoleLog[level](`body: ${JSON.stringify(body)}`);
 		}
-	}
-}
+	};
+};

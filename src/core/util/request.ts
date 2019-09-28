@@ -4,7 +4,7 @@ export function updateRequest(request: any, params: { [key: string]: any }) {
 	}
 }
 
-export function getParams<T extends {}>(request: any, ... keys: (keyof T)[]): T {
+export function getParams<T extends {}>(request: any, ...keys: (keyof T)[]): T {
 	const params: any = {};
 
 	for (let key of keys) {

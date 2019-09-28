@@ -1,11 +1,11 @@
-import { MiddlewareFactory } from "../interface";
+import { MiddlewareFactory } from '../interface';
 import { parse as parseUrl } from 'url';
-import { IncomingMessage, ServerResponse } from "http";
-import { join, resolve } from "path";
-import { existsSync, statSync, readdir } from "fs";
-import { HttpError, HttpStatus } from "../HttpError";
-import { log } from "../log";
-import { forwarder } from "./forwarder";
+import { IncomingMessage, ServerResponse } from 'http';
+import { join, resolve } from 'path';
+import { existsSync, statSync, readdir } from 'fs';
+import { HttpError, HttpStatus } from '../HttpError';
+import { log } from '../log';
+import { forwarder } from './forwarder';
 import * as send from 'send';
 
 export interface ServeProperties {
@@ -59,16 +59,20 @@ function sendFile(request: IncomingMessage, response: ServerResponse, target: st
 			dotfiles: 'deny',
 			index: false
 		})
-		.on('end', function() {
-			response.end();
-			resolve();
-		})
-		.on('error', reject)
-		.pipe(response);
+			.on('end', function() {
+				response.end();
+				resolve();
+			})
+			.on('error', reject)
+			.pipe(response);
 	});
 }
 
-export const serve: MiddlewareFactory<ServeProperties> = ({ basePath = process.cwd(), trailingSlash, searchDefaults = ['index.html'] }) => {
+export const serve: MiddlewareFactory<ServeProperties> = ({
+	basePath = process.cwd(),
+	trailingSlash,
+	searchDefaults = ['index.html']
+}) => {
 	const base = resolve(basePath);
 
 	return (request, response) => {
@@ -94,5 +98,5 @@ export const serve: MiddlewareFactory<ServeProperties> = ({ basePath = process.c
 		} else {
 			return sendFile(request, response, path);
 		}
-	}
-}
+	};
+};

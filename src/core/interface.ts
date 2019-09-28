@@ -1,5 +1,5 @@
-import { IncomingMessage, ServerResponse } from "http"
-import { Socket } from "net";
+import { IncomingMessage, ServerResponse } from 'http';
+import { Socket } from 'net';
 
 export const enum ServerType {
 	HTTP = 'http',
@@ -18,7 +18,10 @@ export type GuardFactory<T extends object> = (options: T) => Guard;
 
 export type MiddlewareResult = object | string | void;
 
-export type Middleware = (request: IncomingMessage, response: ServerResponse) => Promise<MiddlewareResult> | MiddlewareResult;
+export type Middleware = (
+	request: IncomingMessage,
+	response: ServerResponse
+) => Promise<MiddlewareResult> | MiddlewareResult;
 
 export type MiddlewareFactory<T extends object = {}> = (options: T) => Middleware;
 

@@ -1,6 +1,6 @@
-import { createProxy, CreateProxyOptions } from "../util/createProxy"
+import { createProxy, CreateProxyOptions } from '../util/createProxy';
 import { proxy as proxyMiddleware } from '../middleware/proxy';
-import { proxyUpgrade } from "../upgrades/proxy.upgrade";
+import { proxyUpgrade } from '../upgrades/proxy.upgrade';
 
 export interface ProxyProperties extends CreateProxyOptions {
 	baseDir?: string;
