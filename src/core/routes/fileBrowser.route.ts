@@ -12,7 +12,7 @@ export interface FileBrowserProperties extends ServeProperties {
 export const fileBrowser = (options: FileBrowserProperties) => {
 	return route({
 		before: [ noCache ],
-		guards: [ method.get() ],
+		guards: [ method.get('*') ],
 		middleware: serve(options),
 		transforms: [ directoryTransform, jsonTransform ]
 	});
