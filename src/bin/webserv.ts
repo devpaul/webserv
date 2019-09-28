@@ -1,14 +1,11 @@
 #!/usr/bin/env node
-import { RequestListener } from 'http';
-import { createRequestHandler } from 'src/core/app';
-import { Process, Upgrader } from 'src/core/interface';
-import { logRequest } from 'src/core/processors/log.processor';
-import { fileBrowser } from 'src/core/routes/fileBrowser.route';
-import { proxyRoute } from 'src/core/routes/proxy.route';
-import { route } from 'src/core/routes/route';
-import { startHttpServer } from 'src/core/servers/createHttpServer';
-import { startHttpsServer } from 'src/core/servers/createHttpsServer';
 import * as yargs from 'yargs';
+import { App } from '../core/app';
+import { logRequest } from '../core/processors/log.processor';
+import { fileBrowser } from '../core/routes/fileBrowser.route';
+import { proxyRoute } from '../core/routes/proxy.route';
+import { route } from '../core/routes/route';
+import { body } from '../core/processors/body.processor';
 
 const argv = yargs
 	.option('folder', {
@@ -23,7 +20,8 @@ const argv = yargs
 	.option('mode', {
 		alias: 'm',
 		describe: 'use http or https',
-		choices: ['http', 'https']
+		choices: ['http', 'https'],
+		default: 'http'
 	})
 	.option('port', {
 		alias: 'p',
@@ -37,47 +35,29 @@ const argv = yargs
 	}).argv;
 
 export async function start() {
-	const before: Process[] = [];
-	let onRequest: RequestListener;
-	let onUpgrade: Upgrader | undefined;
+	const app = new App();
 
 	if (argv.log) {
-		before.push(logRequest({}))
+		app.before.push(body({}), logRequest({ logBody: true }));
 	}
 
 	if (argv.proxy) {
 		const proxy = proxyRoute({ target: argv.proxy });
-		onRequest = createRequestHandler(route({
+		app.routes.push(route({
 			middleware: proxy.middleware
-		}));
-		onUpgrade = proxy.upgrader;
+		}))
+		app.upgrader = proxy.upgrader;
 	}
 	else {
-		onRequest = createRequestHandler(fileBrowser({}))
+		app.routes.push(fileBrowser({}));
 	}
 
-	if (argv.mode === 'https') {
-		return startHttpsServer({
-			port: argv.port,
-			onRequest,
-			onUpgrade
-		});
-	}
-	else {
-		return startHttpServer({
-			port: argv.port,
-			onRequest,
-			onUpgrade
-		})
-	}
+	return app.start(argv.mode as any, {
+		port: argv.port
+	});
 }
 
-async function run() {
-	await start();
-	console.log(`server started on port ${argv.port}`);
-}
-
-run().catch((err: Error) => {
+start().catch((err: Error) => {
 	console.error('failed to start webserv');
 	console.error(`reason: ${err.message}`);
 	console.error(err.stack);

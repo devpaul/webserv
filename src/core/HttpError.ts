@@ -72,3 +72,7 @@ export class HttpError {
 		public readonly message?: MiddlewareResult
 	) { }
 }
+
+export function isHttpError(value: any): value is HttpError {
+	return value && typeof value === 'object' && value.statusCode;
+}

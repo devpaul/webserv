@@ -9,7 +9,13 @@ export interface ServerConfig<T extends Server = Server> {
 	onError?(error: Error): void;
 }
 
-export async function startServer<T extends Server = Server>(config: ServerConfig<T>) {
+export interface ServerControls {
+	closed: Promise<unknown>;
+	addListener: (event: string, listener: () => void) => void;
+	stop(): Promise<void>;
+}
+
+export async function startServer<T extends Server = Server>(config: ServerConfig<T>): Promise<ServerControls> {
 	const server = await config.createServer();
 	const handles: { remove(): void }[] = [];
 	const stop = async () => {
@@ -51,7 +57,7 @@ export async function startServer<T extends Server = Server>(config: ServerConfi
 		server.listen(config.port, () => {
 			resolve({
 				closed,
-				addListener: (event: string, listener: () => void) => {
+				addListener: (event, listener) => {
 					server.addListener(event, listener);
 				},
 				stop

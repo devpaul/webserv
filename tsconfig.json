@@ -15,6 +15,7 @@
 		"moduleResolution": "node",
 		"noImplicitReturns": false,
 		"noUnusedLocals": true,
+		"noUnusedParameters": true,
 		"outDir": "./_dist/src",
 		"removeComments": false,
 		"sourceMap": true,

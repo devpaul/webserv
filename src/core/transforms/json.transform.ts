@@ -1,6 +1,6 @@
 import { Transform } from "../interface";
 
-export const jsonTransform: Transform = (result, request, response) => {
+export const jsonTransform: Transform = (result, _request, response) => {
 	if (!response.statusCode) {
 		response.statusCode = 200;
 	}

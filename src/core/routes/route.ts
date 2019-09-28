@@ -19,15 +19,15 @@ export type RouteFactory = (options: RouteProperties) => Route;
 
 export const route: RouteFactory = ({ before = [], guards = [], middleware: action, transforms = [], after = []}) => {
 	const middleware = Array.isArray(action) ? subroute({ routes: action }) : action;
-	function test(request: IncomingMessage, response: ServerResponse) {
+	async function test(request: IncomingMessage, response: ServerResponse) {
 		for (let process of before) {
-			process(request, response);
+			await process(request, response);
 		}
 		return guards.every(guard => guard(request));
 	}
 
-	function run(request: IncomingMessage, response: ServerResponse) {
-		const result = middleware(request, response);
+	async function run(request: IncomingMessage, response: ServerResponse) {
+		const result = await middleware(request, response);
 		for (let transform of transforms) {
 			if (response.finished) {
 				break;
@@ -35,7 +35,7 @@ export const route: RouteFactory = ({ before = [], guards = [], middleware: acti
 			transform(result, request, response);
 		}
 		for (let process of after) {
-			process(request, response);
+			await process(request, response);
 		}
 	}
 

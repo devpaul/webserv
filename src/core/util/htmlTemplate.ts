@@ -1,4 +1,4 @@
-function htmlTemplate(title: string, body: string) {
+export function htmlTemplate(title: string, body: string) {
 	return `
 		<html>
 		<head>

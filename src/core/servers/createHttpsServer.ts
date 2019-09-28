@@ -24,9 +24,9 @@ export function createHttpsServer(config: HttpsConfig) {
 	}
 }
 
-export type StartHttpConfig = Omit<ServerConfig, 'createServer'> & HttpsConfig;
+export type StartHttpsConfig = Omit<ServerConfig, 'createServer'> & HttpsConfig;
 
-export function startHttpsServer(config: StartHttpConfig) {
+export function startHttpsServer(config: StartHttpsConfig) {
 	return startServer({
 		... config,
 		createServer: createHttpsServer(config)

@@ -5,7 +5,7 @@ export interface HeaderProperties {
 }
 
 export const header: ProcessFactory<HeaderProperties> = (headers) => {
-	return (request, response) => {
+	return (_request, response) => {
 		for (let [ header, value ] of Object.entries(headers)) {
 			response.setHeader(header, value);
 		}
