@@ -44,6 +44,12 @@ When launched `webserv` will automatically look a file named `webserv.ts`, `webs
 webserv -m https
 ```
 
+**-l**: log all requests to the console
+
+```
+webserv -l
+```
+
 **-p, --port**: sets the port to use (defaults to 8888)
 
 ```

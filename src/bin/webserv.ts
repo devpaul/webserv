@@ -1,22 +1,24 @@
 #!/usr/bin/env node
-
-import createServer, { Config } from '../configuration/createServer';
+import { RequestListener } from 'http';
+import { createRequestHandler } from 'src/core/app';
+import { Process, Upgrader } from 'src/core/interface';
+import { logRequest } from 'src/core/processors/log.processor';
+import { fileBrowser } from 'src/core/routes/fileBrowser.route';
+import { proxyRoute } from 'src/core/routes/proxy.route';
+import { route } from 'src/core/routes/route';
+import { startHttpServer } from 'src/core/servers/createHttpServer';
+import { startHttpsServer } from 'src/core/servers/createHttpsServer';
 import * as yargs from 'yargs';
-import { join } from 'path';
-import WebProxy from '../core/middleware/WebProxy';
-import { loadConfiguration } from '../configuration/loader';
-import { ServerType } from 'src/core/interface';
 
 const argv = yargs
-	.option('config', {
-		alias: 'c',
-		describe: 'select a configuration file',
-		type: 'string'
-	})
 	.option('folder', {
 		alias: 'f',
 		describe: 'serves this folder',
 		type: 'string'
+	})
+	.options('log', {
+		alias: 'l',
+		describe: 'display all logs to the console'
 	})
 	.option('mode', {
 		alias: 'm',
@@ -32,44 +34,47 @@ const argv = yargs
 	.option('proxy', {
 		describe: 'create a proxy to an external url',
 		type: 'string'
-	})
-	.option('server', {
-		alias: 's',
-		describe: 'starts a server defined in the configuration',
-		type: 'string'
-	})
-	.option('showConfig', {
-		describe: 'prints the config to the console before starting',
-		type: 'boolean'
 	}).argv;
 
-const config: Config = {
-	...(argv.config ? loadConfiguration(argv.config, argv.server) : {}),
-	port: argv.port,
-	type: argv.mode === 'https' ? ServerType.HTTPS : ServerType.HTTP
-};
+export async function start() {
+	const before: Process[] = [];
+	let onRequest: RequestListener;
+	let onUpgrade: Upgrader | undefined;
 
-if (argv.folder) {
-	config.directory = join(process.cwd(), argv.folder);
-}
-if (argv.proxy) {
-	const wsProxy = new WebProxy(argv.proxy, {
-		changeOrigin: true,
-		ws: true
-	});
-	config.middleware = [wsProxy];
-	config.upgrade = wsProxy;
-} else if (!argv.folder) {
-	config.directory = process.cwd();
-}
-
-export async function run() {
-	if (argv.showConfig) {
-		console.log(config);
+	if (argv.log) {
+		before.push(logRequest({}))
 	}
-	const server = await createServer(config);
-	server.start();
-	console.log(`started server on ${server.port}`);
+
+	if (argv.proxy) {
+		const proxy = proxyRoute({ target: argv.proxy });
+		onRequest = createRequestHandler(route({
+			middleware: proxy.middleware
+		}));
+		onUpgrade = proxy.upgrader;
+	}
+	else {
+		onRequest = createRequestHandler(fileBrowser({}))
+	}
+
+	if (argv.mode === 'https') {
+		return startHttpsServer({
+			port: argv.port,
+			onRequest,
+			onUpgrade
+		});
+	}
+	else {
+		return startHttpServer({
+			port: argv.port,
+			onRequest,
+			onUpgrade
+		})
+	}
+}
+
+async function run() {
+	await start();
+	console.log(`server started on port ${argv.port}`);
 }
 
 run().catch((err: Error) => {

@@ -1,20 +1,15 @@
-import { IncomingMessage, ServerResponse } from 'http';
-import { log } from '../log';
-import Response from './Response';
+import { MiddlewareFactory } from "../interface";
+import { log } from "../log";
+import { response } from "./response";
 
-/**
- * Middleware to return a 404 response
- */
-export default class NotFound extends Response {
-	constructor(message: string = 'Not Found') {
-		super({
-			message,
-			statusCode: 404
-		});
-	}
+export const notFound: MiddlewareFactory = () => {
+	const responseHandler = response({
+		message: 'Not Found',
+		statusCode: 301
+	});
 
-	handle(request: IncomingMessage, response: ServerResponse) {
+	return (request, response) => {
 		log.debug(`Not Found: ${request.url}`);
-		return super.handle(request, response);
+		responseHandler(request, response);
 	}
-}
+};

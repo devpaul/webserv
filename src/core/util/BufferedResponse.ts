@@ -1,5 +1,3 @@
-import '../polyfills';
-
 const DONE = Symbol();
 
 type BufferData<T> = Symbol | T;

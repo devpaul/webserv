@@ -1,30 +1,15 @@
-import { Handler } from '../handlers/Handler';
-import { IncomingMessage, ServerResponse, OutgoingHttpHeaders } from 'http';
+import { IncomingMessage, OutgoingHttpHeaders, ServerResponse } from 'http';
+import { MiddlewareFactory } from '../interface';
 
-export interface Config {
-	header?: Response['header'];
-	message?: Response['message'];
-	statusCode?: Response['statusCode'];
+export interface ResponseProperties {
+	header?: OutgoingHttpHeaders;
+	statusCode: number;
+	message?: string | Buffer;
 }
 
-/**
- * Middleware to return a http response
- */
-export default class Response implements Handler {
-	header: OutgoingHttpHeaders;
-
-	message?: string | Buffer;
-
-	statusCode: number;
-
-	constructor(config: Config) {
-		this.header = config.header || {};
-		this.message = config.message;
-		this.statusCode = config.statusCode || 200;
-	}
-
-	handle(_request: IncomingMessage, response: ServerResponse) {
-		response.writeHead(this.statusCode, this.header);
-		response.end(this.message);
-	}
+export const response: MiddlewareFactory<ResponseProperties> = ({ header, statusCode, message }) => {
+	return async (_request: IncomingMessage, response: ServerResponse) => {
+		response.writeHead(statusCode, header);
+		response.end(message);
+	};
 }
