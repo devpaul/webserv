@@ -6,13 +6,9 @@ import { fileBrowser } from '../core/routes/fileBrowser.route';
 import { proxyRoute } from '../core/routes/proxy.route';
 import { route } from '../core/routes/route';
 import { body } from '../core/processors/body.processor';
+import { uploadRoute } from '../core/routes/upload.route';
 
 const argv = yargs
-	.option('folder', {
-		alias: 'f',
-		describe: 'serves this folder',
-		type: 'string'
-	})
 	.options('log', {
 		alias: 'l',
 		describe: 'display all logs to the console'
@@ -29,9 +25,10 @@ const argv = yargs
 		default: 8888,
 		type: 'number'
 	})
-	.option('proxy', {
-		describe: 'create a proxy to an external url',
-		type: 'string'
+	.option('type', {
+		alias: 't',
+		describe: 'start a predefined server',
+		type: 'array'
 	}).argv;
 
 export async function start() {
@@ -41,15 +38,34 @@ export async function start() {
 		app.before.push(body({}), logRequest({ logBody: true }));
 	}
 
-	if (argv.proxy) {
-		const proxy = proxyRoute({ target: argv.proxy });
-		app.routes.push(route({
-			middleware: proxy.middleware
-		}))
-		app.upgrader = proxy.upgrader;
-	}
-	else {
-		app.routes.push(fileBrowser({}));
+	switch (argv.type[0]) {
+		case 'cors':
+			break;
+		case 'proxy': {
+			const target = String(argv.type[1]);
+			const proxy = proxyRoute({
+				target,
+				changeOrigin: true,
+				followRedirects: false,
+				ws: true
+			 });
+			app.routes.push(route({
+				middleware: proxy.middleware
+			}))
+			app.upgrader = proxy.upgrader;
+		}
+			break;
+		case 'file': {
+			const basePath = String(argv.type[1] || process.cwd());
+			app.routes.push(fileBrowser({ basePath }));
+		}
+			break;
+		case 'upload':
+			const directory = String(argv.type[1]);
+			app.routes.push(uploadRoute({ directory }));
+			break;
+		default:
+			app.routes.push(fileBrowser({}));
 	}
 
 	return app.start(argv.mode as any, {

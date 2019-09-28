@@ -14,17 +14,14 @@ export interface SaveFilesProperties {
 }
 
 export const saveFiles: MiddlewareFactory<SaveFilesProperties> = ({ allowOverwrite = false, createUploadDirectory = false, directory }) => {
+	const uploadDirectory = resolvePath(directory);
+	if (createUploadDirectory) {
+		mkdirp.sync(uploadDirectory);
+	}
+
 	return async (request) => {
 		if (request.method !== 'POST') {
 			throw new HttpError(HttpStatus.BadRequest);
-		}
-
-		if (createUploadDirectory) {
-			await new Promise((resolve, reject) => {
-				mkdirp(resolvePath(directory), (err) => {
-					err ? reject(err) : resolve();
-				});
-			});
 		}
 
 		let files: string[] = [];
@@ -45,7 +42,7 @@ export const saveFiles: MiddlewareFactory<SaveFilesProperties> = ({ allowOverwri
 				}
 			}
 		} else {
-			log.warn('request contains no files property. Was the incomingFiles transform applied?');
+			log.warn('request contains no files property. Was the file processor applied?');
 		}
 
 		return {

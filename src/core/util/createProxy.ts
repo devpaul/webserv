@@ -4,7 +4,7 @@ import { Socket } from "net";
 import { log } from "../log";
 import Server = require("http-proxy");
 
-export interface Options extends ServerOptions {
+export interface CreateProxyOptions extends ServerOptions {
 	target: string;
 	onError?(err: Error): void;
 	onProxyRequest?(
@@ -31,7 +31,7 @@ function defaultErrorHandler(err: Error) {
 	log.error(`Proxy failed: ${err.message}`);
 }
 
-export function createProxy(options: Options): Server {
+export function createProxy(options: CreateProxyOptions): Server {
 	const { onError = defaultErrorHandler, onProxyResponse, onProxyRequest, onWebsocketRequest, ... config } = options;
 	const proxy = createProxyServer(config);
 

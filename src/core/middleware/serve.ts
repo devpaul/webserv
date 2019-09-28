@@ -1,7 +1,7 @@
 import { MiddlewareFactory } from "../interface";
 import { parse as parseUrl } from 'url';
 import { IncomingMessage, ServerResponse } from "http";
-import { join } from "path";
+import { join, resolve } from "path";
 import { existsSync, statSync, readdir } from "fs";
 import { HttpError, HttpStatus } from "../HttpError";
 import { log } from "../log";
@@ -69,14 +69,15 @@ function sendFile(request: IncomingMessage, response: ServerResponse, target: st
 }
 
 export const serve: MiddlewareFactory<ServeProperties> = ({ basePath = process.cwd(), trailingSlash, searchDefaults = ['index.html'] }) => {
+	const base = resolve(basePath);
 
 	return (request, response) => {
-		const path = getPath(basePath, request);
+		const path = getPath(base, request);
 
 		if (!path) {
 			throw new HttpError(HttpStatus.NotFound);
 		}
-		if (path.indexOf(basePath) === -1) {
+		if (path.indexOf(base) === -1) {
 			log.debug(`Attempted to access ${path} from ${basePath} with ${request.url}`);
 			throw new HttpError(HttpStatus.Forbidden);
 		}

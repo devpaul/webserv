@@ -22,21 +22,11 @@ and type `webserv` on the command line to serve files and directories from your 
 
 ### Command Line options
 
-**-c, --config**: selects a configuration file
-
-When using a configuration file `webserv` will not serve the current directory by default.
-
-```
-webserv -c webserv.json
-```
-
-**-f, --folder**: serves this folder
+**-f**: serves this folder
 
 ```
 webserv -f ./dist
 ```
-
-When launched `webserv` will automatically look a file named `webserv.ts`, `webserv.js`, or `webserv.json` in the current directory.
 
 **-m, --mode**: use `http` or `https` (defaults to http)
 
@@ -56,14 +46,28 @@ webserv -l
 webserv -p 8000
 ```
 
-**--proxy**: create a proxy to an external url
+**-t {crud, proxy, file, upload} [options]**: start a predefined server type
+
+*Create a basic CRUD server*
 
 ```
-webserv --proxy "https://example.com"
+webserv -t crud
 ```
 
-**-s, --server**: starts a server defined in the configuration
+*Create a proxy server*
 
 ```
-webserv -s myproxy
+webserv -t proxy http://devpaul.com
+```
+
+*Create a file browser* (same as -f)
+
+```
+webserv -t file ./dist
+```
+
+*Create an upload server*
+
+```
+webserv -t upload ./files
 ```

@@ -1,9 +1,9 @@
-import { Process } from "../interface";
-import { IncomingMessage } from "http";
 import * as BusBoy from 'busboy';
-import { log } from "../log";
-import BufferedResponse from "../util/BufferedResponse";
-import { updateRequest } from "../util/request";
+import { IncomingMessage } from 'http';
+
+import { Process } from '../interface';
+import { log } from '../log';
+import BufferedResponse from '../util/BufferedResponse';
 
 export interface IncomingFile {
 	fieldName: string;
@@ -44,7 +44,7 @@ export const fileProcessor: Process = (request) => {
 	let buffer: BufferedResponse<IncomingFile>;
 
 	if (request.method.toUpperCase() === 'POST') {
-		updateRequest(request, {
+		Object.defineProperty(request, 'files', {
 			get() {
 				if (!buffer) {
 					buffer = setupBuffer(request);

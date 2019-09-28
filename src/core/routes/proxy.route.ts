@@ -1,14 +1,14 @@
-import { createProxy } from "../util/createProxy"
+import { createProxy, CreateProxyOptions } from "../util/createProxy"
 import { proxy as proxyMiddleware } from '../middleware/proxy';
 import { proxyUpgrade } from "../upgrades/proxy.upgrade";
 
-export interface ProxyProperties {
-	target: string;
+export interface ProxyProperties extends CreateProxyOptions {
+	baseDir?: string;
 }
 
-export function proxyRoute({ target }: ProxyProperties) {
-	const baseUrl = '/';
-	const proxy = createProxy({ target });
+export function proxyRoute(props: ProxyProperties) {
+	const baseUrl = props.baseDir || '/';
+	const proxy = createProxy(props);
 
 	return {
 		middleware: proxyMiddleware({ baseUrl, proxy }),
