@@ -31,7 +31,7 @@ const argv = yargs
 		alias: 't',
 		describe: 'start a predefined server',
 		type: 'array',
-		default: [ 'file' ]
+		default: ['file']
 	}).argv;
 
 export async function start() {
@@ -79,7 +79,7 @@ export async function start() {
 			app.routes.push(route({ middleware: response({ statusCode: 200 }) }));
 			break;
 		default:
-			throw new Error(`unknown server type ${ argv.type[0] }`);
+			throw new Error(`unknown server type ${argv.type[0]}`);
 	}
 
 	return app.start(argv.mode as any, {
