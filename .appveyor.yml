@@ -1,7 +1,6 @@
 environment:
   matrix:
-    - nodejs_version: "6.10"
-    - nodejs_version: "8.1"
+    - nodejs_version: "8"
 cache:
   - node_modules
 install:
@@ -10,10 +9,10 @@ install:
   - if exist node_modules npm prune
   - if exist node_modules npm rebuild
   - npm install
-  - npm install -g grunt-cli
 build: off
 test_script:
   - node --version
   - npm --version
-  - grunt ci
+  - npm run build
+  - npm test
 version: "{build}"

@@ -1,37 +1,41 @@
 {
   "name": "webserv",
-  "author": "Paul Shannon <pshannon@sitepen.com>",
-  "version": "0.13.0-pre",
-  "description": "Programmatically create a frontend web-server for development",
+  "author": {
+    "name": "Paul Shannon",
+    "url": "https://devpaul.com"
+  },
+  "version": "1.0.0-alpha.1",
+  "description": "a quick, flexible, fully typed development server",
   "license": "MPL-2.0",
   "bin": {
-    "webserv": "bin/webserv.js"
+    "webserv": "src/bin/webserv.js"
   },
+  "main": "src/core/app.js",
   "bugs": {
     "url": "https://github.com/devpaul/webserv/issues"
   },
   "engines": {
-    "node": "6"
+    "node": "10"
   },
-  "main": "./_dist/src/index",
   "repository": {
     "type": "git",
     "url": "https://github.com/devpaul/webserv"
   },
   "scripts": {
-    "example": "ts-node ./examples/sample",
-    "example-basic": "ts-node ./examples/basic",
-    "example-proxy": "ts-node ./examples/proxy",
-    "example-upload": "ts-node ./examples/upload"
+    "build": "run-s copy build:quick",
+    "build:quick": "tsc",
+    "build:watch": "tsc -w",
+    "clean": "shx rm -rf _dist",
+    "copy": "run-s copy:src copy:package",
+    "copy:src": "copyfiles src/**/*.html _dist",
+    "copy:package": "copyfiles README.md package.json LICENSE _dist",
+    "lint": "eslint ./src/**/*.ts",
+    "pretty": "prettier --write ./src/**",
+    "start": "ts-node ./examples/hello",
+    "test": "intern"
   },
   "dependencies": {
-    "@types/busboy": "^0.2.3",
-    "@types/http-proxy": "^1.12.0",
-    "@types/mkdirp": "^0.5.0",
-    "@types/node": "0.0.2",
-    "@types/pem": "^1.9.2",
-    "@types/send": "^0.14.3",
-    "@types/winston": "^2.2.0",
+    "body-parser": "^1.19.0",
     "busboy": "^0.2.14",
     "commander": "^2.9.0",
     "findup": "^0.1.5",
@@ -40,29 +44,37 @@
     "path-to-regexp": "^1.7.0",
     "pem": "^1.9.7",
     "send": "^0.15.4",
-    "winston": "^2.3.1"
+    "winston": "^2.3.1",
+    "yargs": "^14.0.0"
   },
   "devDependencies": {
+    "@types/body-parser": "^1.17.1",
+    "@types/busboy": "^0.2.3",
     "@types/commander": "^2.3.31",
-    "@types/grunt": "^0.4.21",
+    "@types/http-proxy": "^1.12.0",
+    "@types/mkdirp": "^0.5.0",
     "@types/mockery": "^1.4.29",
+    "@types/node": "12.7.5",
+    "@types/pem": "^1.9.2",
+    "@types/send": "^0.14.3",
     "@types/sinon": "^1.16.36",
+    "@types/winston": "^2.2.0",
+    "@types/yargs": "^13.0.2",
+    "@typescript-eslint/eslint-plugin": "^2.3.1",
+    "@typescript-eslint/parser": "^2.3.1",
     "codecov": "^2.3.0",
-    "grunt": "^1.0.1",
-    "grunt-cli": "^1.2.0",
-    "grunt-contrib-clean": "^1.1.0",
-    "grunt-contrib-copy": "^1.0.0",
-    "grunt-shell": "^2.1.0",
-    "grunt-tslint": "^5.0.1",
+    "copyfiles": "^2.1.1",
+    "eslint": "^6.4.0",
     "intern": "^4",
-    "load-grunt-tasks": "^3.5.2",
+    "lint-staged": "^9.2.5",
     "mockery": "^2.0.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^1.18.2",
     "shelljs": "^0.7.5",
+    "shx": "^0.3.2",
     "sinon": "^1.17.7",
-    "ts-node": "^3.2.1",
-    "tslint": "^5.2.0",
-    "tslint-sitepen": "^0.1.0",
-    "typescript": "^2.6"
+    "ts-node": "^8.4.1",
+    "typescript": "^3.4"
   },
   "keywords": [
     "server",
@@ -71,5 +83,19 @@
     "https",
     "devserver",
     "development"
-  ]
+  ],
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "prettier": {
+    "singleQuote": true,
+    "tabWidth": 4,
+    "useTabs": true,
+    "parser": "typescript",
+    "printWidth": 120,
+    "arrowParens": "always"
+  }
 }
