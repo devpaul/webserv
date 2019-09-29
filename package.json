@@ -1,11 +1,14 @@
 {
   "name": "webserv",
-  "author": "Paul Shannon <pshannon@sitepen.com>",
-  "version": "1.0.0-pre",
+  "author": {
+    "name": "Paul Shannon",
+    "url": "https://devpaul.com"
+  },
+  "version": "1.0.0-alpha.1",
   "description": "a quick, flexible, fully typed development server",
   "license": "MPL-2.0",
   "bin": {
-    "webserv": "bin/webserv.js"
+    "webserv": "src/bin/webserv.js"
   },
   "bugs": {
     "url": "https://github.com/devpaul/webserv/issues"
@@ -13,19 +16,22 @@
   "engines": {
     "node": "10"
   },
-  "main": "./_dist/src/index",
   "repository": {
     "type": "git",
     "url": "https://github.com/devpaul/webserv"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "run-s copy build:quick",
+    "build:quick": "tsc",
     "build:watch": "tsc -w",
     "clean": "shx rm -rf _dist",
+    "copy": "run-s copy:src copy:package",
+    "copy:src": "copyfiles src/**/*.html _dist",
+    "copy:package": "copyfiles README.md package.json LICENSE _dist",
     "lint": "eslint ./src/**/*.ts",
     "pretty": "prettier --write ./src/**",
-    "test": "intern",
-    "example": "ts-node ./examples/hello"
+    "start": "ts-node ./examples/hello",
+    "test": "intern"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
@@ -56,10 +62,12 @@
     "@typescript-eslint/eslint-plugin": "^2.3.1",
     "@typescript-eslint/parser": "^2.3.1",
     "codecov": "^2.3.0",
+    "copyfiles": "^2.1.1",
     "eslint": "^6.4.0",
     "intern": "^4",
     "lint-staged": "^9.2.5",
     "mockery": "^2.0.0",
+    "npm-run-all": "^4.1.5",
     "prettier": "^1.18.2",
     "shelljs": "^0.7.5",
     "shx": "^0.3.2",

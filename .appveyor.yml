@@ -13,5 +13,6 @@ build: off
 test_script:
   - node --version
   - npm --version
-  - npm run ci
+  - npm run build
+  - npm test
 version: "{build}"
