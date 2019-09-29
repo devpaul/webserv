@@ -50,7 +50,6 @@
   "devDependencies": {
     "@types/body-parser": "^1.17.1",
     "@types/busboy": "^0.2.3",
-    "@types/commander": "^2.3.31",
     "@types/http-proxy": "^1.12.0",
     "@types/mkdirp": "^0.5.0",
     "@types/mockery": "^1.4.29",
@@ -58,7 +57,6 @@
     "@types/pem": "^1.9.2",
     "@types/send": "^0.14.3",
     "@types/sinon": "^1.16.36",
-    "@types/winston": "^2.2.0",
     "@types/yargs": "^13.0.2",
     "@typescript-eslint/eslint-plugin": "^2.3.1",
     "@typescript-eslint/parser": "^2.3.1",
