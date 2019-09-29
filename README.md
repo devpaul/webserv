@@ -5,7 +5,7 @@
 [![codecov.io](https://codecov.io/github/devpaul/webserv/coverage.svg?branch=master)](https://codecov.io/github/devpaul/webserv?branch=master)
 [![npm version](https://badge.fury.io/js/webserv.svg)](https://badge.fury.io/js/webserv)
 
-Webserv aims to be the fastest way to deploy server for development. It comes fully loaded with standard definitions for basic web patterns. Serve a directory, start a proxy, create a CRUD server, a basic upload, or just log connections instantly from the command line.
+Webserv aims to be the fastest way to create a server for development. It comes fully loaded with standard definitions for basic web patterns. Serve a directory, start a proxy, create a CRUD server, a basic upload, or just log connections instantly from the command line.
 
 ## Quick Start
 
