@@ -22,7 +22,7 @@
     "url": "https://github.com/devpaul/webserv"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "run-s copy build:quick",
     "build:quick": "tsc",
     "build:watch": "tsc -w",
     "clean": "shx rm -rf _dist",
