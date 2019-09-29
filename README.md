@@ -5,81 +5,109 @@
 [![codecov.io](https://codecov.io/github/devpaul/webserv/coverage.svg?branch=master)](https://codecov.io/github/devpaul/webserv?branch=master)
 [![npm version](https://badge.fury.io/js/webserv.svg)](https://badge.fury.io/js/webserv)
 
-Webserv aims to be the fastest way to create a server for development. It comes fully loaded with standard definitions for basic web patterns. Serve a directory, start a proxy, create a CRUD server, a basic upload, or just log connections instantly from the command line.
+Webserv is the fastest way to create a server for development.
 
-## Quick Start
-
-Use `webserv` instantly with `npx`
+Serve your folder right now without installing anything using `npx`.
 
 ```
-npx webserv -t log
+npx webserv
 ```
+
+Webserv comes packed with standard server patterns. Start a proxy, CRUD server, upload, or log connections from the command-line or use `webserv`'s fully typed API to programmatically create a custom server.
 
 ## Command Line
 
 Webserv allows you to quickly start a fully fledged development server from the command line without editing a single file.
 
+Start a https server with self-signed certificate like this:
+
 ```
 webserv -m https -t file ./_dist -p 9999
 ```
 
-**-f**: serves this folder
+### Command-line Options
 
-```
-webserv -f ./dist
-```
+#### -m, --mode {http | https}
 
-**-m, --mode**: use `http` or `https` (defaults to http)
+Create a `http` or `https` server (defaults to http)
 
 ```
 webserv -m https
 ```
 
-**-l**: log all requests to the console
+#### -l, --log
+
+Log all requests to the console
 
 ```
 webserv -l
 ```
 
-**-p, --port**: sets the port to use (defaults to 8888)
+#### -p, --port
+
+Set the port to use (defaults to 8888)
 
 ```
 webserv -p 8000
 ```
 
-**-t {crud, file, log, proxy, upload} [options]**: start a predefined server type
+#### -t crud
 
-*Create a basic CRUD server*
+Start a basic CRUD server
 
 ```
 webserv -t crud
 ```
 
-*Create a proxy server*
+This server keeps records in an internal store.
 
-```
-webserv -t proxy http://devpaul.com
-```
+* GET `/` will list all of the records
+* POST `/` with a json object in the body with an `id` to add a record
+* PUT `/` with a json object in the body to update a record
+* GET `/id/:id` to view a single record
+* DELETE `/id/:id` to delete a record
 
-*Create a file browser* (same as -f)
+#### -t file {directory}
+
+Serve the directory.
+
+This is the default server type. If the `directory` is omitted the current directory will be served.
 
 ```
 webserv -t file ./dist
 ```
 
-*Create an upload server*
+#### -t log
+
+Create a log server that logs all request to the console and returns 200.
+
+```
+webserv -t log
+```
+
+#### -t proxy {target}
+
+Create a proxy server.
+
+```
+webserv -t proxy http://devpaul.com
+```
+
+#### -t upload {directory}
+
+Create an upload server.
+
+`directory` is the location where uploaded files will be stored
 
 ```
 webserv -t upload ./files
 ```
 
-*Create a log server*
+* GET `/` provides an interface to upload files
+* POST `/` uploads the file(s)
+* GET `/list` lists files that have been uploaded
 
-A log server logs all request to the console and returns 200
 
-```
-webserv -t log
-```
 ## Programmatic API
 
 Webserv offers a fully-typed programmatic API. See `./examples/hello` and `./src/webserv/bin/webserv.ts`.
