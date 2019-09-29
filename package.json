@@ -10,6 +10,7 @@
   "bin": {
     "webserv": "src/bin/webserv.js"
   },
+  "main": "src/core/app.js",
   "bugs": {
     "url": "https://github.com/devpaul/webserv/issues"
   },
