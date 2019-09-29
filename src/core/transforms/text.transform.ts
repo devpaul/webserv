@@ -1,6 +1,6 @@
 import { Transform } from '../interface';
 
-export const textTransform: Transform = async (result, request, response) => {
+export const textTransform: Transform = async (result, _request, response) => {
 	if (!response.statusCode) {
 		response.statusCode = 200;
 	}
