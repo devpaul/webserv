@@ -5,22 +5,23 @@
 [![codecov.io](https://codecov.io/github/devpaul/webserv/coverage.svg?branch=master)](https://codecov.io/github/devpaul/webserv?branch=master)
 [![npm version](https://badge.fury.io/js/webserv.svg)](https://badge.fury.io/js/webserv)
 
-Programatic API for creating front-end webservers to support development. Webserv was built to provide a complete
-	and simple way for front-end engineers develop decoupled from the backend.
+Webserv aims to be the fastest way to deploy server for development. It comes fully loaded with standard definitions for basic web patterns. Serve a directory, start a proxy, create a CRUD server, a basic upload, or just log connections instantly from the command line.
 
-## Features
+## Quick Start
 
-* Command line interface
-* Configuration driven
-* Fully typed, programmatic API
-* Grunt support
+Use `webserv` instantly with `npx`
+
+```
+npx webserv -t log
+```
 
 ## Command Line
 
-WebServ offers a very basic command-line usage. Simply install webserv globally (`npm i webserv -g`)
-and type `webserv` on the command line to serve files and directories from your current directory.
+Webserv allows you to quickly start a fully fledged development server from the command line without editing a single file.
 
-### Command Line options
+```
+webserv -m https -t file ./_dist -p 9999
+```
 
 **-f**: serves this folder
 
@@ -79,3 +80,6 @@ A log server logs all request to the console and returns 200
 ```
 webserv -t log
 ```
+## Programmatic API
+
+Webserv offers a fully-typed programmatic API. See `./examples/hello` and `./src/webserv/bin/webserv.ts`.
