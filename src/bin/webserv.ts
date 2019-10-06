@@ -9,6 +9,7 @@ import { body } from '../core/processors/body.processor';
 import { uploadRoute } from '../core/routes/upload.route';
 import { crudRoute } from '../core/routes/crud.route';
 import { response } from '../core/middleware/response';
+import { startNgrok } from './addons/ngrok';
 
 const argv = yargs
 	.options('log', {
@@ -18,7 +19,7 @@ const argv = yargs
 	.option('mode', {
 		alias: 'm',
 		describe: 'use http or https',
-		choices: ['http', 'https'],
+		choices: ['http', 'https', 'ngrok'],
 		default: 'http'
 	})
 	.option('port', {
@@ -82,9 +83,16 @@ export async function start() {
 			throw new Error(`unknown server type ${argv.type[0]}`);
 	}
 
-	return app.start(argv.mode as any, {
+	const mode = argv.mode === 'https' ? 'https' : 'http';
+	const controls = await app.start(mode, {
 		port: argv.port
 	});
+
+	if (argv.mode === 'ngrok') {
+		await startNgrok(argv.port);
+	}
+
+	return controls;
 }
 
 start().catch((err: Error) => {

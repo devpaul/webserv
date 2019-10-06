@@ -27,9 +27,11 @@ webserv -m https -t file ./_dist -p 9999
 
 ### Command-line Options
 
-#### -m, --mode {http | https}
+#### -m, --mode {http | https | ngrok}
 
 Create a `http` or `https` server (defaults to http)
+
+`ngrok` mode will create a local `http` server and use ngrok to create an externally accessible site on ngrok. The public url will be displayed on the console.
 
 ```
 webserv -m https

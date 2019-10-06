@@ -39,9 +39,10 @@ export class App {
 
 	protected controls?: Promise<ServerControls>;
 
-	start(type: 'https', config: HttpsConfig): void;
-	start(type: 'http', config: HttpConfig): void;
-	start(type: 'http' | 'https', config: HttpsConfig | HttpConfig) {
+	start(type: 'https', config: HttpsConfig): Promise<ServerControls>;
+	start(type: 'http', config: HttpConfig): Promise<ServerControls>;
+	start(type: 'http' | 'https', config: HttpsConfig | HttpConfig): Promise<ServerControls>;
+	start(type: 'http' | 'https', config: HttpsConfig | HttpConfig): Promise<ServerControls> {
 		if (this.controls) {
 			throw new Error('server already started');
 		}
