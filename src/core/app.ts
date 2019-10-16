@@ -7,6 +7,8 @@ import { Route, route } from './routes/route';
 import { StartHttpConfig, startHttpServer } from './servers/createHttpServer';
 import { StartHttpsConfig, startHttpsServer } from './servers/createHttpsServer';
 import { ServerControls } from './servers/startServer';
+import { Upgrade, upgrade } from './upgrades/upgrade';
+import uuid = require('uuid');
 
 export type ErrorRequestHandler = (error: any, response: ServerResponse) => void;
 
@@ -26,6 +28,24 @@ export function createRequestHandler(route: Route, errorHandler?: ErrorRequestHa
 	};
 }
 
+export type ErrorUpgradeHandler = (error: any) => void;
+
+export function createUpgradeHandler(upgrade: Upgrade, errorHandler?: ErrorUpgradeHandler): Upgrader {
+	return async (request, socket, head) => {
+		try {
+			if (await upgrade.test(request)) {
+				await upgrade.upgrader(request, socket, head);
+			}
+		} catch (e) {
+			if (errorHandler) {
+				errorHandler(e);
+			} else {
+				throw e;
+			}
+		}
+	}
+}
+
 export type HttpConfig = Omit<StartHttpConfig, 'onRequest' | 'onUpgrade'>;
 export type HttpsConfig = Omit<StartHttpsConfig, 'onRequest' | 'onUpgrade'>;
 
@@ -35,9 +55,11 @@ export class App {
 	readonly routes: Route[] = [];
 	readonly transforms: Transform[] = [];
 	readonly after: Process[] = [];
-	upgrader: Upgrader;
+	readonly upgrades: Upgrade[] = [];
 
 	protected controls?: Promise<ServerControls>;
+
+	constructor(public readonly id: string = uuid.v4()) {}
 
 	start(type: 'https', config: HttpsConfig): Promise<ServerControls>;
 	start(type: 'http', config: HttpConfig): Promise<ServerControls>;
@@ -61,11 +83,9 @@ export class App {
 				throw e;
 			}
 		});
-		const onUpgrade: Upgrader = (request, socket, head) => {
-			if (this.upgrader) {
-				this.upgrader(request, socket, head);
-			}
-		};
+		const globalUpgrader = upgrade({ upgrade: this.upgrades })
+		const onUpgrade = createUpgradeHandler(globalUpgrader);
+
 		if (type === 'http') {
 			this.controls = startHttpServer({
 				...config,

@@ -45,7 +45,9 @@
     "path-to-regexp": "^1.7.0",
     "pem": "^1.14.3",
     "send": "^0.17.1",
+    "uuid": "^3.3.3",
     "winston": "^2.3.1",
+    "ws": "^7.1.2",
     "yargs": "^14.0.0"
   },
   "devDependencies": {
@@ -59,6 +61,7 @@
     "@types/pem": "^1.9.2",
     "@types/send": "^0.14.3",
     "@types/sinon": "^1.16.36",
+    "@types/uuid": "^3.4.5",
     "@types/yargs": "^13.0.2",
     "@typescript-eslint/eslint-plugin": "^2.3.1",
     "@typescript-eslint/parser": "^2.3.1",

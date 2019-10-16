@@ -6,6 +6,10 @@ export const enum ServerType {
 	HTTPS = 'https'
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Web
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 export type HttpMethod = 'connect' | 'delete' | 'get' | 'head' | 'post' | 'put' | 'trace';
 
 export type Process = (request: IncomingMessage, response: ServerResponse) => Promise<void> | void;
@@ -29,14 +33,10 @@ export type Transform = (result: MiddlewareResult, request: IncomingMessage, res
 
 export type TransformFactory<T extends object> = (options: T) => Transform;
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Socket upgrades
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 export type Upgrader = (request: IncomingMessage, socket: Socket, head: Buffer) => Promise<void> | void;
 
 export type UpgraderFactory<T extends object> = (options: T) => Upgrader;
-
-export interface Route {
-	after?: Process[];
-	before?: Process[];
-	guards?: Guard[];
-	middleware: Middleware;
-	transforms?: Transform[];
-}
