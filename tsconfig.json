@@ -21,9 +21,15 @@
 		"sourceMap": true,
 		"strict": true,
 		"strictNullChecks": false,
-		"target": "ES6"
+		"target": "ES6",
+		"types": [ "intern" ]
 	},
 	"include": [
 		"./src/**/*.ts"
+	],
+	"exclude": [
+		"_support",
+		"node_modules",
+		"**/*.spec.ts"
 	]
 }
