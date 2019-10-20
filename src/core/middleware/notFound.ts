@@ -5,7 +5,7 @@ import { response } from './response';
 export const notFound: MiddlewareFactory = () => {
 	const responseHandler = response({
 		message: 'Not Found',
-		statusCode: 301
+		statusCode: 404
 	});
 
 	return (request, response) => {

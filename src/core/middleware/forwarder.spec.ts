@@ -1,10 +1,9 @@
 /// <reference types="intern" />
 
 import { forwarder } from "./forwarder";
-import { mockResponse } from "../../_support/mocks/mockResponse";
+import { mockResponse, assertHeader } from "../../_support/mocks/mockResponse";
 import { IncomingMessage } from "http";
 
-const { assert } = intern.getPlugin('chai');
 const { describe, it } = intern.getPlugin('interface.bdd');
 
 describe('/core/middleware/forwarder', () => {
@@ -16,8 +15,7 @@ describe('/core/middleware/forwarder', () => {
 			const middleware = forwarder({ location });
 			middleware(request, response as any);
 
-			assert.deepEqual(response.writeHead.firstCall.args, [ 301, { Location: location }]);
-			assert.isTrue(response.end.calledOnce);
+			assertHeader(response, 301, { Location: location });
 		});
 	});
 });
