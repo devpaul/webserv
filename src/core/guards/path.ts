@@ -47,7 +47,7 @@ export const pathGuard: GuardFactory<PathGuardProperties> = ({ match }) => {
 	if (typeof match === 'string') {
 		const keys: Key[] = [];
 		const regex = pathToRegexp(match, keys);
-		log.info(`Created regexp ${regex} to match ${match}`);
+		log.debug(`Created regexp ${regex} to match ${match}`);
 		log.debug('route keys', keys);
 
 		return (request) => {
