@@ -26,10 +26,5 @@
 	},
 	"include": [
 		"./src/**/*.ts"
-	],
-	"exclude": [
-		"_support",
-		"node_modules",
-		"**/*.spec.ts"
 	]
 }
