@@ -35,7 +35,8 @@
     "lint": "eslint ./src/**/*.ts",
     "pretty": "prettier --write ./src/**",
     "start": "ts-node ./examples/hello",
-    "test": "intern"
+    "test": "intern",
+    "test:integration": "intern config=@integration"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
@@ -57,6 +58,7 @@
     "@types/mkdirp": "^0.5.0",
     "@types/mockery": "^1.4.29",
     "@types/node": "12.7.5",
+    "@types/node-fetch": "^2.5.2",
     "@types/npm": "^2.0.31",
     "@types/pem": "^1.9.2",
     "@types/send": "^0.14.3",
@@ -70,6 +72,7 @@
     "intern": "^4",
     "lint-staged": "^9.2.5",
     "mockery": "^2.1.0",
+    "node-fetch": "^2.6.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^1.18.2",
     "shelljs": "^0.7.5",

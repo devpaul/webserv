@@ -1,11 +1,10 @@
 {
 	"description": "Run unit tests",
-
 	"reporters": [
 		{
 			"name": "runner",
 			"options": {
-				"hideSkipped": true,
+				"hideSkipped": false,
 				"hidePassed": true
 			}
 		},
@@ -13,15 +12,31 @@
 			"name": "lcov"
 		}
 	],
-
 	"node": {
 		"plugins": [
 			"node_modules/ts-node/register/index.js"
 		],
-
 		"suites": [
 			"src/**/*.spec.ts",
 			"!_support"
 		]
+	},
+	"configs": {
+		"integration": {
+			"reporters": [
+				{
+					"name": "runner",
+					"options": {
+						"hideSkipped": false,
+						"hidePassed": false
+					}
+				}
+			],
+			"node": {
+				"suites": [
+					"tests/integration/*.test.ts"
+				]
+			}
+		}
 	}
 }
