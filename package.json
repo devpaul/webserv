@@ -27,6 +27,7 @@
     "build:dist": "tsc --build ./tsconfig.dist.json",
     "build:quick": "tsc",
     "build:watch": "tsc -w",
+    "ci": "run-s build test test:integration",
     "clean": "shx rm -rf _dist",
     "copy": "run-s copy:src copy:package",
     "copy:src": "copyfiles src/**/*.html _dist",
