@@ -1,15 +1,10 @@
 {
-	"description": "Run unit and integration tests on Node",
-
-	"coverage": [
-		"_dist/src/**/*.js"
-	],
-
+	"description": "Run unit tests",
 	"reporters": [
 		{
 			"name": "runner",
 			"options": {
-				"hideSkipped": true,
+				"hideSkipped": false,
 				"hidePassed": true
 			}
 		},
@@ -17,10 +12,31 @@
 			"name": "lcov"
 		}
 	],
-
-	"suites": [
-		"_dist/tests/unit/**/*.js",
-		"_dist/tests/integration/**/*.js",
-		"!_support"
-	]
+	"node": {
+		"plugins": [
+			"node_modules/ts-node/register/index.js"
+		],
+		"suites": [
+			"src/**/*.spec.ts",
+			"!_support"
+		]
+	},
+	"configs": {
+		"integration": {
+			"reporters": [
+				{
+					"name": "runner",
+					"options": {
+						"hideSkipped": false,
+						"hidePassed": false
+					}
+				}
+			],
+			"node": {
+				"suites": [
+					"tests/integration/*.test.ts"
+				]
+			}
+		}
+	}
 }

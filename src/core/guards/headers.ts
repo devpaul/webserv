@@ -6,7 +6,7 @@ type HeaderGuardProperties<K extends IncomingHttpHeaders = IncomingHttpHeaders> 
 };
 
 export const headerGuard: GuardFactory<HeaderGuardProperties> = (headers) => {
-	const list = Object.entries(headers).map((_) => _.map(String.prototype.toLowerCase));
+	const list = Object.entries(headers);
 
 	return (request) => {
 		for (let [name, value] of list) {
