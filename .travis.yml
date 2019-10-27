@@ -5,6 +5,8 @@ node_js:
 cache:
   directories:
     - node_modules
+before_install:
+  - npm i -g npm@6.12
 script: npm run build && npm test
 deploy:
   skip_cleanup: true
