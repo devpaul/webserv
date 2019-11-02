@@ -2,7 +2,7 @@ import { MiddlewareFactory } from '../interface';
 import { parse as parseUrl, UrlWithStringQuery } from 'url';
 import { IncomingMessage, ServerResponse } from 'http';
 import { join, resolve } from 'path';
-import { existsSync, statSync, readdir, access, constants } from 'fs';
+import { readdir, access, constants, stat, Stats } from 'fs';
 import { HttpError, HttpStatus } from '../HttpError';
 import { log } from '../log';
 import { forwarder } from './forwarder';
@@ -38,20 +38,26 @@ function checkAccess(target: string, mode: number = constants.F_OK) {
 	});
 }
 
+function getStat(target: string): Promise<Stats> {
+	return new Promise((resolve, reject) => {
+		stat(target, (err, stats) => {
+			err ? reject(err) : resolve(stats);
+		});
+	});
+}
+
 function isMissingTrailingSlash(url: string) {
 	const pathname = parseUrl(url).pathname;
 	return pathname.length <= 1 || pathname.charAt(pathname.length - 1) === '/';
 }
 
-function findDefaultFile(path: string, search: string[]): string | null {
+async function findDefaultFile(path: string, search: string[]) {
 	for (let searchFile of search) {
 		const searchTarget = join(path, searchFile);
-		if (existsSync(searchTarget) && statSync(searchTarget).isFile()) {
+		if ((await checkAccess(searchTarget)) && (await getStat(searchTarget)).isFile()) {
 			return searchTarget;
 		}
 	}
-
-	return null;
 }
 
 function listDirectoryContents(target: string) {
@@ -105,14 +111,14 @@ export const serve: MiddlewareFactory<ServeProperties> = ({
 			throw new HttpError(HttpStatus.Forbidden);
 		}
 
-		const stat = statSync(path);
+		const stat = await getStat(path);
 
 		if (stat.isDirectory()) {
-			if (trailingSlash && !isMissingTrailingSlash(request.url)) {
+			if (trailingSlash && isMissingTrailingSlash(request.url)) {
 				return forwarder({ location: request.url + '/' })(request, response);
 			}
 
-			const search = findDefaultFile(path, searchDefaults);
+			const search = await findDefaultFile(path, searchDefaults);
 			return search ? sendFile(request, response, search) : listDirectoryContents(path);
 		} else {
 			return sendFile(request, response, path);
