@@ -3,8 +3,9 @@ import { getParams } from '../util/request';
 import { parse } from 'url';
 import { join } from 'path';
 import { htmlTemplate } from '../util/htmlTemplate';
+import slash from 'slash';
 
-interface Directory {
+export interface Directory {
 	directory: string;
 	files: string[];
 }
@@ -23,7 +24,9 @@ export const directoryTransform: Transform = (result, request, response) => {
 
 	const fileLinks = result.files
 		.map((file) => {
-			return `<a href="${join(baseUrl, file)}">${file}</a>`;
+			const relative = slash(file);
+			const url = slash(join(baseUrl, file));
+			return `<a href="${url}">${relative}</a>`;
 		})
 		.join('<br>');
 	response.write(htmlTemplate('Directory listing', fileLinks));

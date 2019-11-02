@@ -1,24 +1,49 @@
 import { MiddlewareFactory } from '../interface';
-import { parse as parseUrl } from 'url';
+import { parse as parseUrl, UrlWithStringQuery } from 'url';
 import { IncomingMessage, ServerResponse } from 'http';
 import { join, resolve } from 'path';
-import { existsSync, statSync, readdir } from 'fs';
+import { readdir, access, constants, stat, Stats } from 'fs';
 import { HttpError, HttpStatus } from '../HttpError';
 import { log } from '../log';
 import { forwarder } from './forwarder';
-import * as send from 'send';
+import send from 'send';
 
 export interface ServeProperties {
 	basePath?: string;
 	searchDefaults?: string[];
 	trailingSlash?: boolean;
+	extensions?: string[];
 }
 
-function getPath(basePath: string, request: IncomingMessage): string | null {
-	const url = parseUrl(request.url);
+async function getPath(basePath: string, url: UrlWithStringQuery, extensions: string[] = []) {
 	const target = join(basePath, url.pathname);
 
-	return existsSync(target) ? target : null;
+	if (await checkAccess(target)) {
+		return target;
+	}
+
+	for (let extension of extensions) {
+		const path = target + extension;
+		if (await checkAccess(path)) {
+			return path;
+		}
+	}
+}
+
+function checkAccess(target: string, mode: number = constants.F_OK) {
+	return new Promise((resolve) => {
+		access(target, mode, (err) => {
+			err ? resolve() : resolve(target);
+		});
+	});
+}
+
+function getStat(target: string): Promise<Stats> {
+	return new Promise((resolve, reject) => {
+		stat(target, (err, stats) => {
+			err ? reject(err) : resolve(stats);
+		});
+	});
 }
 
 function isMissingTrailingSlash(url: string) {
@@ -26,15 +51,13 @@ function isMissingTrailingSlash(url: string) {
 	return pathname.length <= 1 || pathname.charAt(pathname.length - 1) === '/';
 }
 
-function findDefaultFile(path: string, search: string[]): string | null {
+async function findDefaultFile(path: string, search: string[]) {
 	for (let searchFile of search) {
 		const searchTarget = join(path, searchFile);
-		if (existsSync(searchTarget) && statSync(searchTarget).isFile()) {
+		if ((await checkAccess(searchTarget)) && (await getStat(searchTarget)).isFile()) {
 			return searchTarget;
 		}
 	}
-
-	return null;
 }
 
 function listDirectoryContents(target: string) {
@@ -71,12 +94,14 @@ function sendFile(request: IncomingMessage, response: ServerResponse, target: st
 export const serve: MiddlewareFactory<ServeProperties> = ({
 	basePath = process.cwd(),
 	trailingSlash,
-	searchDefaults = ['index.html']
+	searchDefaults = ['index.html'],
+	extensions = ['', '.js']
 }) => {
 	const base = resolve(basePath);
+	log.debug('serving path', base);
 
-	return (request, response) => {
-		const path = getPath(base, request);
+	return async (request, response) => {
+		const path = await getPath(base, parseUrl(request.url), extensions);
 
 		if (!path) {
 			throw new HttpError(HttpStatus.NotFound);
@@ -86,14 +111,14 @@ export const serve: MiddlewareFactory<ServeProperties> = ({
 			throw new HttpError(HttpStatus.Forbidden);
 		}
 
-		const stat = statSync(path);
+		const stat = await getStat(path);
 
 		if (stat.isDirectory()) {
-			if (trailingSlash && !isMissingTrailingSlash(request.url)) {
+			if (trailingSlash && isMissingTrailingSlash(request.url)) {
 				return forwarder({ location: request.url + '/' })(request, response);
 			}
 
-			const search = findDefaultFile(path, searchDefaults);
+			const search = await findDefaultFile(path, searchDefaults);
 			return search ? sendFile(request, response, search) : listDirectoryContents(path);
 		} else {
 			return sendFile(request, response, path);
