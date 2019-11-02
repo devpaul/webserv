@@ -4,7 +4,7 @@
 		"./src/**/*.ts"
 	],
 	"exclude": [
-		"_support",
+		"**/_support",
 		"node_modules",
 		"./src/**/*.spec.ts"
 	]

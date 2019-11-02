@@ -35,6 +35,7 @@
     "dist": "run-s clean copy build:dist",
     "lint": "eslint ./src/**/*.ts",
     "pretty": "prettier --write ./src/**",
+    "run:local": "npx -p file://./_dist webserv",
     "start": "ts-node ./examples/hello",
     "test": "intern",
     "test:integration": "intern config=@integration"
