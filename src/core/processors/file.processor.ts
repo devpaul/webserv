@@ -1,4 +1,4 @@
-import * as BusBoy from 'busboy';
+import BusBoy from 'busboy';
 import { IncomingMessage } from 'http';
 
 import { Process } from '../interface';
