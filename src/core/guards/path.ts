@@ -1,6 +1,6 @@
 import { GuardFactory } from '../interface';
 import { parse as parseUrl } from 'url';
-import * as pathToRegexp from 'path-to-regexp';
+import pathToRegexp from 'path-to-regexp';
 import { Key } from 'path-to-regexp';
 import { log } from '../log';
 import { updateRequest } from '../util/request';

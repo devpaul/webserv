@@ -6,7 +6,7 @@ import { readdir, access, constants, stat, Stats } from 'fs';
 import { HttpError, HttpStatus } from '../HttpError';
 import { log } from '../log';
 import { forwarder } from './forwarder';
-import * as send from 'send';
+import send from 'send';
 
 export interface ServeProperties {
 	basePath?: string;

@@ -50,7 +50,7 @@ describe('serve tests', () => {
 	it('displays a directory listing', async () => {
 		const result = await fetch('http://localhost:3001/child/');
 		const expected =
-			'\n\t\t<html>\n\t\t<head>\n\t\t\t<title>Directory listing</title>\n\t\t</head>\n\t\t<body>\n\t\t\t<a href="\\child\\1.txt">1.txt</a><br><a href="\\child\\2.txt">2.txt</a>\n\t\t</form>\n\t\t</body>\n\t\t</html>\n\t\t';
+			'\n\t\t<html>\n\t\t<head>\n\t\t\t<title>Directory listing</title>\n\t\t</head>\n\t\t<body>\n\t\t\t<a href="/child/1.txt">1.txt</a><br><a href="/child/2.txt">2.txt</a>\n\t\t</form>\n\t\t</body>\n\t\t</html>\n\t\t';
 
 		assert.strictEqual(result.status, 200);
 		assert.strictEqual(await result.text(), expected);

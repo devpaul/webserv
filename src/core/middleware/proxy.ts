@@ -1,6 +1,6 @@
 import { MiddlewareFactory } from '../interface';
 import { createProxy } from '../util/createProxy';
-import * as Server from 'http-proxy';
+import Server from 'http-proxy';
 import { log } from '../log';
 import { IncomingMessage, ServerResponse } from 'http';
 
