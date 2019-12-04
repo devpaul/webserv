@@ -27,30 +27,6 @@ function asyncExists(path: string) {
 	});
 }
 
-export async function runConfig(path?: string, app: App = new App(), overrides?: object) {
-	const configMeta = path ? loadConfigFile(path) : await loadDefaultConfig();
-	if (configMeta) {
-		const { config, configPath } = configMeta;
-		const workingDirectory = dirname(configPath);
-		for (let service of config.services || []) {
-			await bootService(app, service, workingDirectory);
-		}
-	}
-	const { mode = 'http', port = 8888 } = {
-		...(configMeta ? configMeta.config : {}),
-		...overrides
-	};
-	const controls = await app.start(mode === 'https' ? 'https' : 'http', {
-		port
-	});
-
-	if (mode === 'ngrok') {
-		await startNgrok(port);
-	}
-
-	return controls;
-}
-
 export function loadConfigFile(path: string): LoadedConfig {
 	const configPath = resolve(path);
 	const config = require(configPath);
@@ -66,7 +42,40 @@ export async function loadDefaultConfig(): Promise<LoadedConfig | undefined> {
 	}
 }
 
-export function bootService(app: App, config: ServiceConfig, basePath: string) {
+export function loadConfig(path?: string) {
+	return path ? loadConfigFile(path) : loadDefaultConfig();
+}
+
+export async function bootConfig(path?: string, app: App = new App()) {
+	const configMeta = await loadConfig(path);
+	if (configMeta) {
+		const { config, configPath } = configMeta;
+		const workingDirectory = dirname(configPath);
+		bootServices(app, config.services, workingDirectory);
+		return config;
+	}
+}
+
+export function bootService(app: App, config: ServiceConfig, workingDirectory: string) {
 	const handler = getLoader(config.name);
-	return handler(app, config, basePath);
+	return handler(app, config, workingDirectory);
+}
+
+export async function bootServices(app: App, configs: ServiceConfig[] = [], workingDirectory: string) {
+	for (let service of configs) {
+		await bootService(app, service, workingDirectory);
+	}
+}
+
+export async function startServer(app: App, config: Config = {}) {
+	const { mode = 'http', port = 8888 } = config;
+	const controls = await app.start(mode === 'https' ? 'https' : 'http', {
+		port
+	});
+
+	if (mode === 'ngrok') {
+		await startNgrok(port);
+	}
+
+	return controls;
 }

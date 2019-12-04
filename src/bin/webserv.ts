@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-import { bootFileService } from '../config/services/file';
-import { bootLogService } from '../config/services/log';
 import * as yargs from 'yargs';
 
-import { bootService, Config, runConfig } from '../config';
+import { bootConfig, bootService, startServer } from '../config';
+import { bootFileService } from '../config/services/file';
+import { bootLogService } from '../config/services/log';
 import { App } from '../core/app';
 
 const argv = yargs
@@ -48,7 +48,10 @@ export async function start() {
 			...getConfig(name, options)
 		};
 		bootService(app, config, basePath);
-	} else if (!argv.config) {
+	}
+
+	const config = await bootConfig(argv.config, app);
+	if (!config && !argv.type) {
 		bootFileService(
 			app,
 			{
@@ -57,15 +60,8 @@ export async function start() {
 			basePath
 		);
 	}
-
-	const configOverrides: Config = {};
-	if (argv.mode) {
-		configOverrides.mode = argv.mode as any;
-	}
-	if (argv.port) {
-		configOverrides.port = argv.port;
-	}
-	return runConfig(argv.config, app, configOverrides);
+	const serverConfig = Object.assign({}, config, argv);
+	return startServer(app, serverConfig);
 }
 
 function getConfig(name: string, ...options: string[]) {
