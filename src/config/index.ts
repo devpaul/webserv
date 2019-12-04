@@ -31,8 +31,9 @@ export async function runConfig(path?: string, app: App = new App(), overrides?:
 	const configMeta = path ? loadConfigFile(path) : await loadDefaultConfig();
 	if (configMeta) {
 		const { config, configPath } = configMeta;
+		const workingDirectory = dirname(configPath);
 		for (let service of config.services || []) {
-			await bootService(app, service, configPath);
+			await bootService(app, service, workingDirectory);
 		}
 	}
 	const { mode = 'http', port = 8888 } = {
@@ -54,7 +55,7 @@ export function loadConfigFile(path: string): LoadedConfig {
 	const configPath = resolve(path);
 	const config = require(configPath);
 
-	return { config, configPath: dirname(configPath) };
+	return { config, configPath };
 }
 
 export async function loadDefaultConfig(): Promise<LoadedConfig | undefined> {
