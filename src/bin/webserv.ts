@@ -1,19 +1,10 @@
 #!/usr/bin/env node
-import { resolve } from 'path';
+import { bootFileService } from '../config/services/file';
+import { bootLogService } from '../config/services/log';
 import * as yargs from 'yargs';
 
+import { bootService, Config, runConfig } from '../config';
 import { App } from '../core/app';
-import { response } from '../core/middleware/response';
-import { body } from '../core/processors/body.processor';
-import { logRequest } from '../core/processors/log.processor';
-import { crudRoute } from '../core/routes/crud.route';
-import { fileBrowser } from '../core/routes/fileBrowser.route';
-import { proxyRoute } from '../core/routes/proxy.route';
-import { route } from '../core/routes/route';
-import { uploadRoute } from '../core/routes/upload.route';
-import { startNgrok } from './addons/ngrok';
-import { configExists, loadConfig } from './config';
-import { setLogLevel } from '../core/log';
 
 const argv = yargs
 	.options('config', {
@@ -29,13 +20,11 @@ const argv = yargs
 	.option('mode', {
 		alias: 'm',
 		describe: 'use http or https',
-		choices: ['http', 'https', 'ngrok'],
-		default: 'http'
+		choices: ['http', 'https', 'ngrok']
 	})
 	.option('port', {
 		alias: 'p',
 		describe: 'sets the server port to use',
-		default: 8888,
 		type: 'number'
 	})
 	.option('type', {
@@ -46,84 +35,68 @@ const argv = yargs
 
 export async function start() {
 	const app = new App();
+	const basePath = process.cwd();
 
 	if (argv.log != null) {
-		setLogLevel(argv.log || 'info');
-		app.before.push(body({}), logRequest({ logBody: true }));
-	}
-
-	if (argv.config) {
-		loadConfig(app, resolve(argv.config));
-	} else {
-		const defaultConfigPath = resolve('./webserv.json');
-		if (await configExists(defaultConfigPath)) {
-			loadConfig(app, defaultConfigPath);
-		}
+		bootLogService(app, { level: argv.log || 'info' });
 	}
 
 	if (argv.type) {
-		addService(app, argv.type.map((val) => String(val)));
+		const [name, options] = argv.type.map((val) => String(val));
+		const config = {
+			name,
+			...getConfig(name, options)
+		};
+		bootService(app, config, basePath);
 	} else if (!argv.config) {
-		addFileService(app, ['file']);
+		bootFileService(
+			app,
+			{
+				paths: { '*': '.' }
+			},
+			basePath
+		);
 	}
 
-	const mode = argv.mode === 'https' ? 'https' : 'http';
-	const controls = await app.start(mode, {
-		port: argv.port
-	});
-
-	if (argv.mode === 'ngrok') {
-		await startNgrok(argv.port);
+	const configOverrides: Config = {};
+	if (argv.mode) {
+		configOverrides.mode = argv.mode as any;
 	}
-
-	return controls;
+	if (argv.port) {
+		configOverrides.port = argv.port;
+	}
+	return runConfig(argv.config, app, configOverrides);
 }
 
-function addService(app: App, options: string[]) {
-	switch (options[0]) {
+function getConfig(name: string, ...options: string[]) {
+	switch (name) {
 		case 'crud':
-			app.routes.push(crudRoute({}));
-			break;
+			return {
+				route: '*'
+			};
 		case 'proxy':
-			addProxyService(app, options);
-			break;
+			return {
+				target: options[0]
+			};
 		case 'file':
-			addFileService(app, options);
-			break;
+			return {
+				paths: {
+					'*': options[0]
+				}
+			};
 		case 'upload':
-			const directory = String(argv.type[1]);
-			app.routes.push(uploadRoute({ directory }));
-			break;
+			return {
+				route: '*',
+				directory: options[0]
+			};
 		case 'log':
-			if (!argv.log) {
-				app.before.push(body({}), logRequest({ logBody: true }));
-			}
-			app.routes.push(route({ middleware: response({ statusCode: 200 }) }));
+			return {
+				respondOk: true
+			};
 			break;
 		default:
-			if (!argv.config) {
-				throw new Error(`unknown server type ${argv.type[0]}`);
-			}
+			return {};
 	}
-}
-
-function addFileService(app: App, [, basePath = process.cwd()]: string[]) {
-	app.routes.push(fileBrowser({ basePath }));
-}
-
-function addProxyService(app: App, [, target]: string[]) {
-	const proxy = proxyRoute({
-		target,
-		changeOrigin: true,
-		followRedirects: false,
-		ws: true
-	});
-	app.routes.push(
-		route({
-			middleware: proxy.middleware
-		})
-	);
-	app.upgrader = proxy.upgrader;
 }
 
 start().catch((err: Error) => {
