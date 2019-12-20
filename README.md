@@ -15,7 +15,7 @@ Serve your folder right now without installing anything using `npx`.
 npx webserv
 ```
 
-Webserv comes with standard server patterns. Start a proxy, CRUD server, upload, or log connections from the command-line or use `webserv`'s fully typed API to programmatically create a custom server.
+Webserv comes with standard server patterns. Start a proxy, CRUD server, upload, or log connections from the command-line. Have a more complex use case? `webserv` supports JSON configs and has a fully-typed programmatic API so you will *never* be stuck.
 
 Interested? Start experimenting now on [Glitch](https://glitch.com)
 
@@ -115,7 +115,47 @@ webserv -t upload ./files
 * POST `/` uploads the file(s)
 * GET `/list` lists files that have been uploaded
 
+## webserv configuration
+
+Webserv supports more complex usage through config files. When a file named `webserv.json` is present or when `webserv` is launched using the `-c <configPath>` option, webserv will launch using the provided configuration.
+
+The available configurations match the server types (available with the `-t` option): crud, file, log, proxy, and upload.
+
+The configuration json is used to specify services. Example `webserv.json` file:
+
+```
+{
+	"services": [
+		{
+			"name": "file",
+			"paths": {
+				"/src/*": "./dist",
+				"/aframe/*": "./node_modules/aframe",
+				"/node_modules/*": "./node_modules",
+				"*": "./src"
+			}
+		},
+		{
+			"name": "upload",
+			"route": "/upload/*",
+			"directory": "./uploadDirectory"
+		},
+		{
+			"name": "crud",
+			"route": "/users/*",
+			"data": {
+				"1": {
+					"id": 1,
+					"name": "Paul"
+				}
+			}
+		}
+	]
+}
+```
+
+All service configurations include a `name` that refers to the service to be loaded and configuration options. Configuration options may be found on the type definitions in [src/config/services](https://github.com/devpaul/webserv/tree/master/src/config/services).
 
 ## Programmatic API
 
-Webserv offers a fully-typed programmatic API. See `./examples/hello` and `./src/webserv/bin/webserv.ts`.
+For users that may need to create their own services or have complex use cases that are not served the configuration, `webserv` offers a fully-typed programmatic API. See [examples/hello](https://github.com/devpaul/webserv/tree/master/src/config/services) and [src/webserv/core/routes](https://github.com/devpaul/webserv/tree/master/src/core/routes) for example usage.
