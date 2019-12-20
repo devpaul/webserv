@@ -53,7 +53,13 @@ describe('serve tests', () => {
 
 	it('displays a directory listing', async () => {
 		const result = await fetch('http://localhost:3001/child/');
-		const expected = `${CR}\t\t<html>${CR}\t\t<head>${CR}\t\t\t<title>Directory listing</title>${CR}\t\t</head>${CR}\t\t<body>${CR}\t\t\t<a href="/child/1.txt">1.txt</a><br><a href="/child/2.txt">2.txt</a>${CR}\t\t</form>${CR}\t\t</body>${CR}\t\t</html>${CR}\t\t`;
+		const expected =
+			`${CR}\t\t<html>${CR}\t\t<head>${CR}\t\t\t<title>Directory listing</title>${CR}\t\t</head>${CR}\t\t` +
+			`<body>${CR}\t\t\t<a href="/child/1.txt">1.txt</a><br>` +
+			`<a href="/child/2.txt">2.txt</a><br>` +
+			`<a href="/child/file%20with%20a%20space.txt">file with a space.txt</a>${CR}` +
+			`\t\t</form>${CR}\t\t</body>` +
+			`${CR}\t\t</html>${CR}\t\t`;
 
 		assert.strictEqual(result.status, 200);
 		assert.strictEqual(await result.text(), expected);
@@ -85,5 +91,12 @@ describe('serve tests', () => {
 
 		assert.strictEqual(result.status, 200);
 		assert.strictEqual(await result.text(), `console.log('Hello world');${EOL}`);
+	});
+
+	it('handles url encoded file with a space', async () => {
+		const result = await fetch('http://localhost:3001/child/file%20with%20a%20space.txt');
+
+		assert.strictEqual(result.status, 200);
+		assert.strictEqual(await result.text(), `file with a space${CR}`);
 	});
 });
