@@ -9,12 +9,13 @@ import fetch from 'node-fetch';
 import { isHttpError } from '../../src/core/HttpError';
 import { setLogLevel } from '../../src/core/log';
 import { join } from 'path';
-import * as os from 'os';
+import { detectEol } from './_support/eol';
 
 const { assert } = intern.getPlugin('chai');
 const { describe, it, before, beforeEach, after } = intern.getPlugin('interface.bdd');
 
-const EOL = os.EOL;
+let EOL = detectEol();
+const CR = '\n';
 
 describe('serve tests', () => {
 	const sinon = createSandbox();
@@ -52,8 +53,7 @@ describe('serve tests', () => {
 
 	it('displays a directory listing', async () => {
 		const result = await fetch('http://localhost:3001/child/');
-		const EOL = '\n';
-		const expected = `${EOL}\t\t<html>${EOL}\t\t<head>${EOL}\t\t\t<title>Directory listing</title>${EOL}\t\t</head>${EOL}\t\t<body>${EOL}\t\t\t<a href="/child/1.txt">1.txt</a><br><a href="/child/2.txt">2.txt</a>${EOL}\t\t</form>${EOL}\t\t</body>${EOL}\t\t</html>${EOL}\t\t`;
+		const expected = `${CR}\t\t<html>${CR}\t\t<head>${CR}\t\t\t<title>Directory listing</title>${CR}\t\t</head>${CR}\t\t<body>${CR}\t\t\t<a href="/child/1.txt">1.txt</a><br><a href="/child/2.txt">2.txt</a>${CR}\t\t</form>${CR}\t\t</body>${CR}\t\t</html>${CR}\t\t`;
 
 		assert.strictEqual(result.status, 200);
 		assert.strictEqual(await result.text(), expected);
