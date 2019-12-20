@@ -4,7 +4,7 @@
     "name": "Paul Shannon",
     "url": "https://devpaul.com"
   },
-  "version": "1.1.0-pre",
+  "version": "1.2.0-pre",
   "description": "a quick, flexible, fully typed development server",
   "license": "MPL-2.0",
   "bin": {
@@ -34,8 +34,8 @@
     "copy:package": "copyfiles README.md package.json LICENSE _dist",
     "dist": "run-s clean copy build:dist",
     "lint": "eslint ./src/**/*.ts",
+    "local": "npx -p file://./_dist webserv",
     "pretty": "prettier --write ./src/**",
-    "run:local": "npx -p file://./_dist webserv",
     "start": "ts-node ./examples/hello",
     "test": "intern",
     "test:integration": "intern config=@integration"
@@ -82,7 +82,7 @@
     "shx": "^0.3.2",
     "sinon": "^7.5.0",
     "ts-node": "^8.4.1",
-    "typescript": "^3.4"
+    "typescript": "^3.6"
   },
   "keywords": [
     "server",

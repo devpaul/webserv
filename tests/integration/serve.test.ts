@@ -9,9 +9,13 @@ import fetch from 'node-fetch';
 import { isHttpError } from '../../src/core/HttpError';
 import { setLogLevel } from '../../src/core/log';
 import { join } from 'path';
+import { detectEol } from './_support/eol';
 
 const { assert } = intern.getPlugin('chai');
 const { describe, it, before, beforeEach, after } = intern.getPlugin('interface.bdd');
+
+let EOL = detectEol();
+const CR = '\n';
 
 describe('serve tests', () => {
 	const sinon = createSandbox();
@@ -49,8 +53,7 @@ describe('serve tests', () => {
 
 	it('displays a directory listing', async () => {
 		const result = await fetch('http://localhost:3001/child/');
-		const expected =
-			'\n\t\t<html>\n\t\t<head>\n\t\t\t<title>Directory listing</title>\n\t\t</head>\n\t\t<body>\n\t\t\t<a href="/child/1.txt">1.txt</a><br><a href="/child/2.txt">2.txt</a>\n\t\t</form>\n\t\t</body>\n\t\t</html>\n\t\t';
+		const expected = `${CR}\t\t<html>${CR}\t\t<head>${CR}\t\t\t<title>Directory listing</title>${CR}\t\t</head>${CR}\t\t<body>${CR}\t\t\t<a href="/child/1.txt">1.txt</a><br><a href="/child/2.txt">2.txt</a>${CR}\t\t</form>${CR}\t\t</body>${CR}\t\t</html>${CR}\t\t`;
 
 		assert.strictEqual(result.status, 200);
 		assert.strictEqual(await result.text(), expected);
@@ -60,27 +63,27 @@ describe('serve tests', () => {
 		const result = await fetch('http://localhost:3001/child/1.txt');
 
 		assert.strictEqual(result.status, 200);
-		assert.strictEqual(await result.text(), 'one\n');
+		assert.strictEqual(await result.text(), `one${EOL}`);
 	});
 
 	it('returns index.html', async () => {
 		const result = await fetch('http://localhost:3001/');
 
 		assert.strictEqual(result.status, 200);
-		assert.strictEqual(await result.text(), '<html></html>;\n');
+		assert.strictEqual(await result.text(), `<html></html>;${EOL}`);
 	});
 
 	it('finds the first extensions', async () => {
 		const result = await fetch('http://localhost:3001/js/index');
 
 		assert.strictEqual(result.status, 200);
-		assert.strictEqual(await result.text(), 'ok\n');
+		assert.strictEqual(await result.text(), `ok${EOL}`);
 	});
 
 	it('finds esm module extensions', async () => {
 		const result = await fetch('http://localhost:3001/js/main');
 
 		assert.strictEqual(result.status, 200);
-		assert.strictEqual(await result.text(), "console.log('Hello world');\n");
+		assert.strictEqual(await result.text(), `console.log('Hello world');${EOL}`);
 	});
 });

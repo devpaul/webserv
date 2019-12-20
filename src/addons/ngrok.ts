@@ -1,4 +1,4 @@
-import { log } from '../../core/log';
+import { log } from '../core/log';
 import npm from 'npm';
 import { join } from 'path';
 
