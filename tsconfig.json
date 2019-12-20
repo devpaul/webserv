@@ -23,7 +23,10 @@
 		"strict": true,
 		"strictNullChecks": false,
 		"target": "ES6",
-		"types": [ "intern" ]
+		"types": [ "intern" ],
+		"paths": {
+			"src": ["src"]
+		}
 	},
 	"include": [
 		"./src/**/*.ts"
