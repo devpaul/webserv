@@ -26,7 +26,7 @@ export const directoryTransform: Transform = (result, request, response) => {
 		.map((file) => {
 			const relative = slash(file);
 			const url = slash(join(baseUrl, file));
-			return `<a href="${encodeURI(url)}">${relative}</a>`;
+			return `<a href="${url}">${relative}</a>`;
 		})
 		.join('<br>');
 	response.write(htmlTemplate('Directory listing', fileLinks));
