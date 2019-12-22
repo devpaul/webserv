@@ -1,9 +1,9 @@
 import { RequestListener, ServerResponse } from 'http';
 
 import { isHttpError } from './HttpError';
-import { Guard, Process, Transform, Upgrader } from './interface';
+import { Guard, Process, Transform, Upgrader, RouteDescriptor, Route } from './interface';
 import { log } from './log';
-import { Route, route, RouteProperties } from './routes/route';
+import { route } from './routes/route';
 import { StartHttpConfig, startHttpServer } from './servers/createHttpServer';
 import { StartHttpsConfig, startHttpsServer } from './servers/createHttpsServer';
 import { ServerControls } from './servers/startServer';
@@ -11,8 +11,8 @@ import { ServerControls } from './servers/startServer';
 export type ErrorRequestHandler = (error: any, response: ServerResponse) => void;
 
 export interface ServiceDefinition {
-	global?: Omit<RouteProperties, 'middleware'>;
-	services?: RouteProperties[];
+	global?: Omit<RouteDescriptor, 'middleware'>;
+	services?: RouteDescriptor[];
 	upgrader?: Upgrader;
 }
 

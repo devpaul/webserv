@@ -19,6 +19,7 @@ describe('config/services/crud', () => {
 
 		beforeEach(() => {
 			bootCrudService = require('./crud').bootCrudService;
+			mockCrudRoute.returns({ middleware: () => {} });
 		});
 
 		after(() => {

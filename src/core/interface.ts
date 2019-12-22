@@ -18,6 +18,12 @@ export type GuardFactory<T extends object> = (options: T) => Guard;
 
 export type MiddlewareResult = object | string | void;
 
+/**
+ * Middleware handles a single request made to the server.
+ *
+ * The preferred way to provide a response is by returning a MiddlewareResult from the middleware.
+ * This may then be transformed by a Transform to supply a response in an acceptable format.
+ */
 export type Middleware = (
 	request: IncomingMessage,
 	response: ServerResponse
@@ -34,9 +40,20 @@ export type Upgrader = (request: IncomingMessage, socket: Socket, head: Buffer) 
 export type UpgraderFactory<T extends object> = (options: T) => Upgrader;
 
 export interface Route {
-	after?: Process[];
+	/**
+	 * Tests if the IncomingMessage should be handled by this route
+	 */
+	test(request: IncomingMessage, response: ServerResponse): Promise<boolean> | boolean;
+	/**
+	 * Seeks a response to provide to ServerResponse
+	 */
+	run(request: IncomingMessage, response: ServerResponse): Promise<MiddlewareResult> | MiddlewareResult;
+}
+
+export interface RouteDescriptor {
 	before?: Process[];
 	guards?: Guard[];
-	middleware: Middleware;
+	middleware: Middleware | Array<Route | RouteDescriptor>;
 	transforms?: Transform[];
+	after?: Process[];
 }
