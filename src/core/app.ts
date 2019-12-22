@@ -3,12 +3,18 @@ import { RequestListener, ServerResponse } from 'http';
 import { isHttpError } from './HttpError';
 import { Guard, Process, Transform, Upgrader } from './interface';
 import { log } from './log';
-import { Route, route } from './routes/route';
+import { Route, route, RouteProperties } from './routes/route';
 import { StartHttpConfig, startHttpServer } from './servers/createHttpServer';
 import { StartHttpsConfig, startHttpsServer } from './servers/createHttpsServer';
 import { ServerControls } from './servers/startServer';
 
 export type ErrorRequestHandler = (error: any, response: ServerResponse) => void;
+
+export interface ServiceDefinition {
+	global?: Omit<RouteProperties, 'middleware'>;
+	services?: RouteProperties[];
+	upgrader?: Upgrader;
+}
 
 export function createRequestHandler(route: Route, errorHandler?: ErrorRequestHandler): RequestListener {
 	return async (request, response) => {
@@ -38,6 +44,24 @@ export class App {
 	upgrader: Upgrader;
 
 	protected controls?: Promise<ServerControls>;
+
+	addService({ global, services, upgrader }: ServiceDefinition) {
+		if (global) {
+			const { before, guards, transforms, after } = global;
+			before && this.before.push(...before);
+			guards && this.guards.push(...guards);
+			transforms && this.transforms.push(...transforms);
+			after && this.after.push(...after);
+		}
+
+		if (services) {
+			this.routes.push(...services.map((service) => route(service)));
+		}
+
+		if (upgrader) {
+			this.upgrader = upgrader;
+		}
+	}
 
 	start(type: 'https', config: HttpsConfig): Promise<ServerControls>;
 	start(type: 'http', config: HttpConfig): Promise<ServerControls>;
