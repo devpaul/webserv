@@ -57,7 +57,8 @@ describe('serve tests', () => {
 			`${CR}\t\t<html>${CR}\t\t<head>${CR}\t\t\t<title>Directory listing</title>${CR}\t\t</head>${CR}\t\t` +
 			`<body>${CR}\t\t\t<a href="/child/1.txt">1.txt</a><br>` +
 			`<a href="/child/2.txt">2.txt</a><br>` +
-			`<a href="/child/file%20with%20a%20space.txt">file with a space.txt</a>${CR}` +
+			`<a href="/child/directory with spaces">directory with spaces</a><br>` +
+			`<a href="/child/file with a space.txt">file with a space.txt</a>${CR}` +
 			`\t\t</form>${CR}\t\t</body>` +
 			`${CR}\t\t</html>${CR}\t\t`;
 
@@ -97,6 +98,13 @@ describe('serve tests', () => {
 		const result = await fetch('http://localhost:3001/child/file%20with%20a%20space.txt');
 
 		assert.strictEqual(result.status, 200);
-		assert.strictEqual(await result.text(), `file with a space${CR}`);
+		assert.strictEqual(await result.text(), `file with a space${EOL}`);
+	});
+
+	it('handles directories with a space', async () => {
+		const result = await fetch('http://localhost:3001/child/directory%20with%20spaces/file.txt');
+
+		assert.strictEqual(result.status, 200);
+		assert.strictEqual(await result.text(), `file in a directory with a space${CR}`);
 	});
 });
