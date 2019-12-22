@@ -17,7 +17,6 @@ export interface ServeProperties {
 
 async function getPath(basePath: string, url: UrlWithStringQuery, extensions: string[] = []) {
 	const target = join(basePath, decodeURI(url.pathname));
-	console.log(target);
 
 	if (await checkAccess(target)) {
 		return target;

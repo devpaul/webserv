@@ -105,6 +105,6 @@ describe('serve tests', () => {
 		const result = await fetch('http://localhost:3001/child/directory%20with%20spaces/file.txt');
 
 		assert.strictEqual(result.status, 200);
-		assert.strictEqual(await result.text(), `file in a directory with a space${CR}`);
+		assert.strictEqual(await result.text(), `file in a directory with a space${EOL}`);
 	});
 });

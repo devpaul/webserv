@@ -1,6 +1,5 @@
 import { HttpError, HttpStatus } from '../HttpError';
-import { MiddlewareFactory } from '../interface';
-import { Route } from '../routes/route';
+import { MiddlewareFactory, Route } from '../interface';
 
 export interface SubrouteProperties {
 	routes: Route[];

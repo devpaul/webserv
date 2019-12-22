@@ -1,25 +1,25 @@
 import { IncomingMessage, ServerResponse } from 'http';
 
-import { Guard, Middleware, Process, Transform, MiddlewareResult } from '../interface';
 import { subroute } from '../middleware/subroute';
+import { RouteDescriptor, Route, Middleware } from '../interface';
 
-export interface RouteProperties {
-	before?: Process[];
-	guards?: Guard[];
-	middleware: Middleware | Route[];
-	transforms?: Transform[];
-	after?: Process[];
+export type RouteFactory = (options: RouteDescriptor) => Route;
+
+function isRoute(value: any): value is Route {
+	return typeof value === 'object' && typeof value.test === 'function' && typeof value.run === 'function';
 }
 
-export interface Route {
-	test(request: IncomingMessage, response: ServerResponse): Promise<boolean> | boolean;
-	run(request: IncomingMessage, response: ServerResponse): Promise<MiddlewareResult> | MiddlewareResult;
-}
+function createMiddleware(descriptors: RouteDescriptor['middleware']): Middleware {
+	if (!Array.isArray(descriptors)) {
+		return descriptors;
+	}
 
-export type RouteFactory = (options: RouteProperties) => Route;
+	const routes: Route[] = descriptors.map((descriptor) => (isRoute(descriptor) ? descriptor : route(descriptor)));
+	return subroute({ routes });
+}
 
 export const route: RouteFactory = ({ before = [], guards = [], middleware: action, transforms = [], after = [] }) => {
-	const middleware = Array.isArray(action) ? subroute({ routes: action }) : action;
+	const middleware = createMiddleware(action);
 	async function test(request: IncomingMessage, response: ServerResponse) {
 		for (let process of before) {
 			await process(request, response);
