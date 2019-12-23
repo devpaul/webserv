@@ -2,7 +2,6 @@
 
 import { createSandbox } from 'sinon';
 import { startHttpServer } from '../../src/core/servers/createHttpServer';
-import { createRequestHandler, ErrorRequestHandler } from '../../src/core/app';
 import { fileBrowser } from '../../src/core/routes/fileBrowser.route';
 import { ServerControls } from '../../src/core/servers/startServer';
 import fetch from 'node-fetch';
@@ -10,6 +9,7 @@ import { isHttpError } from '../../src/core/HttpError';
 import { setLogLevel } from '../../src/core/log';
 import { join } from 'path';
 import { detectEol } from './_support/eol';
+import { ErrorRequestHandler, createRequestHandler } from '../../src/core/servers/createRequestHandler';
 
 const { assert } = intern.getPlugin('chai');
 const { describe, it, before, beforeEach, after } = intern.getPlugin('interface.bdd');

@@ -35,10 +35,6 @@ export type Transform = (result: MiddlewareResult, request: IncomingMessage, res
 
 export type TransformFactory<T extends object> = (options: T) => Transform;
 
-export type Upgrader = (request: IncomingMessage, socket: Socket, head: Buffer) => Promise<void> | void;
-
-export type UpgraderFactory<T extends object> = (options: T) => Upgrader;
-
 export interface Route {
 	/**
 	 * Tests if the IncomingMessage should be handled by this route
@@ -47,7 +43,7 @@ export interface Route {
 	/**
 	 * Seeks a response to provide to ServerResponse
 	 */
-	run(request: IncomingMessage, response: ServerResponse): Promise<MiddlewareResult> | MiddlewareResult;
+	run: Middleware;
 }
 
 export interface RouteDescriptor {
@@ -56,4 +52,28 @@ export interface RouteDescriptor {
 	middleware: Middleware | Array<Route | RouteDescriptor>;
 	transforms?: Transform[];
 	after?: Process[];
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Socket upgrades
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export type UpgradeMiddleware = (request: IncomingMessage, socket: Socket, head: Buffer) => Promise<void> | void;
+
+export type UpgradeMiddlewareFactory<T extends object> = (options: T) => UpgradeMiddleware;
+
+export interface Upgrade {
+	/**
+	 * Tests if the IncomingMessage should be upgraded
+	 */
+	test(request: IncomingMessage): Promise<boolean> | boolean;
+	/**
+	 * Upgrades the IncomingMessage to bidirectionally pass messages asynchronously using a socket
+	 */
+	run: UpgradeMiddleware;
+}
+
+export interface UpgradeDescriptor {
+	guards?: Guard[];
+	upgrade: UpgradeMiddleware | Array<Upgrade | UpgradeDescriptor>;
 }

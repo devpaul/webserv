@@ -1,39 +1,25 @@
-import { RequestListener, ServerResponse } from 'http';
+import { ServerResponse } from 'http';
 
 import { isHttpError } from './HttpError';
-import { Guard, Process, Transform, Upgrader, RouteDescriptor, Route } from './interface';
+import { Guard, Process, Route, RouteDescriptor, Transform, Upgrade, UpgradeDescriptor } from './interface';
 import { log } from './log';
-import { route } from './routes/route';
+import { route as createRoute } from './routes/route';
 import { StartHttpConfig, startHttpServer } from './servers/createHttpServer';
 import { StartHttpsConfig, startHttpsServer } from './servers/createHttpsServer';
+import { createRequestHandler } from './servers/createRequestHandler';
+import { createUpgradeHandler } from './servers/createUpgradeHandler';
 import { ServerControls } from './servers/startServer';
+import { upgrade as createUpgrade } from './upgrades/upgrade';
 
 export type ErrorRequestHandler = (error: any, response: ServerResponse) => void;
 
-export interface ServiceDefinition {
-	global?: Omit<RouteDescriptor, 'middleware'>;
-	services?: RouteDescriptor[];
-	upgrader?: Upgrader;
-}
-
-export function createRequestHandler(route: Route, errorHandler?: ErrorRequestHandler): RequestListener {
-	return async (request, response) => {
-		try {
-			if (await route.test(request, response)) {
-				await route.run(request, response);
-			}
-		} catch (e) {
-			if (errorHandler) {
-				errorHandler(e, response);
-			} else {
-				throw e;
-			}
-		}
-	};
-}
-
 export type HttpConfig = Omit<StartHttpConfig, 'onRequest' | 'onUpgrade'>;
 export type HttpsConfig = Omit<StartHttpsConfig, 'onRequest' | 'onUpgrade'>;
+
+export interface Service {
+	route?: RouteDescriptor;
+	upgrade?: UpgradeDescriptor;
+}
 
 export class App {
 	readonly before: Process[] = [];
@@ -41,25 +27,16 @@ export class App {
 	readonly routes: Route[] = [];
 	readonly transforms: Transform[] = [];
 	readonly after: Process[] = [];
-	upgrader: Upgrader;
+	readonly upgrades: Upgrade[] = [];
 
 	protected controls?: Promise<ServerControls>;
 
-	addService({ global, services, upgrader }: ServiceDefinition) {
-		if (global) {
-			const { before, guards, transforms, after } = global;
-			before && this.before.push(...before);
-			guards && this.guards.push(...guards);
-			transforms && this.transforms.push(...transforms);
-			after && this.after.push(...after);
+	addService({ route, upgrade }: Service) {
+		if (route) {
+			this.routes.push(createRoute(route));
 		}
-
-		if (services) {
-			this.routes.push(...services.map((service) => route(service)));
-		}
-
-		if (upgrader) {
-			this.upgrader = upgrader;
+		if (upgrade) {
+			this.upgrades.push(createUpgrade(upgrade));
 		}
 	}
 
@@ -70,7 +47,7 @@ export class App {
 		if (this.controls) {
 			throw new Error('server already started');
 		}
-		const globalRoute = route({
+		const globalRoute = createRoute({
 			before: this.before,
 			guards: this.guards,
 			middleware: this.routes,
@@ -85,11 +62,9 @@ export class App {
 				throw e;
 			}
 		});
-		const onUpgrade: Upgrader = (request, socket, head) => {
-			if (this.upgrader) {
-				this.upgrader(request, socket, head);
-			}
-		};
+		const globalUpgrader = createUpgrade({ upgrade: this.upgrades });
+		const onUpgrade = createUpgradeHandler(globalUpgrader);
+
 		if (type === 'http') {
 			this.controls = startHttpServer({
 				...config,
