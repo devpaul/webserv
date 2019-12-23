@@ -15,7 +15,7 @@ describe('config/services/proxy', () => {
 			};
 			bootProxyService(app, config);
 			assert.lengthOf(app.routes, 1);
-			assert.isDefined(app.upgrader);
+			assert.lengthOf(app.upgrades, 1);
 		});
 	});
 });

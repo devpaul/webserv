@@ -1,21 +1,16 @@
-import { App } from '../../core/app';
-import { ProxyProperties, proxyRoute } from '../../core/routes/proxy.route';
-import { route } from '../../core/routes/route';
+import { proxyService, ProxyServiceProperties } from '../../core/services/proxy.service';
 
-export interface ProxyConfig extends ProxyProperties {}
+import { App } from '../../core/app';
+
+export interface ProxyConfig extends ProxyServiceProperties {}
 
 export function bootProxyService(app: App, config: ProxyConfig) {
 	const { target, changeOrigin = true, followRedirects = false, ws = true } = config;
-	const { middleware, upgrader } = proxyRoute({
+	const service = proxyService({
 		target,
 		changeOrigin,
 		followRedirects,
 		ws
 	});
-	app.routes.push(
-		route({
-			middleware
-		})
-	);
-	app.upgrader = upgrader;
+	app.addService(service);
 }

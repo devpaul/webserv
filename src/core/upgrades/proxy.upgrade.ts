@@ -1,4 +1,4 @@
-import { UpgraderFactory } from '../interface';
+import { UpgradeMiddlewareFactory } from '../interface';
 import { log } from '../log';
 import Server = require('http-proxy');
 
@@ -7,7 +7,7 @@ export interface ProxyProperties {
 	proxy: Server;
 }
 
-export const proxyUpgrade: UpgraderFactory<ProxyProperties> = ({ baseUrl, proxy }) => {
+export const proxyUpgrade: UpgradeMiddlewareFactory<ProxyProperties> = ({ baseUrl, proxy }) => {
 	return (request, socket, head) => {
 		log.debug(`Upgrade request for proxied "${baseUrl}"`);
 
