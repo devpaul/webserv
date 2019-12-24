@@ -12,6 +12,7 @@ export interface Config {
 
 export interface ServiceConfig {
 	name: string;
+	[key: string]: any;
 }
 
 export interface LoadedConfig {
@@ -78,4 +79,9 @@ export async function startServer(app: App, config: Config = {}) {
 	}
 
 	return controls;
+}
+
+export default async function start(config: Config, app = new App()) {
+	await bootServices(app, config.services, process.cwd());
+	return startServer(app, config);
 }
