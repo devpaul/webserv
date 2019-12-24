@@ -1,7 +1,7 @@
 import { IncomingMessage } from 'http';
 import { v4 as uuid } from 'uuid';
-import WebSocket = require('ws');
 import { UpgradeMiddlewareFactory, UpgradeMiddleware } from '../interface';
+import WebSocket, { Server } from 'ws';
 
 export interface WebSocketProperties {
 	onConnection?(client: WebSocket, socketId: string, request: IncomingMessage): void;
@@ -16,11 +16,12 @@ export const websocket: UpgradeMiddlewareFactory<WebSocketProperties> = ({
 	onError,
 	onMessage
 }) => {
-	const ws = new WebSocket.Server({ noServer: true });
-	const socketId = uuid();
+	const ws = new Server({ noServer: true });
 
 	const upgrader: UpgradeMiddleware = async (request, socket, head) => {
 		await new Promise((resolve) => {
+			const socketId = uuid();
+
 			ws.handleUpgrade(request, socket, head, (client) => {
 				onConnection && onConnection(client, socketId, request);
 				onMessage && client.on('message', (data) => onMessage(socketId, data));

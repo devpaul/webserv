@@ -4,8 +4,10 @@ import { bootProxyService } from './proxy';
 import { bootCrudService } from './crud';
 import { bootLogService } from './log';
 import { bootUploadService } from './upload';
+import { bootChatService } from './chat';
 
 const serviceMap: { [key: string]: ServiceLoader } = {
+	chat: bootChatService,
 	crud: bootCrudService,
 	file: bootFileService,
 	log: bootLogService,

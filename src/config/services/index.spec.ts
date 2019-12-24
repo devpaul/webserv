@@ -7,7 +7,7 @@ const { describe, it } = intern.getPlugin('interface.bdd');
 
 describe('config/services/index', () => {
 	it('registers a set of default loaders', () => {
-		const defaultLoaders = ['crud', 'file', 'log', 'proxy', 'upload'];
+		const defaultLoaders = ['chat', 'crud', 'file', 'log', 'proxy', 'upload'];
 		for (let loader of defaultLoaders) {
 			assert.doesNotThrow(() => {
 				getLoader(loader);
