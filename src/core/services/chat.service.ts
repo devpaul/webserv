@@ -9,6 +9,7 @@ class User {
 	constructor(readonly id: string, readonly client: WebSocket) {}
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function chatService(_props: ChatServiceProperties): Service {
 	const users: User[] = [];
 	const upgrade = websocket({
@@ -21,7 +22,7 @@ export function chatService(_props: ChatServiceProperties): Service {
 				log.warn(`Unregistered user ${socketId} closed connection!`);
 			}
 		},
-		onConnection(client, socketId, _request) {
+		onConnection(client, socketId) {
 			log.debug(`{${socketId}} connected`);
 			const user = new User(socketId, client);
 			users.push(user);

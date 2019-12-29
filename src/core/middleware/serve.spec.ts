@@ -154,6 +154,24 @@ describe('core/middleware/serve', () => {
 			});
 		});
 
+		describe('showDirectoryContents', () => {
+			it('returns NotFound status when showDirectoryContents is false', async () => {
+				const serveMiddleware = serveFactory({
+					showDirectoryContents: false
+				});
+				const request = {
+					url: 'http://example.org/'
+				} as IncomingMessage;
+				const response = {} as ServerResponse;
+				const expected = {};
+
+				setupDirectoryMocks(expected);
+
+				const err = await eventuallyRejects(serveMiddleware(request, response));
+				assert.strictEqual(err.statusCode, HttpStatus.NotFound);
+			});
+		});
+
 		describe('extensions', () => {
 			it('uses extensions to find a matching file', async () => {
 				const serveMiddleware = serveFactory({});

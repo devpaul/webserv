@@ -11,6 +11,7 @@ import send from 'send';
 export interface ServeProperties {
 	basePath?: string;
 	searchDefaults?: string[];
+	showDirectoryContents?: boolean;
 	trailingSlash?: boolean;
 	extensions?: string[];
 }
@@ -94,6 +95,7 @@ function sendFile(request: IncomingMessage, response: ServerResponse, target: st
 export const serve: MiddlewareFactory<ServeProperties> = ({
 	basePath = process.cwd(),
 	trailingSlash,
+	showDirectoryContents = true,
 	searchDefaults = ['index.html'],
 	extensions = ['', '.js']
 }) => {
@@ -119,7 +121,13 @@ export const serve: MiddlewareFactory<ServeProperties> = ({
 			}
 
 			const search = await findDefaultFile(path, searchDefaults);
-			return search ? sendFile(request, response, search) : listDirectoryContents(path);
+			if (search) {
+				return sendFile(request, response, search);
+			} else if (showDirectoryContents) {
+				return listDirectoryContents(path);
+			} else {
+				throw new HttpError(HttpStatus.NotFound);
+			}
 		} else {
 			return sendFile(request, response, path);
 		}

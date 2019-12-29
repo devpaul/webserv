@@ -2,7 +2,8 @@
 
 import { createSandbox } from 'sinon';
 import { startHttpServer } from '../../src/core/servers/createHttpServer';
-import { fileBrowser } from '../../src/core/routes/fileBrowser.route';
+import { fileService } from '../../src/core/services/file.service';
+import { route as createRoute } from '../../src/core/routes/route';
 import { ServerControls } from '../../src/core/servers/startServer';
 import fetch from 'node-fetch';
 import { isHttpError } from '../../src/core/HttpError';
@@ -32,9 +33,10 @@ describe('serve tests', () => {
 				throw err;
 			}
 		};
-		const route = fileBrowser({
+		const service = fileService({
 			basePath: join(__dirname, '_assets/sample1')
 		});
+		const route = createRoute(service.route);
 		controls = await startHttpServer({
 			port: 3001,
 			onRequest: createRequestHandler(route, errorHandler)
