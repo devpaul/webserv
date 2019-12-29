@@ -2,6 +2,7 @@
 
 import { App } from '../core/app';
 import { setupMocks, setupSinon } from '../_support/mocks';
+import { createDeferred } from '../_support/Deferred';
 
 const { assert } = intern.getPlugin('chai');
 const { describe, it, beforeEach } = intern.getPlugin('interface.bdd');
@@ -57,6 +58,31 @@ describe('config/index', () => {
 			const result = bootServices(app, configs, workingDirectory);
 			assert.isDefined(result);
 			await result;
+			assert.strictEqual(handler.callCount, 2);
+			assert.deepEqual(handler.firstCall.args, [app, configs[0], workingDirectory]);
+			assert.deepEqual(handler.secondCall.args, [app, configs[1], workingDirectory]);
+		});
+
+		it('get async loaders and calls them in order', async () => {
+			const app = new App();
+			const configs = [{ name: 'name1' }, { name: 'name2' }];
+			const handler = sinon.stub();
+			const firstHandlerResult = createDeferred();
+			const secondHandlerResult = Promise.resolve();
+			handler.onFirstCall().returns(firstHandlerResult.promise);
+			handler.onSecondCall().returns(secondHandlerResult);
+			getLoaderMock.returns(handler);
+
+			const result = bootServices(app, configs, workingDirectory);
+			assert.isDefined(result);
+			const expected = Promise.race([
+				Promise.all([firstHandlerResult.promise, secondHandlerResult]),
+				result.then(() => {
+					throw new Error();
+				})
+			]);
+			firstHandlerResult.resolve();
+			await expected;
 			assert.strictEqual(handler.callCount, 2);
 			assert.deepEqual(handler.firstCall.args, [app, configs[0], workingDirectory]);
 			assert.deepEqual(handler.secondCall.args, [app, configs[1], workingDirectory]);

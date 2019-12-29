@@ -52,7 +52,7 @@ export async function bootConfig(path?: string, app: App = new App()) {
 	if (configMeta) {
 		const { config, configPath } = configMeta;
 		const workingDirectory = dirname(configPath);
-		bootServices(app, config.services, workingDirectory);
+		await bootServices(app, config.services, workingDirectory);
 		return config;
 	}
 }
