@@ -5,7 +5,9 @@ import { join } from 'path';
 async function loadDependencies() {
 	try {
 		return require('ngrok');
-	} catch (e) {}
+	} catch (e) {
+		// install the dependency if node loading failed
+	}
 
 	log.info('Install dependencies for ngrok...');
 	try {

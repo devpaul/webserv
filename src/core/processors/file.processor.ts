@@ -61,5 +61,5 @@ export interface IncomingFiles extends IncomingMessage {
 }
 
 export function hasIncomingFiles(request: any): request is IncomingFiles {
-	return !!(request && request.hasOwnProperty('files'));
+	return !!(request && Object.prototype.hasOwnProperty.call(request, 'files'));
 }

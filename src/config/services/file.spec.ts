@@ -10,17 +10,16 @@ const { describe, it, beforeEach } = intern.getPlugin('interface.bdd');
 describe('config/services/file', () => {
 	describe('bootFileService', () => {
 		const sinon = setupSinon();
-		const mockMethodGet = sinon.stub();
-		const mockServe = sinon.stub();
+		const mockFileService = sinon.stub();
 		setupMocks({
 			'../../core/log': { log: { debug: sinon.stub() } },
-			'../../core/guards/method': { method: { get: mockMethodGet } },
-			'../../core/middleware/serve': { serve: mockServe }
+			'../../core/services/file.service': { fileService: mockFileService }
 		});
 		let bootFileService: typeof import('./file').bootFileService;
 
 		beforeEach(() => {
 			bootFileService = require('./file').bootFileService;
+			mockFileService.returns({});
 		});
 
 		it('creates a single route from a path', () => {
@@ -33,11 +32,11 @@ describe('config/services/file', () => {
 
 			bootFileService(app, config, 'configPath');
 
-			assert.lengthOf(app.routes, 1);
-			assert.isTrue(mockMethodGet.calledOnce);
-			assert.isTrue(mockServe.calledOnce);
-			assert.strictEqual(mockMethodGet.firstCall.args[0], '*');
-			assert.deepEqual(mockServe.firstCall.args[0], { basePath: resolve('configPath') });
+			assert.isTrue(mockFileService.calledOnce);
+			assert.deepEqual(mockFileService.firstCall.args[0], {
+				path: '*',
+				basePath: resolve('configPath')
+			});
 		});
 
 		it('creates multiple routes from a list of paths', () => {
@@ -51,13 +50,15 @@ describe('config/services/file', () => {
 
 			bootFileService(app, config, 'configPath');
 
-			assert.lengthOf(app.routes, 2);
-			assert.isTrue(mockMethodGet.calledTwice);
-			assert.isTrue(mockServe.calledTwice);
-			assert.strictEqual(mockMethodGet.firstCall.args[0], '/uploads/*');
-			assert.deepEqual(mockServe.firstCall.args[0], { basePath: resolve('configPath/uploads') });
-			assert.strictEqual(mockMethodGet.secondCall.args[0], '*');
-			assert.deepEqual(mockServe.secondCall.args[0], { basePath: resolve('configPath') });
+			assert.isTrue(mockFileService.calledTwice);
+			assert.deepEqual(mockFileService.firstCall.args[0], {
+				path: '/uploads/*',
+				basePath: resolve('configPath/uploads')
+			});
+			assert.deepEqual(mockFileService.secondCall.args[0], {
+				path: '*',
+				basePath: resolve('configPath')
+			});
 		});
 
 		it('creates a route using a basePath', () => {
@@ -71,11 +72,11 @@ describe('config/services/file', () => {
 
 			bootFileService(app, config, 'configPath');
 
-			assert.lengthOf(app.routes, 1);
-			assert.isTrue(mockMethodGet.calledOnce);
-			assert.isTrue(mockServe.calledOnce);
-			assert.strictEqual(mockMethodGet.firstCall.args[0], '*');
-			assert.deepEqual(mockServe.firstCall.args[0], { basePath: resolve('configPath/serve') });
+			assert.isTrue(mockFileService.calledOnce);
+			assert.deepEqual(mockFileService.firstCall.args[0], {
+				path: '*',
+				basePath: resolve('configPath/serve')
+			});
 		});
 	});
 });
