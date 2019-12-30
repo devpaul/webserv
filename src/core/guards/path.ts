@@ -55,6 +55,7 @@ export const pathGuard: GuardFactory<PathGuardProperties> = ({ match }) => {
 			const result = regex.exec(url.pathname);
 
 			if (result) {
+				log.debug(`"${url.pathname}" matched path "${match}"`);
 				updateRequest(request, {
 					originalUrl: request.url,
 					params: parameterizeMatches(keys, result),

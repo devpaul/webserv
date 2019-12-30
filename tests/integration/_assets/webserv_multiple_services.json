@@ -21,7 +21,7 @@
 		{
 			"name": "file",
 			"description": "presentation client",
-			"basePath": "..",
+			"basePath": ".",
 			"showDirectoryContents": true,
 			"paths": {
 				"/src/*": "./sample1/js",

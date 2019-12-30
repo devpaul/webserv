@@ -8,13 +8,13 @@ import { setLogLevel } from '../../src/core/log';
 import { ServerControls } from '../../src/core/servers/startServer';
 
 const { assert } = intern.getPlugin('chai');
-const { describe, it, before, afterEach } = intern.getPlugin('interface.bdd');
+const { describe, it, beforeEach, afterEach } = intern.getPlugin('interface.bdd');
 
 describe('config tests', () => {
 	let controls: ServerControls | undefined;
 
-	before(async () => {
-		setLogLevel('warn');
+	beforeEach(async () => {
+		setLogLevel('error');
 	});
 
 	afterEach(async () => {

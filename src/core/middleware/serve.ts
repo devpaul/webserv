@@ -1,5 +1,5 @@
 import { MiddlewareFactory } from '../interface';
-import { parse as parseUrl, UrlWithStringQuery } from 'url';
+import { parse as parseUrl } from 'url';
 import { IncomingMessage, ServerResponse } from 'http';
 import { join, resolve } from 'path';
 import { readdir, access, constants, stat, Stats } from 'fs';
@@ -16,9 +16,7 @@ export interface ServeProperties {
 	extensions?: string[];
 }
 
-async function getPath(basePath: string, url: UrlWithStringQuery, extensions: string[] = []) {
-	const target = join(basePath, decodeURI(url.pathname));
-
+async function getPath(target: string, extensions: string[] = []) {
 	if (await checkAccess(target)) {
 		return target;
 	}
@@ -103,7 +101,9 @@ export const serve: MiddlewareFactory<ServeProperties> = ({
 	log.debug('serving path', base);
 
 	return async (request, response) => {
-		const path = await getPath(base, parseUrl(request.url), extensions);
+		const target = join(base, decodeURI(parseUrl(request.url).pathname));
+		const path = await getPath(target, extensions);
+		log.debug(`Request to serve ${target}`);
 
 		if (!path) {
 			throw new HttpError(HttpStatus.NotFound);

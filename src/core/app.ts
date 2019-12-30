@@ -56,9 +56,11 @@ export class App {
 		});
 		const onRequest = createRequestHandler(globalRoute, (e, response) => {
 			if (isHttpError(e)) {
+				log.info(`HTTPError: ${e.statusCode}${e.message ? `. Reason "${e.message}"` : ''}`);
 				response.statusCode = e.statusCode;
 				response.end();
 			} else {
+				log.info('General error. ' + e.message);
 				throw e;
 			}
 		});
