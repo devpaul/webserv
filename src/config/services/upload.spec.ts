@@ -14,7 +14,7 @@ describe('config/services/upload', () => {
 				path: '*',
 				directory: '.'
 			};
-			bootUploadService(app, config);
+			bootUploadService(app, config, '.');
 			assert.lengthOf(app.routes, 1);
 		});
 	});

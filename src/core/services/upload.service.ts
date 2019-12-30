@@ -15,7 +15,7 @@ export interface UploadServiceProperties extends SaveFilesProperties {
 }
 
 export function uploadService(props: UploadServiceProperties): Service {
-	const { path = '*' } = props;
+	const { path = '*', directory } = props;
 
 	return {
 		route: {
@@ -29,7 +29,7 @@ export function uploadService(props: UploadServiceProperties): Service {
 				},
 				{
 					guards: [method.get('list')],
-					middleware: serve({ basePath: props.directory }),
+					middleware: serve({ basePath: directory }),
 					transforms: [directoryTransform]
 				},
 				{

@@ -6,8 +6,7 @@
 		{
 			"name": "upload",
 			"path": "/upload/*",
-			"directory": "./examples/uploads",
-			"createUploadDirectory": true
+			"directory": "./sample2/uploadedFiles"
 		},
 		{
 			"name": "crud",
