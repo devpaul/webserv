@@ -14,7 +14,7 @@ describe('config tests', () => {
 	let controls: ServerControls | undefined;
 
 	beforeEach(async () => {
-		setLogLevel('debug');
+		setLogLevel('warn');
 	});
 
 	afterEach(async () => {
