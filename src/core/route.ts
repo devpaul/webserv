@@ -1,6 +1,6 @@
 import { IncomingMessage, ServerResponse } from 'http';
-import { RouteDescriptor, Route, MiddlewareFactory } from '../interface';
-import { HttpError, HttpStatus } from '../HttpError';
+import { RouteDescriptor, Route, MiddlewareFactory } from './interface';
+import { HttpError, HttpStatus } from './HttpError';
 
 export type RouteFactory = (options: RouteDescriptor) => Route;
 

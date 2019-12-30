@@ -1,7 +1,7 @@
 /// <reference types="intern" />
 import { App } from '../../src/core/app';
 import { body } from '../../src/core/processors/body.processor';
-import { route } from '../../src/core/routes/route';
+import { route } from '../../src/core/route';
 import { response } from '../../src/core/middleware/response';
 import fetch from 'node-fetch';
 
