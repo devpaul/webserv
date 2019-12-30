@@ -1,12 +1,13 @@
-import { MiddlewareFactory } from '../interface';
-import { parse as parseUrl } from 'url';
-import { IncomingMessage, ServerResponse } from 'http';
+import { access, constants, readdir } from 'fs';
 import { join, resolve } from 'path';
-import { readdir, access, constants, stat, Stats } from 'fs';
+import { parse as parseUrl } from 'url';
+
 import { HttpError, HttpStatus } from '../HttpError';
+import { MiddlewareFactory } from '../interface';
 import { log } from '../log';
+import { getStat } from '../util/file/getStat';
+import { sendFile } from '../util/file/sendFile';
 import { forwarder } from './forwarder';
-import send from 'send';
 
 export interface ServeProperties {
 	basePath?: string;
@@ -37,14 +38,6 @@ function checkAccess(target: string, mode: number = constants.F_OK) {
 	});
 }
 
-function getStat(target: string): Promise<Stats> {
-	return new Promise((resolve, reject) => {
-		stat(target, (err, stats) => {
-			err ? reject(err) : resolve(stats);
-		});
-	});
-}
-
 function isMissingTrailingSlash(url: string) {
 	const pathname = parseUrl(url).pathname;
 	return pathname.length <= 1 || pathname.charAt(pathname.length - 1) === '/';
@@ -71,22 +64,6 @@ function listDirectoryContents(target: string) {
 				files
 			});
 		});
-	});
-}
-
-function sendFile(request: IncomingMessage, response: ServerResponse, target: string) {
-	return new Promise<void>((resolve, reject) => {
-		log.debug(`ServePath: serving file "${target}"`);
-		send(request, target, {
-			dotfiles: 'deny',
-			index: false
-		})
-			.on('end', function() {
-				response.end();
-				resolve();
-			})
-			.on('error', reject)
-			.pipe(response);
 	});
 }
 

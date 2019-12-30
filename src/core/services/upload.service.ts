@@ -9,6 +9,7 @@ import { fileProcessor } from '../processors/file.processor';
 import { directoryTransform } from '../transforms/directory.transform';
 import { htmlTemplate } from '../util/htmlTemplate';
 import { pathGuard } from '../guards/path';
+import { serveFile } from '../middleware/serveFile';
 
 export interface UploadServiceProperties extends SaveFilesProperties {
 	path?: string;
@@ -34,7 +35,7 @@ export function uploadService(props: UploadServiceProperties): Service {
 				},
 				{
 					guards: [method.get()],
-					middleware: serve({ basePath: join(__dirname, 'upload', 'upload.html') })
+					middleware: serveFile({ path: join(__dirname, 'upload', 'upload.html') })
 				}
 			]
 		}
