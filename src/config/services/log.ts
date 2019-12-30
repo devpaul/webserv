@@ -2,7 +2,7 @@ import { App } from '../../core/app';
 import { setLogLevel } from '../../core/log';
 import { body } from '../../core/processors/body.processor';
 import { logRequest } from '../../core/processors/log.processor';
-import { route } from '../../core/routes/route';
+import { route } from '../../core/route';
 import { response } from '../../core/middleware/response';
 
 export interface LogConfig {

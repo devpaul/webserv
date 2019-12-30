@@ -3,7 +3,7 @@ import { ServerResponse } from 'http';
 import { isHttpError } from './HttpError';
 import { Guard, Process, Route, RouteDescriptor, Transform, Upgrade, UpgradeDescriptor } from './interface';
 import { log } from './log';
-import { route as createRoute } from './routes/route';
+import { route as createRoute } from './route';
 import { StartHttpConfig, startHttpServer } from './servers/createHttpServer';
 import { StartHttpsConfig, startHttpsServer } from './servers/createHttpsServer';
 import { createRequestHandler } from './servers/createRequestHandler';

@@ -3,7 +3,7 @@
 import { createSandbox } from 'sinon';
 import { startHttpServer } from '../../src/core/servers/createHttpServer';
 import { fileService } from '../../src/core/services/file.service';
-import { route as createRoute } from '../../src/core/routes/route';
+import { route as createRoute } from '../../src/core/route';
 import { ServerControls } from '../../src/core/servers/startServer';
 import fetch from 'node-fetch';
 import { isHttpError } from '../../src/core/HttpError';
