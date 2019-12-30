@@ -1,12 +1,13 @@
-import { MiddlewareFactory } from '../interface';
-import { parse as parseUrl, UrlWithStringQuery } from 'url';
-import { IncomingMessage, ServerResponse } from 'http';
+import { access, constants, readdir } from 'fs';
 import { join, resolve } from 'path';
-import { readdir, access, constants, stat, Stats } from 'fs';
+import { parse as parseUrl } from 'url';
+
 import { HttpError, HttpStatus } from '../HttpError';
+import { MiddlewareFactory } from '../interface';
 import { log } from '../log';
+import { getStat } from '../util/file/getStat';
+import { sendFile } from '../util/file/sendFile';
 import { forwarder } from './forwarder';
-import send from 'send';
 
 export interface ServeProperties {
 	basePath?: string;
@@ -16,9 +17,7 @@ export interface ServeProperties {
 	extensions?: string[];
 }
 
-async function getPath(basePath: string, url: UrlWithStringQuery, extensions: string[] = []) {
-	const target = join(basePath, decodeURI(url.pathname));
-
+async function getPath(target: string, extensions: string[] = []) {
 	if (await checkAccess(target)) {
 		return target;
 	}
@@ -35,14 +34,6 @@ function checkAccess(target: string, mode: number = constants.F_OK) {
 	return new Promise((resolve) => {
 		access(target, mode, (err) => {
 			err ? resolve() : resolve(target);
-		});
-	});
-}
-
-function getStat(target: string): Promise<Stats> {
-	return new Promise((resolve, reject) => {
-		stat(target, (err, stats) => {
-			err ? reject(err) : resolve(stats);
 		});
 	});
 }
@@ -76,22 +67,6 @@ function listDirectoryContents(target: string) {
 	});
 }
 
-function sendFile(request: IncomingMessage, response: ServerResponse, target: string) {
-	return new Promise<void>((resolve, reject) => {
-		log.debug(`ServePath: serving file "${target}"`);
-		send(request, target, {
-			dotfiles: 'deny',
-			index: false
-		})
-			.on('end', function() {
-				response.end();
-				resolve();
-			})
-			.on('error', reject)
-			.pipe(response);
-	});
-}
-
 export const serve: MiddlewareFactory<ServeProperties> = ({
 	basePath = process.cwd(),
 	trailingSlash,
@@ -103,7 +78,9 @@ export const serve: MiddlewareFactory<ServeProperties> = ({
 	log.debug('serving path', base);
 
 	return async (request, response) => {
-		const path = await getPath(base, parseUrl(request.url), extensions);
+		const target = join(base, decodeURI(parseUrl(request.url).pathname));
+		const path = await getPath(target, extensions);
+		log.debug(`Request to serve ${target}`);
 
 		if (!path) {
 			throw new HttpError(HttpStatus.NotFound);

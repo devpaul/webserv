@@ -1,0 +1,32 @@
+{
+	"services": [
+		{
+			"name": "chat"
+		},
+		{
+			"name": "upload",
+			"path": "/upload/*",
+			"directory": "./sample2/uploadedFiles"
+		},
+		{
+			"name": "crud",
+			"path": "/data/*",
+			"data": {
+				"one": {
+					"value": 1
+				}
+			}
+		},
+		{
+			"name": "file",
+			"description": "presentation client",
+			"basePath": ".",
+			"showDirectoryContents": true,
+			"paths": {
+				"/src/*": "./sample1/js",
+				"/assets/*": "./sample1/child",
+				"*": "./sample1"
+			}
+		}
+	]
+}

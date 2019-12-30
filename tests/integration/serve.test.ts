@@ -23,7 +23,7 @@ describe('serve tests', () => {
 	let controls: ServerControls | undefined;
 
 	before(async () => {
-		setLogLevel('debug');
+		setLogLevel('warn');
 		const errorHandler: ErrorRequestHandler = (err, response) => {
 			if (isHttpError(err)) {
 				response.statusCode = err.statusCode;

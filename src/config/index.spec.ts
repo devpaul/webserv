@@ -2,7 +2,7 @@
 
 import { App } from '../core/app';
 import { setupMocks, setupSinon } from '../_support/mocks';
-import { createDeferred } from '../_support/Deferred';
+import { createDeferred } from '../_support/deferred';
 
 const { assert } = intern.getPlugin('chai');
 const { describe, it, beforeEach } = intern.getPlugin('interface.bdd');

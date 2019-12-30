@@ -1,5 +1,6 @@
 import { join } from 'path';
 
+import { Service } from '../app';
 import { method } from '../guards/method';
 import { Transform } from '../interface';
 import { saveFiles, SaveFilesProperties } from '../middleware/saveFiles';
@@ -7,12 +8,38 @@ import { serve } from '../middleware/serve';
 import { fileProcessor } from '../processors/file.processor';
 import { directoryTransform } from '../transforms/directory.transform';
 import { htmlTemplate } from '../util/htmlTemplate';
-import { route } from './route';
+import { pathGuard } from '../guards/path';
+import { serveFile } from '../middleware/serveFile';
 
-export interface UploadRouteProperties {
-	allowOverwrite?: boolean;
-	createUploadDirectory?: boolean;
-	directory: string;
+export interface UploadServiceProperties extends SaveFilesProperties {
+	path?: string;
+}
+
+export function uploadService(props: UploadServiceProperties): Service {
+	const { path = '*', directory } = props;
+
+	return {
+		route: {
+			guards: [pathGuard({ match: path })],
+			middleware: [
+				{
+					before: [fileProcessor],
+					guards: [method.post()],
+					middleware: saveFiles(props),
+					transforms: [fileUploadTransform]
+				},
+				{
+					guards: [method.get('list')],
+					middleware: serve({ basePath: directory }),
+					transforms: [directoryTransform]
+				},
+				{
+					guards: [method.get()],
+					middleware: serveFile({ path: join(__dirname, 'upload', 'upload.html') })
+				}
+			]
+		}
+	};
 }
 
 interface FileUploadResult {
@@ -47,26 +74,4 @@ export const fileUploadTransform: Transform = (result, _request, response) => {
 		response.write(html);
 		response.end();
 	}
-};
-
-export const uploadRoute = (options: SaveFilesProperties) => {
-	return route({
-		middleware: [
-			route({
-				before: [fileProcessor],
-				guards: [method.post()],
-				middleware: saveFiles(options),
-				transforms: [fileUploadTransform]
-			}),
-			route({
-				guards: [method.get('/list')],
-				middleware: serve({ basePath: options.directory }),
-				transforms: [directoryTransform]
-			}),
-			route({
-				guards: [method.get()],
-				middleware: serve({ basePath: join(__dirname, 'pages', 'upload.html') })
-			})
-		]
-	});
 };

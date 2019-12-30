@@ -39,24 +39,24 @@ describe('config/services/crud', () => {
 		it('creates a crud route', () => {
 			const app = new App();
 			const config = {
-				route: '*'
+				path: '*'
 			};
 
 			bootCrudService(app, config);
 
-			assertBoot(app, config.route);
+			assertBoot(app, config.path);
 		});
 
 		it('creates a crud route with initial data', () => {
 			const app = new App();
 			const config = {
-				route: '*',
+				path: '*',
 				data: { 'id-1': 'one' }
 			};
 
 			bootCrudService(app, config);
 
-			assertBoot(app, config.route, config.data);
+			assertBoot(app, config.path, config.data);
 		});
 	});
 });
