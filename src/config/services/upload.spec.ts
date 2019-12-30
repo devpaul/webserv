@@ -11,7 +11,7 @@ describe('config/services/upload', () => {
 		it('Adds an upload route', () => {
 			const app = new App();
 			const config = {
-				route: '*',
+				path: '*',
 				directory: '.'
 			};
 			bootUploadService(app, config);

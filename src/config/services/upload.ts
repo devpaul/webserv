@@ -1,18 +1,11 @@
-import { App } from '../../core/app';
-import { pathGuard } from '../../core/guards/path';
-import { route } from '../../core/routes/route';
-import { uploadRoute, UploadRouteProperties } from '../../core/routes/upload.route';
+import { uploadService, UploadServiceProperties } from '../../core/services/upload.service';
 
-export interface UploadConfig extends UploadRouteProperties {
-	route: string;
+import { App } from '../../core/app';
+
+export interface UploadConfig extends UploadServiceProperties {
+	path: string;
 }
 
 export function bootUploadService(app: App, config: UploadConfig) {
-	const { route: match } = config;
-	app.routes.push(
-		route({
-			guards: [pathGuard({ match })],
-			middleware: [uploadRoute(config)]
-		})
-	);
+	app.addService(uploadService(config));
 }
