@@ -20,7 +20,7 @@ export const realtimeService: UpgradeMiddlewareFactory<RealtimeServiceProperties
 	onDisconnect,
 	onError,
 	onMessage
-} = {}) => {
+}) => {
 	const connections: Map<string, Connection> = new Map();
 
 	return websocket({
@@ -48,8 +48,10 @@ export const realtimeService: UpgradeMiddlewareFactory<RealtimeServiceProperties
 		},
 		onMessage(socketId, data) {
 			log.debug(`{${socketId}} says: ${data}`);
-			const con = connections.get(socketId);
-			con && onMessage(data, con, connections.values());
+			if (onMessage) {
+				const con = connections.get(socketId);
+				con && onMessage(data, con, connections.values());
+			}
 		}
 	});
 };
