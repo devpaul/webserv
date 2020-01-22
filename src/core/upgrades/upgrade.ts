@@ -29,7 +29,12 @@ export const upgrade: UpgradeFactory = ({ guards = [], upgrade }) => {
 	const run = Array.isArray(upgrade) ? multiupgrade({ upgrades: upgrade }) : upgrade;
 
 	async function test(request: IncomingMessage) {
-		return guards.every((guard) => guard(request));
+		for (let guard of guards) {
+			if (!(await guard(request))) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	return {

@@ -10,6 +10,10 @@ export interface WebSocketProperties {
 	onError?(socketId: string, error: Error): void;
 }
 
+/**
+ * This provides a very basic implementation of the WebSocket upgrade process needed
+ * to establish a WebSocket connection.
+ */
 export const websocket: UpgradeMiddlewareFactory<WebSocketProperties> = ({
 	onClose,
 	onConnection,
@@ -23,7 +27,7 @@ export const websocket: UpgradeMiddlewareFactory<WebSocketProperties> = ({
 			const socketId = uuid();
 
 			ws.handleUpgrade(request, socket, head, (client) => {
-				onConnection && onConnection(client, socketId, request);
+				onConnection?.(client, socketId, request);
 				onMessage && client.on('message', (data) => onMessage(socketId, data));
 				onClose && client.on('close', (code, reason) => onClose(socketId, code, reason));
 				onError && client.on('error', (err) => onError(socketId, err));

@@ -1,21 +1,38 @@
-import WebSocket = require('ws');
 import { UpgradeMiddlewareFactory } from '../interface';
+import { websocket } from '../upgrades/websocket.upgrade';
 import { log } from '../log';
-import { websocket } from './websocket.upgrade';
+import WebSocket = require('ws');
 
-export interface RealtimeServiceProperties {
-	onConnect?: (connection: Connection) => void;
-	onDisconnect?: (connection: Connection) => void;
+export interface RealtimeUpgradeProperties {
+	onInit?: (methods: ConnectionMethods) => void;
+	onConnect?: (connection: Connection, methods: ConnectionMethods) => void;
+	onDisconnect?: (connection: Connection, methods: ConnectionMethods) => void;
 	onError?: (error: Error, connection: Connection | string) => void;
-	onMessage?: (data: any, connection: Connection, connections: Iterable<Connection>) => void;
+	onMessage?: (data: any, connection: Connection, methods: ConnectionMethods) => void;
+}
+
+/**
+ * ConnectionMethods give proxied access to the underlying connection map
+ */
+export interface ConnectionMethods {
+	get(socketId: string): Connection | undefined;
+	getAll(): Iterable<Connection>;
+	getSize(): number;
 }
 
 export class Connection {
 	constructor(readonly id: string, readonly client: WebSocket) {}
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const realtimeService: UpgradeMiddlewareFactory<RealtimeServiceProperties> = ({
+/**
+ * This extends the functionality of websocket.upgrade to provide more robust connection tracking of
+ * WebSocket connections.
+ *
+ * Connections are given a unique ID that can retrieve the user's WebSocket client via ConnectionMethods
+ * or can be used to link internal data (such as user name or other user information) to the connection.
+ */
+export const realtimeUpgrade: UpgradeMiddlewareFactory<RealtimeUpgradeProperties> = ({
+	onInit,
 	onConnect,
 	onDisconnect,
 	onError,
@@ -23,34 +40,50 @@ export const realtimeService: UpgradeMiddlewareFactory<RealtimeServiceProperties
 }) => {
 	const connections: Map<string, Connection> = new Map();
 
+	const methods: ConnectionMethods = {
+		get(socketId) {
+			return connections.get(socketId);
+		},
+		getAll() {
+			return connections.values();
+		},
+		getSize() {
+			return connections.size;
+		}
+	};
+
+	onInit?.(methods);
+
 	return websocket({
 		onClose(socketId, code, reason) {
-			log.debug(`{${socketId}} connection closed (${code}).${reason ? ` Reason: ${reason}` : ''}`);
+			log.debug(`[WS] {${socketId}} connection closed (${code}).${reason ? ` Reason: ${reason}` : ''}`);
 			const con = connections.get(socketId);
 
 			if (con) {
 				connections.delete(socketId);
-				onDisconnect && onDisconnect(con);
+				onDisconnect?.(con, methods);
 			} else {
-				log.warn(`Unregistered user ${socketId} closed connection!`);
+				log.warn(`[WS] Unregistered user ${socketId} closed connection!`);
 			}
 		},
 		onConnection(client, socketId) {
-			log.debug(`{${socketId}} connected`);
+			log.debug(`[WS] {${socketId}} connected`);
 			const con = new Connection(socketId, client);
 			connections.set(con.id, con);
-			onConnect && onConnect(con);
+			onConnect?.(con, methods);
 		},
 		onError(socketId, err) {
-			log.debug(`{${socketId}} errored. ${err && err.message}`);
+			log.debug(`[WS] {${socketId}} errored. ${err && err.message}`);
 			const con = connections.get(socketId);
-			onError && onError(err, con || socketId);
+			onError?.(err, con || socketId);
 		},
 		onMessage(socketId, data) {
-			log.debug(`{${socketId}} says: ${data}`);
+			log.debug(`[WS] {${socketId}} says: ${data}`);
 			if (onMessage) {
 				const con = connections.get(socketId);
-				con && onMessage(data, con, connections.values());
+				if (con) {
+					onMessage(data, con, methods);
+				}
 			}
 		}
 	});
