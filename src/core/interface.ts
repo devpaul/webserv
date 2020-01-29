@@ -14,6 +14,8 @@ export type ProcessFactory<T extends object> = (options: T) => Process;
 
 export type Guard = (request: IncomingMessage) => boolean;
 
+export type AsyncGuard = (request: IncomingMessage) => boolean | Promise<boolean>;
+
 export type GuardFactory<T extends object> = (options: T) => Guard;
 
 export type MiddlewareResult = object | string | void;
@@ -74,6 +76,6 @@ export interface Upgrade {
 }
 
 export interface UpgradeDescriptor {
-	guards?: Guard[];
+	guards?: AsyncGuard[];
 	upgrade: UpgradeMiddleware | Array<Upgrade | UpgradeDescriptor>;
 }

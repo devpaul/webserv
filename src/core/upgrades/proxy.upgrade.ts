@@ -7,6 +7,9 @@ export interface ProxyProperties {
 	proxy: Server;
 }
 
+/**
+ * This connects a local websocket to a proxied websocket
+ */
 export const proxyUpgrade: UpgradeMiddlewareFactory<ProxyProperties> = ({ baseUrl, proxy }) => {
 	return (request, socket, head) => {
 		log.debug(`Upgrade request for proxied "${baseUrl}"`);
