@@ -81,7 +81,12 @@ export async function startServer(app: App, config: Config = {}) {
 	return controls;
 }
 
-export default async function start(config: Config, app = new App()) {
-	await bootServices(app, config.services, process.cwd());
-	return startServer(app, config);
+export default async function start(config: Config | string, app = new App()) {
+	if (typeof config === 'string') {
+		const loadedConfig = await bootConfig(config, app);
+		return await startServer(app, loadedConfig);
+	} else {
+		await bootServices(app, config.services, process.cwd());
+		return startServer(app, config);
+	}
 }

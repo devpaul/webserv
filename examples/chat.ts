@@ -1,4 +1,4 @@
-import start from '../src/config';
+import { start } from '..';
 
 start({
 	services: [
