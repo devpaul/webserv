@@ -3,9 +3,16 @@ language: node_js
 node_js:
   - 12
 script: npm run ci
+before_deploy:
+  - npm run dist
+  - cd _dist
 deploy:
+  provider: npm
   skip_cleanup: true
-  provider: script
-  script: ./node_modules/.bin/codecov
+  tag: next
+  email: paul@devpaul.com
+  api_key: $NPM_AUTH
   on:
     branch: master
+    repo: devpaul/webserv
+
