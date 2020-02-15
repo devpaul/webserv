@@ -1,18 +1,18 @@
 sudo: false
 language: node_js
 node_js:
-  - 12
+- 12
 script: npm run ci
 before_deploy:
-  - npm run dist
-  - cd _dist
+- npm run dist
+- cd _dist
 deploy:
   provider: npm
   skip_cleanup: true
   tag: next
   email: paul@devpaul.com
-  api_key: $NPM_AUTH
+  api_key:
+    secure: LPohVNYDxcOg5C0gqsG1oRiScaU9nnwTqxqq29Yw5A8s53+y3OdPmIEB6pTErWcrQ5eZviG1jlTBow9QBQmp2Nv63pv0pDQ03KSQW353sh5GQOU5saidnr13VcRnP0DI4tV5yDALS0KoaKiFEKXQmu0ZEu2YSgilIMmJdprf7pUutjZUrmj3wp6TO+Y+VrQaVHu71KhY/marYIoPKpx/wZ9q2ShxUMi/9sDu0yX3JeTzYxA2gcRtI2rGFpZ75j3GxThJ12nMemm5oxe/oWAA+MLrRNXHmTrBkxZfmevXSWxaCzHbRCuKGBV1L8ZLlXh+FcDMOfvam2vlwPwos9wW2RanDu15I64oDV6Js1nyMXpb0X2KO5/26LOTv9BoIDCZEgtNB0ITth77vJjhdVf/LXdZ3JOgYEPnsp+tLz4x50jQCMcCQtHeMAjeNBW5HFoBMBTMOwsb2tu5OqBxPmd2DDPEGprAA8wu8n+qc+7qea1WQyRBaSbyWIEmVuYU75pvSY3DC3aQwQnAOhPu738HIw8vkza8jz+7O6F1k0m2lJniRn4VdXmr6iXNbZZbeF176gY8aAYX2WDNZNgKb5TxE5pvXr2VHYN3JeGefSJlKm3bfKCK6wgQYoga/eO/5eVlj388HDAXf2YK1YwuPmgW6irX5KWDXCTs1JutULMnyFM=
   on:
     branch: master
     repo: devpaul/webserv
-
