@@ -15,7 +15,8 @@
     "url": "https://github.com/devpaul/webserv/issues"
   },
   "engines": {
-    "node": "10"
+    "node": "10",
+    "node": "12"
   },
   "repository": {
     "type": "git",
