@@ -15,8 +15,7 @@
     "url": "https://github.com/devpaul/webserv/issues"
   },
   "engines": {
-    "node": "10",
-    "node": "12"
+    "node": ">=10"
   },
   "repository": {
     "type": "git",
@@ -34,6 +33,7 @@
     "copy:src": "copyfiles src/**/*.html _dist",
     "copy:package": "copyfiles README.md package.json LICENSE _dist",
     "dist": "run-s clean copy build:dist update:version",
+    "dist:release": "run-s clean copy build:dist update:version:dist",
     "lint": "eslint ./src/**/*.ts",
     "local": "npx -p file://./_dist webserv",
     "pretty": "prettier --write ./src/**",
@@ -41,7 +41,8 @@
     "start:chat": "ts-node ./examples/chat",
     "test": "intern",
     "test:integration": "intern config=@integration",
-    "update:version": "ts-node ./support/updateVersion"
+    "update:version": "ts-node ./support/updateVersion",
+    "update:version:dist": "ts-node ./support/updateVersion --dist"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
