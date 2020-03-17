@@ -1,21 +1,20 @@
 /// <reference types="intern" />
 
+import { Service } from 'src/core/app';
 import { bootProxyService } from './proxy';
-import { App } from '../../core/app';
 
 const { assert } = intern.getPlugin('chai');
 const { describe, it } = intern.getPlugin('interface.bdd');
 
 describe('config/services/proxy', () => {
 	describe('bootProxyService', () => {
-		it('Adds a route and an upgrader', () => {
-			const app = new App();
+		it('Adds a route and an upgrader', async () => {
 			const config = {
 				target: 'https://example.org'
 			};
-			bootProxyService(app, config);
-			assert.lengthOf(app.routes, 1);
-			assert.lengthOf(app.upgrades, 1);
+			const service = (await bootProxyService(config)) as Service;
+			assert.isDefined(service.route);
+			assert.isDefined(service.upgrade);
 		});
 	});
 });

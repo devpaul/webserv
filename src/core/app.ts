@@ -1,7 +1,6 @@
 import { ServerResponse } from 'http';
-
 import { isHttpError } from './HttpError';
-import { Guard, Process, Route, RouteDescriptor, Transform, Upgrade, UpgradeDescriptor } from './interface';
+import { Route, RouteDescriptor, Upgrade, UpgradeDescriptor } from './interface';
 import { log } from './log';
 import { route as createRoute } from './route';
 import { StartHttpConfig, startHttpServer } from './servers/createHttpServer';
@@ -17,26 +16,55 @@ export type HttpConfig = Omit<StartHttpConfig, 'onRequest' | 'onUpgrade'>;
 export type HttpsConfig = Omit<StartHttpsConfig, 'onRequest' | 'onUpgrade'>;
 
 export interface Service {
+	global?: Omit<RouteDescriptor, 'middleware'>;
 	route?: RouteDescriptor;
 	upgrade?: UpgradeDescriptor;
 }
 
+export type GlobalRoute = RouteDescriptor & { middleware: Route[] };
+
 export class App {
-	readonly before: Process[] = [];
-	readonly guards: Guard[] = [];
-	readonly routes: Route[] = [];
-	readonly transforms: Transform[] = [];
-	readonly after: Process[] = [];
+	readonly globalRoute: GlobalRoute = {
+		before: [],
+		guards: [],
+		middleware: [],
+		transforms: [],
+		after: []
+	};
 	readonly upgrades: Upgrade[] = [];
 
 	protected controls?: Promise<ServerControls>;
 
-	addService({ route, upgrade }: Service) {
+	add(services: Service | Service[]) {
+		if (Array.isArray(services)) {
+			for (let service of services) {
+				this.addService(service);
+			}
+		} else {
+			this.addService(services);
+		}
+	}
+
+	protected addService({ route, upgrade, global }: Service) {
 		if (route) {
-			this.routes.push(createRoute(route));
+			this.globalRoute.middleware.push(createRoute(route));
 		}
 		if (upgrade) {
 			this.upgrades.push(createUpgrade(upgrade));
+		}
+		if (global) {
+			if (global.after) {
+				this.globalRoute.after.push(...global.after);
+			}
+			if (global.before) {
+				this.globalRoute.before.push(...global.before);
+			}
+			if (global.guards) {
+				this.globalRoute.guards.push(...global.guards);
+			}
+			if (global.transforms) {
+				this.globalRoute.transforms.push(...global.transforms);
+			}
 		}
 	}
 
@@ -47,13 +75,7 @@ export class App {
 		if (this.controls) {
 			throw new Error('server already started');
 		}
-		const globalRoute = createRoute({
-			before: this.before,
-			guards: this.guards,
-			middleware: this.routes,
-			transforms: this.transforms,
-			after: this.after
-		});
+		const globalRoute = createRoute(this.globalRoute);
 		const onRequest = createRequestHandler(globalRoute, (e, response) => {
 			if (isHttpError(e)) {
 				log.info(`HTTPError: ${e.statusCode}${e.message ? `. Reason "${e.message}"` : ''}`);

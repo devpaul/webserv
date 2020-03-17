@@ -1,6 +1,4 @@
-import { App } from '../../core/app';
-import { ChatServiceProperties, chatService } from '../../core/services/chat.service';
+import { chatService, ChatServiceProperties } from '../../core/services/chat.service';
+import { SimpleServiceLoader } from '../loader';
 
-export function bootChatService(app: App, config: ChatServiceProperties) {
-	app.addService(chatService(config));
-}
+export const bootChatService: SimpleServiceLoader<ChatServiceProperties> = (config) => chatService(config);

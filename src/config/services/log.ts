@@ -1,19 +1,27 @@
-import { App } from '../../core/app';
 import { setLogLevel } from '../../core/log';
+import { response } from '../../core/middleware/response';
 import { body } from '../../core/processors/body.processor';
 import { logRequest } from '../../core/processors/log.processor';
-import { route } from '../../core/route';
-import { response } from '../../core/middleware/response';
+import { SimpleServiceLoader } from '../loader';
 
 export interface LogConfig {
 	level?: string;
 	respondOk?: boolean;
 }
 
-export function bootLogService(app: App, config: LogConfig) {
+export const bootLogService: SimpleServiceLoader<LogConfig> = (config) => {
 	const { level, respondOk } = config;
 
 	level && setLogLevel(level);
-	app.before.push(body({}), logRequest({ logBody: true }));
-	respondOk && app.routes.push(route({ middleware: response({ statusCode: 200 }) }));
-}
+	return {
+		global: {
+			before: [body({}), logRequest({ logBody: true })]
+		},
+		route: respondOk
+			? {
+					middleware: response({ statusCode: 200 })
+					// eslint-disable-next-line no-mixed-spaces-and-tabs
+			  }
+			: undefined
+	};
+};

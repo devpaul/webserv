@@ -1,11 +1,16 @@
 /// <reference types="intern" />
 
 import { setupSinon, setupMocks } from '../../_support/mocks';
-import { App } from '../../core/app';
 import { resolve } from 'path';
+import { Environment } from '../loader';
 
 const { assert } = intern.getPlugin('chai');
 const { describe, it, beforeEach } = intern.getPlugin('interface.bdd');
+
+const env: Environment = {
+	configPath: 'configPath',
+	properties: {}
+};
 
 describe('config/services/file', () => {
 	describe('bootFileService', () => {
@@ -22,16 +27,16 @@ describe('config/services/file', () => {
 			mockFileService.returns({});
 		});
 
-		it('creates a single route from a path', () => {
-			const app = new App();
+		it('creates a single route from a path', async () => {
 			const config = {
 				paths: {
 					'*': '.'
 				}
 			};
 
-			bootFileService(app, config, 'configPath');
+			const service = await bootFileService(config, env);
 
+			assert.isArray(service);
 			assert.isTrue(mockFileService.calledOnce);
 			assert.deepEqual(mockFileService.firstCall.args[0], {
 				path: '*',
@@ -39,8 +44,7 @@ describe('config/services/file', () => {
 			});
 		});
 
-		it('creates multiple routes from a list of paths', () => {
-			const app = new App();
+		it('creates multiple routes from a list of paths', async () => {
 			const config = {
 				paths: {
 					'/uploads/*': './uploads',
@@ -48,8 +52,9 @@ describe('config/services/file', () => {
 				}
 			};
 
-			bootFileService(app, config, 'configPath');
+			const service = await bootFileService(config, env);
 
+			assert.isArray(service);
 			assert.isTrue(mockFileService.calledTwice);
 			assert.deepEqual(mockFileService.firstCall.args[0], {
 				path: '/uploads/*',
@@ -61,8 +66,7 @@ describe('config/services/file', () => {
 			});
 		});
 
-		it('creates a route using a basePath', () => {
-			const app = new App();
+		it('creates a route using a basePath', async () => {
 			const config = {
 				basePath: 'serve',
 				paths: {
@@ -70,8 +74,9 @@ describe('config/services/file', () => {
 				}
 			};
 
-			bootFileService(app, config, 'configPath');
+			const service = await bootFileService(config, env);
 
+			assert.isArray(service);
 			assert.isTrue(mockFileService.calledOnce);
 			assert.deepEqual(mockFileService.firstCall.args[0], {
 				path: '*',

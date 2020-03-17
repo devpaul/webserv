@@ -1,11 +1,11 @@
 /// <reference types="intern" />
 
-import { setLoader, getLoader } from '.';
+import { setLoader, getLoader } from './loader';
 
 const { assert } = intern.getPlugin('chai');
 const { describe, it } = intern.getPlugin('interface.bdd');
 
-describe('config/services/index', () => {
+describe('config/loader', () => {
 	it('registers a set of default loaders', () => {
 		const defaultLoaders = ['chat', 'crud', 'file', 'log', 'proxy', 'upload'];
 		for (let loader of defaultLoaders) {
@@ -17,7 +17,7 @@ describe('config/services/index', () => {
 
 	it('can add and retrieve additional loaders', () => {
 		const loaderName = 'testloader';
-		const loader = () => {};
+		const loader = () => ({});
 		assert.throws(() => {
 			getLoader(loaderName);
 		});
