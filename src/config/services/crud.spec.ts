@@ -1,6 +1,5 @@
 /// <reference types="intern" />
 
-import { App } from '../../core/app';
 import { setupMocks, setupSinon } from '../../_support/mocks';
 
 const { assert } = intern.getPlugin('chai');
@@ -20,27 +19,27 @@ describe('config/services/crud', () => {
 			mockCrudService.returns({});
 		});
 
-		it('creates a crud route', () => {
-			const app = new App();
+		it('creates a crud route', async () => {
 			const config = {
 				path: '*'
 			};
 
-			bootCrudService(app, config);
+			const service = await bootCrudService(config);
 
+			assert.isDefined(service);
 			assert.isTrue(mockCrudService.calledOnce);
 			assert.deepEqual(mockCrudService.firstCall.args[0], config);
 		});
 
-		it('creates a crud route with initial data', () => {
-			const app = new App();
+		it('creates a crud route with initial data', async () => {
 			const config = {
 				path: '*',
 				data: { 'id-1': 'one' }
 			};
 
-			bootCrudService(app, config);
+			const service = await bootCrudService(config);
 
+			assert.isDefined(service);
 			assert.isTrue(mockCrudService.calledOnce);
 			assert.deepEqual(mockCrudService.firstCall.args[0], config);
 		});

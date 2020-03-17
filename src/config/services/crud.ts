@@ -1,11 +1,8 @@
 import { crudService, CrudServiceProperties } from '../../core/services/crud.service';
-
-import { App } from '../../core/app';
+import { SimpleServiceLoader } from '../loader';
 
 export interface CrudConfig extends CrudServiceProperties {
 	path: string;
 }
 
-export function bootCrudService(app: App, config: CrudConfig) {
-	app.addService(crudService(config));
-}
+export const bootCrudService: SimpleServiceLoader<CrudConfig> = (config) => crudService(config);

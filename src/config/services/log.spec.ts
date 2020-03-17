@@ -1,7 +1,6 @@
 /// <reference types="intern" />
 
 import { setupMocks, setupSinon } from '../../_support/mocks';
-import { App } from '../../core/app';
 
 const { assert } = intern.getPlugin('chai');
 const { describe, it, beforeEach } = intern.getPlugin('interface.bdd');
@@ -21,33 +20,36 @@ describe('config/services/log', () => {
 	});
 
 	describe('bootLogService', () => {
-		it('Adds a global before processors', () => {
-			const app = new App();
+		it('Adds a global before processors', async () => {
 			const config = {};
-			bootLogService(app, config);
+
+			const service = (await bootLogService(config)) as any;
+
+			assert.isNotArray(service);
 			assert.strictEqual(setLogLevelMock.callCount, 0);
-			assert.lengthOf(app.routes, 0);
-			assert.lengthOf(app.before, 2);
+			assert.isUndefined(service.route);
+			assert.lengthOf(service.global.before, 2);
 		});
 
-		it('sets the log level when level is passed', () => {
-			const app = new App();
+		it('sets the log level when level is passed', async () => {
 			const config = {
 				level: 'taco'
 			};
-			bootLogService(app, config);
+			const service = await bootLogService(config);
+
+			assert.isNotArray(service);
 			assert.strictEqual(setLogLevelMock.callCount, 1);
 			assert.strictEqual(setLogLevelMock.firstCall.args[0], 'taco');
 		});
 
-		it('adds a route when respondOk is true', () => {
-			const app = new App();
+		it('adds a route when respondOk is true', async () => {
 			const config = {
 				respondOk: true
 			};
-			bootLogService(app, config);
+			const service = (await bootLogService(config)) as any;
+
 			assert.strictEqual(setLogLevelMock.callCount, 0);
-			assert.lengthOf(app.routes, 1);
+			assert.isDefined(service.route);
 		});
 	});
 });

@@ -1,7 +1,7 @@
 import { exists } from 'fs';
 import { resolve, dirname } from 'path';
 import { App } from '../core/app';
-import { getLoader } from './services';
+import { getLoader, Environment } from './loader';
 import { startNgrok } from '../addons/ngrok';
 
 export interface Config {
@@ -19,8 +19,6 @@ export interface LoadedConfig {
 	config: Config;
 	configPath: string;
 }
-
-export type ServiceLoader = (app: App, config: any, basePath: string) => Promise<void> | void;
 
 function asyncExists(path: string) {
 	return new Promise((done) => {
@@ -57,9 +55,14 @@ export async function bootConfig(path?: string, app: App = new App()) {
 	}
 }
 
-export function bootService(app: App, config: ServiceConfig, workingDirectory: string) {
-	const handler = getLoader(config.name);
-	return handler(app, config, workingDirectory);
+export async function bootService(app: App, config: ServiceConfig, workingDirectory: string) {
+	const loader = getLoader(config.name);
+	const environment: Environment = {
+		configPath: workingDirectory,
+		properties: {}
+	};
+	const service = await loader(config, environment);
+	app.add(service);
 }
 
 export async function bootServices(app: App, configs: ServiceConfig[] = [], workingDirectory: string) {

@@ -1,5 +1,5 @@
 import start from './config';
-import { setLoader } from './config/services';
+import { setLoader } from './config/loader';
 
 export { start };
 

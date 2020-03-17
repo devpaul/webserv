@@ -1,16 +1,14 @@
 import { proxyService, ProxyServiceProperties } from '../../core/services/proxy.service';
-
-import { App } from '../../core/app';
+import { SimpleServiceLoader } from '../loader';
 
 export interface ProxyConfig extends ProxyServiceProperties {}
 
-export function bootProxyService(app: App, config: ProxyConfig) {
+export const bootProxyService: SimpleServiceLoader<ProxyConfig> = (config) => {
 	const { target, changeOrigin = true, followRedirects = false, ws = true } = config;
-	const service = proxyService({
+	return proxyService({
 		target,
 		changeOrigin,
 		followRedirects,
 		ws
 	});
-	app.addService(service);
-}
+};

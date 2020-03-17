@@ -38,7 +38,7 @@ export async function start() {
 	const basePath = process.cwd();
 
 	if (argv.log != null) {
-		bootLogService(app, { level: argv.log || 'info' });
+		app.add(await bootLogService({ level: argv.log || 'info' }));
 	}
 
 	if (argv.type) {
@@ -52,12 +52,13 @@ export async function start() {
 
 	const config = await bootConfig(argv.config, app);
 	if (!config && !argv.type) {
-		bootFileService(
-			app,
-			{
-				paths: { '*': '.' }
-			},
-			basePath
+		app.add(
+			await bootFileService(
+				{
+					paths: { '*': '.' }
+				},
+				{ configPath: basePath, properties: {} }
+			)
 		);
 	}
 	const serverConfig = Object.assign({}, config, argv);

@@ -2,7 +2,7 @@
 
 import { App } from '../core/app';
 import { setupMocks, setupSinon } from '../_support/mocks';
-import { createDeferred } from '../_support/deferred';
+import { Environment } from './loader';
 
 const { assert } = intern.getPlugin('chai');
 const { describe, it, beforeEach } = intern.getPlugin('interface.bdd');
@@ -10,10 +10,14 @@ const { describe, it, beforeEach } = intern.getPlugin('interface.bdd');
 describe('config/index', () => {
 	const sinon = setupSinon();
 	const workingDirectory = '.';
+	const env: Environment = {
+		configPath: workingDirectory,
+		properties: {}
+	};
 	const getLoaderMock = sinon.stub();
 	const startNgrokMock = sinon.stub();
 	setupMocks({
-		'./services': { getLoader: getLoaderMock },
+		'./loader': { getLoader: getLoaderMock },
 		'../addons/ngrok': { startNgrok: startNgrokMock }
 	});
 
@@ -24,20 +28,17 @@ describe('config/index', () => {
 			bootService = require('./index').bootService;
 		});
 
-		it('gets a loader and calls it', () => {
+		it('gets a loader and calls it', async () => {
 			const app = new App();
 			const config = {
 				name: 'name'
 			};
-			const handler = sinon.stub();
-			const handlerPromise = Promise.resolve();
-			handler.returns(handlerPromise);
-			getLoaderMock.returns(handler);
+			const loader = sinon.stub().returns(Promise.resolve({}));
+			getLoaderMock.returns(loader);
 
-			const result = bootService(app, config, workingDirectory);
-			assert.strictEqual(result, handlerPromise);
-			assert.strictEqual(handler.callCount, 1);
-			assert.deepEqual(handler.firstCall.args, [app, config, workingDirectory]);
+			await bootService(app, config, workingDirectory);
+			assert.strictEqual(loader.callCount, 1);
+			assert.deepEqual(loader.firstCall.args, [config, env]);
 		});
 	});
 
@@ -51,41 +52,15 @@ describe('config/index', () => {
 		it('gets multiple loaders and calls them in order', async () => {
 			const app = new App();
 			const configs = [{ name: 'name1' }, { name: 'name2' }];
-			const handler = sinon.stub();
-			handler.returns(Promise.resolve());
-			getLoaderMock.returns(handler);
+			const loader = sinon.stub().returns(Promise.resolve({}));
+			getLoaderMock.returns(loader);
 
 			const result = bootServices(app, configs, workingDirectory);
 			assert.isDefined(result);
 			await result;
-			assert.strictEqual(handler.callCount, 2);
-			assert.deepEqual(handler.firstCall.args, [app, configs[0], workingDirectory]);
-			assert.deepEqual(handler.secondCall.args, [app, configs[1], workingDirectory]);
-		});
-
-		it('get async loaders and calls them in order', async () => {
-			const app = new App();
-			const configs = [{ name: 'name1' }, { name: 'name2' }];
-			const handler = sinon.stub();
-			const firstHandlerResult = createDeferred();
-			const secondHandlerResult = Promise.resolve();
-			handler.onFirstCall().returns(firstHandlerResult.promise);
-			handler.onSecondCall().returns(secondHandlerResult);
-			getLoaderMock.returns(handler);
-
-			const result = bootServices(app, configs, workingDirectory);
-			assert.isDefined(result);
-			const expected = Promise.race([
-				Promise.all([firstHandlerResult.promise, secondHandlerResult]),
-				result.then(() => {
-					throw new Error();
-				})
-			]);
-			firstHandlerResult.resolve();
-			await expected;
-			assert.strictEqual(handler.callCount, 2);
-			assert.deepEqual(handler.firstCall.args, [app, configs[0], workingDirectory]);
-			assert.deepEqual(handler.secondCall.args, [app, configs[1], workingDirectory]);
+			assert.strictEqual(loader.callCount, 2);
+			assert.deepEqual(loader.firstCall.args, [configs[0], env]);
+			assert.deepEqual(loader.secondCall.args, [configs[1], env]);
 		});
 	});
 
