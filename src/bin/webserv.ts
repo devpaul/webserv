@@ -51,15 +51,20 @@ export async function start() {
 	}
 
 	const config = await bootConfig(argv.config, app);
-	if (!config && !argv.type) {
-		app.add(
-			await bootFileService(
-				{
-					paths: { '*': '.' }
-				},
-				{ configPath: basePath, properties: {} }
-			)
-		);
+	if (!config) {
+		if (argv.config) {
+			throw new Error(`Config ${argv.config} not found`);
+		}
+		if (!argv.type) {
+			app.add(
+				await bootFileService(
+					{
+						paths: { '*': '.' }
+					},
+					{ configPath: basePath, properties: {} }
+				)
+			);
+		}
 	}
 	const serverConfig = Object.assign({}, config, argv);
 	return startServer(app, serverConfig);
