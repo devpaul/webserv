@@ -1,0 +1,11 @@
+{
+	"services": [
+		{
+			"name": "crud",
+			"path": "/",
+			"loadData": {
+				"path": "./crudSample"
+			}
+		}
+	]
+}
