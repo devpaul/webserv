@@ -13,9 +13,6 @@
 		}
 	],
 	"node": {
-		"plugins": [
-			"node_modules/ts-node/register/index.js"
-		],
 		"suites": [
 			"src/**/*.spec.ts",
 			"!_support"
