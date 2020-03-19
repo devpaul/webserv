@@ -86,7 +86,7 @@ export function crudService(props: CrudServiceProperties): Service {
 			}
 		},
 		read: {
-			guards: [method.get(':id')],
+			guards: [method.get('/:id')],
 			middleware: async (request) => {
 				const { params } = getParams(request, 'params');
 				if (params.id) {
@@ -100,7 +100,7 @@ export function crudService(props: CrudServiceProperties): Service {
 			}
 		},
 		delete: {
-			guards: [method.delete(':id')],
+			guards: [method.delete('/:id')],
 			middleware: async (request) => {
 				const { params } = getParams(request, 'params');
 				if (params.id) {
