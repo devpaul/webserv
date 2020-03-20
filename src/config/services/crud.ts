@@ -18,10 +18,8 @@ function createFileLoader(path: string) {
 	function dataLoader(id?: string): Promise<Record | Record[]> | Record | Record[] | undefined {
 		if (id) {
 			const filePath = resolve(path, `${id}.json`);
-			console.log(filePath);
 			return readJsonFile<Record>(filePath).catch(() => undefined);
 		}
-		console.log(path);
 		return readDir(path).then((files) =>
 			Promise.all(
 				files.filter((file) => file.endsWith('.json')).map((file) => readJsonFile<Record>(resolve(path, file)))

@@ -66,11 +66,12 @@ function defaultLoader(id?: string): Promise<Record> | Record | Promise<Record[]
  */
 export function crudService(props: CrudServiceProperties): Service {
 	const {
-		path = '*',
+		path = '/',
 		data = [],
 		operations = ['list', 'create', 'read', 'update', 'delete'],
 		dataLoader = defaultLoader
 	} = props;
+	const expandedPath = path.charAt(path.length - 1) === '*' ? path : `${path}*`;
 	const store: Map<string, Record | Symbol> = new Map(data.map((data) => [data.id, data]));
 	const getRecord = (id: string) => (store.has(id) ? store.get(id) : dataLoader(id));
 	const middlewares: { [P in Operation]: RouteDescriptor } = {
@@ -141,7 +142,7 @@ export function crudService(props: CrudServiceProperties): Service {
 
 	return {
 		route: {
-			guards: [pathGuard({ match: path })],
+			guards: [pathGuard({ match: expandedPath })],
 			before: [body({})],
 			transforms: [jsonTransform],
 			middleware: Object.entries(middlewares)

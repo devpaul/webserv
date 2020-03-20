@@ -38,7 +38,8 @@ function relativeUrl(url: string, keys: Key[], matches: RegExpExecArray): string
 		return '/';
 	} else if (keys[keys.length - 1].pattern === '.*') {
 		// the last match was a wildcard. Reduce the incoming url.
-		return matches[matches.length - 1] || '/';
+		const relativeUrl = matches[matches.length - 1] || '/';
+		return relativeUrl.charAt(0) === '/' ? relativeUrl : `/${relativeUrl}`;
 	}
 	return url;
 }

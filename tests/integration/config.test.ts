@@ -35,7 +35,7 @@ describe('config tests', () => {
 			'http://localhost:3331/upload/',
 			'http://localhost:3331/upload/list',
 			'http://localhost:3331/data/',
-			'http://localhost:3331/data/id/one',
+			'http://localhost:3331/data/one',
 			'http://localhost:3331',
 			'http://localhost:3331/src/index',
 			'http://localhost:3331/assets/1.txt'

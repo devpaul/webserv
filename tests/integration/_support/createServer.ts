@@ -16,7 +16,7 @@ export async function assertOk(sites: string[]) {
 	}
 }
 
-export async function assertResponse(site: FetchRequest | string, expected?: object) {
+export async function assertResponse(site: FetchRequest | string, expected?: object, status: number = 200) {
 	const url = typeof site === 'string' ? site : site.url;
 	const init =
 		typeof site === 'string'
@@ -26,7 +26,7 @@ export async function assertResponse(site: FetchRequest | string, expected?: obj
 					body: site.body || ''
 			  };
 	const result = await fetch(url, init);
-	assert.strictEqual(result.status, 200, `${url} did not return 200`);
+	assert.strictEqual(result.status, status, `${url} did not return 200`);
 	expected && assert.deepEqual(await result.json(), expected);
 }
 
