@@ -1,11 +1,18 @@
 /// <reference types="intern" />
 
 import { setupMocks, setupSinon } from '../../_support/mocks';
+import { describeSuite } from '../../_support/bdd';
+import { Environment } from '../loader';
 
 const { assert } = intern.getPlugin('chai');
 const { describe, it, beforeEach } = intern.getPlugin('interface.bdd');
 
-describe('config/services/crud', () => {
+const env: Environment = {
+	configPath: 'configPath',
+	properties: {}
+};
+
+describeSuite(__filename, () => {
 	describe('bootCrudService', () => {
 		const sinon = setupSinon();
 		const mockCrudService = sinon.stub();
@@ -24,7 +31,7 @@ describe('config/services/crud', () => {
 				path: '*'
 			};
 
-			const service = await bootCrudService(config);
+			const service = await bootCrudService(config, env);
 
 			assert.isDefined(service);
 			assert.isTrue(mockCrudService.calledOnce);
@@ -34,10 +41,10 @@ describe('config/services/crud', () => {
 		it('creates a crud route with initial data', async () => {
 			const config = {
 				path: '*',
-				data: { 'id-1': 'one' }
+				data: [{ id: 'id-1', data: 'one' }]
 			};
 
-			const service = await bootCrudService(config);
+			const service = await bootCrudService(config, env);
 
 			assert.isDefined(service);
 			assert.isTrue(mockCrudService.calledOnce);

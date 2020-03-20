@@ -11,11 +11,12 @@
 		{
 			"name": "crud",
 			"path": "/data/*",
-			"data": {
-				"one": {
+			"data": [
+				{
+					"id": "one",
 					"value": 1
 				}
-			}
+			]
 		},
 		{
 			"name": "file",

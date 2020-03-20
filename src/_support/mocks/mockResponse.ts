@@ -5,6 +5,7 @@ const { assert } = intern.getPlugin('chai');
 
 export function mockResponse(box: Pick<SinonSandbox, 'mock'> = sinon) {
 	return {
+		setHeader: box.mock(),
 		writeHead: box.mock().returnsThis(),
 		write: box.mock().returnsThis(),
 		end: box.mock()
