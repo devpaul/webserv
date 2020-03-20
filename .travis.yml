@@ -2,7 +2,9 @@ sudo: false
 language: node_js
 node_js:
 - 12
-script: npm run ci
+script:
+  - npm install
+  - npm run ci
 before_deploy:
 - npm run dist
 - cd _dist
