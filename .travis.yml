@@ -3,7 +3,6 @@ language: node_js
 node_js:
 - 12
 script:
-  - npm install
   - npm run ci
 before_deploy:
 - npm run dist
