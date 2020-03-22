@@ -1,16 +1,15 @@
 /// <reference types="intern" />
 
-import { createSandbox } from 'sinon';
-import { startHttpServer } from '../../src/core/servers/createHttpServer';
-import { fileService } from '../../src/core/services/file.service';
-import { route as createRoute } from '../../src/core/route';
-import { ServerControls } from '../../src/core/servers/startServer';
 import fetch from 'node-fetch';
+import { join } from 'path';
+import { createSandbox } from 'sinon';
 import { isHttpError } from '../../src/core/HttpError';
 import { setLogLevel } from '../../src/core/log';
-import { join } from 'path';
+import { multiroute } from '../../src/core/route';
+import { startHttpServer } from '../../src/core/servers/createHttpServer';
+import { ServerControls } from '../../src/core/servers/startServer';
+import { fileService } from '../../src/core/services/file.service';
 import { detectEol } from './_support/eol';
-import { ErrorRequestHandler, createRequestHandler } from '../../src/core/servers/createRequestHandler';
 
 const { assert } = intern.getPlugin('chai');
 const { describe, it, before, beforeEach, after } = intern.getPlugin('interface.bdd');
@@ -24,22 +23,23 @@ describe('serve tests', () => {
 
 	before(async () => {
 		setLogLevel('warn');
-		const errorHandler: ErrorRequestHandler = (err, response) => {
+		const service = fileService({
+			basePath: join(__dirname, '_assets/sample1')
+		});
+		service.route.errorHandler = (err, response) => {
 			if (isHttpError(err)) {
-				response.statusCode = err.statusCode;
-				response.end();
+				if (!response.finished) {
+					response.statusCode = err.statusCode;
+					response.end();
+				}
 			} else {
 				console.log('unknown error', err);
 				throw err;
 			}
 		};
-		const service = fileService({
-			basePath: join(__dirname, '_assets/sample1')
-		});
-		const route = createRoute(service.route);
 		controls = await startHttpServer({
 			port: 3001,
-			onRequest: createRequestHandler(route, errorHandler)
+			onRequest: multiroute([service.route])
 		});
 	});
 

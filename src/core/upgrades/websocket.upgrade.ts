@@ -1,7 +1,7 @@
 import { IncomingMessage } from 'http';
 import { v4 as uuid } from 'uuid';
-import { UpgradeMiddlewareFactory, UpgradeMiddleware } from '../interface';
 import WebSocket, { Server } from 'ws';
+import { UpgradeListener, UpgradeListenerFactory } from '../interface';
 
 export interface WebSocketProperties {
 	onConnection?(client: WebSocket, socketId: string, request: IncomingMessage): void;
@@ -14,7 +14,7 @@ export interface WebSocketProperties {
  * This provides a very basic implementation of the WebSocket upgrade process needed
  * to establish a WebSocket connection.
  */
-export const websocket: UpgradeMiddlewareFactory<WebSocketProperties> = ({
+export const websocket: UpgradeListenerFactory<WebSocketProperties> = ({
 	onClose,
 	onConnection,
 	onError,
@@ -22,7 +22,7 @@ export const websocket: UpgradeMiddlewareFactory<WebSocketProperties> = ({
 }) => {
 	const ws = new Server({ noServer: true });
 
-	const upgrader: UpgradeMiddleware = async (request, socket, head) => {
+	const upgrader: UpgradeListener = async (request, socket, head) => {
 		await new Promise((resolve) => {
 			const socketId = uuid();
 

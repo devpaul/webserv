@@ -1,6 +1,6 @@
 import { IncomingMessage, ServerResponse } from 'http';
-import { log } from '../../../core/log';
 import send from 'send';
+import { log } from '../../../core/log';
 
 export function sendFile(request: IncomingMessage, response: ServerResponse, target: string) {
 	return new Promise<void>((resolve, reject) => {

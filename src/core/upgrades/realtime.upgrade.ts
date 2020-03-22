@@ -1,6 +1,6 @@
-import { UpgradeMiddlewareFactory } from '../interface';
-import { websocket } from '../upgrades/websocket.upgrade';
+import { UpgradeListenerFactory } from '../interface';
 import { log } from '../log';
+import { websocket } from '../upgrades/websocket.upgrade';
 import WebSocket = require('ws');
 
 export interface RealtimeUpgradeProperties {
@@ -31,7 +31,7 @@ export class Connection {
  * Connections are given a unique ID that can retrieve the user's WebSocket client via ConnectionMethods
  * or can be used to link internal data (such as user name or other user information) to the connection.
  */
-export const realtimeUpgrade: UpgradeMiddlewareFactory<RealtimeUpgradeProperties> = ({
+export const realtimeUpgrade: UpgradeListenerFactory<RealtimeUpgradeProperties> = ({
 	onInit,
 	onConnect,
 	onDisconnect,

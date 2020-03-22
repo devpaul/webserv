@@ -1,4 +1,4 @@
-import { UpgradeMiddlewareFactory } from '../interface';
+import { UpgradeListenerFactory } from '../interface';
 import { log } from '../log';
 import Server = require('http-proxy');
 
@@ -10,7 +10,7 @@ export interface ProxyProperties {
 /**
  * This connects a local websocket to a proxied websocket
  */
-export const proxyUpgrade: UpgradeMiddlewareFactory<ProxyProperties> = ({ baseUrl, proxy }) => {
+export const proxyUpgrade: UpgradeListenerFactory<ProxyProperties> = ({ baseUrl, proxy }) => {
 	return (request, socket, head) => {
 		log.debug(`Upgrade request for proxied "${baseUrl}"`);
 

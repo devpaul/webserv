@@ -1,5 +1,5 @@
-import { ProcessFactory } from '../interface';
 import { json, OptionsJson } from 'body-parser';
+import { ProcessFactory } from '../../interface';
 
 export const body: ProcessFactory<OptionsJson> = (options) => {
 	const bodyParser = json(options);
