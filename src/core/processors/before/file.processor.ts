@@ -1,9 +1,8 @@
 import BusBoy from 'busboy';
 import { IncomingMessage } from 'http';
-
-import { Process } from '../interface';
-import { log } from '../log';
-import BufferedResponse from '../util/BufferedResponse';
+import { Process } from '../../interface';
+import { log } from '../../log';
+import BufferedResponse from '../../util/BufferedResponse';
 
 export interface IncomingFile {
 	fieldName: string;

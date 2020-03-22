@@ -1,11 +1,10 @@
 import { createWriteStream, existsSync } from 'fs';
-import mkdirp = require('mkdirp');
 import { basename, join, resolve as resolvePath } from 'path';
-
 import { HttpError, HttpStatus } from '../HttpError';
 import { MiddlewareFactory } from '../interface';
 import { log } from '../log';
-import { hasIncomingFiles } from '../processors/file.processor';
+import { hasIncomingFiles } from '../processors/before/file.processor';
+import mkdirp = require('mkdirp');
 
 export interface SaveFilesProperties {
 	allowOverwrite?: boolean;

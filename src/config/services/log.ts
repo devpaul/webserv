@@ -1,6 +1,6 @@
 import { setLogLevel } from '../../core/log';
 import { response } from '../../core/middleware/response';
-import { body } from '../../core/processors/body.processor';
+import { body } from '../../core/processors/before/body.processor';
 import { logRequest } from '../../core/processors/log.processor';
 import { SimpleServiceLoader } from '../loader';
 

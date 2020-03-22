@@ -2,7 +2,7 @@
 import { resolve } from 'path';
 import { setLogLevel } from '../../src/core/log';
 import { ServerControls } from '../../src/core/servers/startServer';
-import { createServer, assertOk } from './_support/createServer';
+import { assertOk, createServer } from './_support/createServer';
 
 const { describe, it, beforeEach, afterEach } = intern.getPlugin('interface.bdd');
 

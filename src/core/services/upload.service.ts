@@ -1,15 +1,14 @@
 import { join } from 'path';
-
 import { Service } from '../app';
 import { method } from '../guards/method';
+import { pathGuard } from '../guards/path';
 import { Transform } from '../interface';
 import { saveFiles, SaveFilesProperties } from '../middleware/saveFiles';
 import { serve } from '../middleware/serve';
-import { fileProcessor } from '../processors/file.processor';
+import { serveFile } from '../middleware/serveFile';
+import { fileProcessor } from '../processors/before/file.processor';
 import { directoryTransform } from '../transforms/directory.transform';
 import { htmlTemplate } from '../util/htmlTemplate';
-import { pathGuard } from '../guards/path';
-import { serveFile } from '../middleware/serveFile';
 
 export interface UploadServiceProperties extends SaveFilesProperties {
 	path?: string;

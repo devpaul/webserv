@@ -1,14 +1,13 @@
 import { ServerResponse } from 'http';
-import { isHttpError } from './HttpError';
+import { HttpStatus, isHttpError } from './HttpError';
 import { Route, RouteDescriptor, Upgrade, UpgradeDescriptor } from './interface';
 import { log } from './log';
-import { route as createRoute } from './route';
+import { notFound } from './processors/after/notFound.processor';
+import { multiroute, route as createRoute } from './route';
 import { StartHttpConfig, startHttpServer } from './servers/createHttpServer';
 import { StartHttpsConfig, startHttpsServer } from './servers/createHttpsServer';
-import { createRequestHandler } from './servers/createRequestHandler';
-import { createUpgradeHandler } from './servers/createUpgradeHandler';
 import { ServerControls } from './servers/startServer';
-import { upgrade as createUpgrade } from './upgrades/upgrade';
+import { multiupgrade, upgrade as createUpgrade } from './upgrade';
 
 export type ErrorRequestHandler = (error: any, response: ServerResponse) => void;
 
@@ -22,6 +21,20 @@ export interface Service {
 }
 
 export type GlobalRoute = RouteDescriptor & { middleware: Route[] };
+
+export const globalErrorHandler: ErrorRequestHandler = (e, response) => {
+	let statusCode: HttpStatus = HttpStatus.InternalServerError;
+	if (isHttpError(e)) {
+		log.info(`HTTPError: ${e.statusCode}${e.message ? `. Reason "${e.message}"` : ''}`);
+		statusCode = e.statusCode;
+	} else {
+		log.info('General error. ' + e.message);
+	}
+	if (!response.finished) {
+		response.statusCode = statusCode;
+		response.end();
+	}
+};
 
 export class App {
 	readonly globalRoute: GlobalRoute = {
@@ -75,19 +88,14 @@ export class App {
 		if (this.controls) {
 			throw new Error('server already started');
 		}
-		const globalRoute = createRoute(this.globalRoute);
-		const onRequest = createRequestHandler(globalRoute, (e, response) => {
-			if (isHttpError(e)) {
-				log.info(`HTTPError: ${e.statusCode}${e.message ? `. Reason "${e.message}"` : ''}`);
-				response.statusCode = e.statusCode;
-				response.end();
-			} else {
-				log.info('General error. ' + e.message);
-				throw e;
+		const onRequest = multiroute([
+			{
+				middleware: [this.globalRoute],
+				after: [notFound],
+				errorHandler: globalErrorHandler
 			}
-		});
-		const globalUpgrader = createUpgrade({ upgrade: this.upgrades });
-		const onUpgrade = createUpgradeHandler(globalUpgrader);
+		]);
+		const onUpgrade = multiupgrade(this.upgrades);
 
 		if (type === 'http') {
 			this.controls = startHttpServer({

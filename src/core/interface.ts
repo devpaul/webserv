@@ -18,7 +18,7 @@ export type AsyncGuard = (request: IncomingMessage) => boolean | Promise<boolean
 
 export type GuardFactory<T extends object> = (options: T) => Guard;
 
-export type MiddlewareResult = object | string | void;
+export type MiddlewareResult = object | void;
 
 /**
  * Middleware handles a single request made to the server.
@@ -26,10 +26,9 @@ export type MiddlewareResult = object | string | void;
  * The preferred way to provide a response is by returning a MiddlewareResult from the middleware.
  * This may then be transformed by a Transform to supply a response in an acceptable format.
  */
-export type Middleware = (
-	request: IncomingMessage,
-	response: ServerResponse
-) => Promise<MiddlewareResult> | MiddlewareResult;
+export interface Middleware {
+	(request: IncomingMessage, response: ServerResponse): Promise<MiddlewareResult> | MiddlewareResult;
+}
 
 export type MiddlewareFactory<T extends object = {}> = (options: T) => Middleware;
 
@@ -48,21 +47,26 @@ export interface Route {
 	run: Middleware;
 }
 
+export type ErrorRequestHandler = (error: any, response: ServerResponse, result?: MiddlewareResult) => void;
+
 export interface RouteDescriptor {
 	before?: Process[];
 	guards?: Guard[];
 	middleware: Middleware | Array<Route | RouteDescriptor>;
 	transforms?: Transform[];
 	after?: Process[];
+	errorHandler?: ErrorRequestHandler;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Socket upgrades
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export type UpgradeMiddleware = (request: IncomingMessage, socket: Socket, head: Buffer) => Promise<void> | void;
+export type UpgradeListener = (request: IncomingMessage, socket: Socket, head: Buffer) => void | Promise<void>;
 
-export type UpgradeMiddlewareFactory<T extends object> = (options: T) => UpgradeMiddleware;
+export type UpgradeListenerFactory<T extends object> = (options: T) => UpgradeListener;
+
+export type UpgradeErrorHandler = (e: Error, socket?: Socket) => void;
 
 export interface Upgrade {
 	/**
@@ -72,10 +76,11 @@ export interface Upgrade {
 	/**
 	 * Upgrades the IncomingMessage to bidirectionally pass messages asynchronously using a socket
 	 */
-	run: UpgradeMiddleware;
+	run: UpgradeListener;
 }
 
 export interface UpgradeDescriptor {
 	guards?: AsyncGuard[];
-	upgrade: UpgradeMiddleware | Array<Upgrade | UpgradeDescriptor>;
+	upgrade: UpgradeListener | Array<Upgrade | UpgradeDescriptor>;
+	errorHandler?: UpgradeErrorHandler;
 }

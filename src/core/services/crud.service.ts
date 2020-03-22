@@ -1,11 +1,11 @@
 import { Service } from '../app';
 import { method } from '../guards/method';
+import { pathGuard } from '../guards/path';
 import { HttpError, HttpStatus } from '../HttpError';
-import { body } from '../processors/body.processor';
+import { RouteDescriptor } from '../interface';
+import { body } from '../processors/before/body.processor';
 import { jsonTransform } from '../transforms/json.transform';
 import { getParams } from '../util/request';
-import { pathGuard } from '../guards/path';
-import { RouteDescriptor } from '../interface';
 
 export interface CrudServiceProperties {
 	path?: string;
