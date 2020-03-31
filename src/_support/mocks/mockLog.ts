@@ -1,6 +1,6 @@
-import * as sinon from 'sinon';
+import sinonGlobal from 'sinon';
 
-export function mockLog(sandbox = sinon) {
+export function mockLog(sandbox = sinonGlobal) {
 	return {
 		error: sandbox.stub(),
 		warn: sandbox.stub(),

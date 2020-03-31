@@ -1,13 +1,12 @@
 /// <reference types="intern" />
 import { assert } from 'chai';
 import { before, describe, it } from 'intern/lib/interfaces/bdd';
+import { describeSuite } from '../../_support/describeSuite';
+import { setupMocks, setupSinon } from '../../_support/mocks';
 import { mockLog } from '../../_support/mocks/mockLog';
 import WebSocket = require('ws');
 
-import { describeSuite } from '../../_support/bdd';
-import { setupMocks, setupSinon } from '../../_support/mocks';
-
-describeSuite(__filename, () => {
+describeSuite(() => {
 	const sinon = setupSinon();
 	const websocketUpgrader = sinon.stub();
 	const mockWebSocketUpgrade = sinon.stub().returns(websocketUpgrader);

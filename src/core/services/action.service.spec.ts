@@ -1,12 +1,11 @@
 /// <reference types="intern" />
 import { assert } from 'chai';
 import { before, describe, it } from 'intern/lib/interfaces/bdd';
-
-import { describeSuite } from '../../_support/bdd';
+import { describeSuite } from '../../_support/describeSuite';
 import { setupMocks, setupSinon } from '../../_support/mocks';
-import { sendError, sendResponse, ActionServiceProperties } from './action.service';
+import { ActionServiceProperties, sendError, sendResponse } from './action.service';
 
-describeSuite(__filename, () => {
+describeSuite(() => {
 	const sinon = setupSinon();
 	const realtimeUpgradeMock = sinon.stub().returns({});
 	let actionService: typeof import('./action.service').actionService;

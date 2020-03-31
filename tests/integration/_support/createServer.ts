@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
-import { bootConfig, startServer } from '../../../src/config';
-import { App } from '../../../src/core/app';
+import { dirname } from 'path';
+import start, { loadConfig } from '../../../src/config';
 
 const { assert } = intern.getPlugin('chai');
 
@@ -31,12 +31,14 @@ export async function assertResponse(site: FetchRequest | string, expected?: obj
 }
 
 export async function createServer(configPath: string) {
-	const app = new App();
-	const config = {
-		...(await bootConfig(configPath, app)),
-		port: 3331
-	};
-	const controls = await startServer(app, config);
+	const { config, configPath: path } = await loadConfig(configPath);
+	const controls = await start(
+		{
+			...config,
+			port: 3331
+		},
+		{ workingDirectory: dirname(path) }
+	);
 
 	return controls;
 }

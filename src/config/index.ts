@@ -1,18 +1,26 @@
 import { exists } from 'fs';
-import { resolve, dirname } from 'path';
+import { dirname, join, resolve } from 'path';
+import { register, RegisterOptions } from 'ts-node';
 import { App } from '../core/app';
-import { getLoader, Environment } from './loader';
-import { startNgrok } from '../addons/ngrok';
+import { Environment, getLoader, setLoader } from './loader';
 
 export interface Config {
-	mode?: 'http' | 'https' | 'ngrok';
+	externals?: ExternalMap;
+	mode?: 'http' | 'https';
 	port?: number;
 	services?: ServiceConfig[];
+	tsConfig?: boolean | RegisterOptions;
 }
+
+export type ExternalMap = { [name: string]: ExternalConfig };
 
 export interface ServiceConfig {
 	name: string;
 	[key: string]: any;
+}
+
+export interface ExternalConfig {
+	path: string;
 }
 
 export interface LoadedConfig {
@@ -20,43 +28,46 @@ export interface LoadedConfig {
 	configPath: string;
 }
 
-function asyncExists(path: string) {
+function asyncExists(path: string): Promise<boolean> {
 	return new Promise((done) => {
 		exists(path, done);
 	});
 }
 
-export function loadConfigFile(path: string): LoadedConfig {
+/**
+ * Loads the configuration file from the provided path
+ */
+function loadConfigFile(path: string): LoadedConfig {
 	const configPath = resolve(path);
 	const config = require(configPath);
 
 	return { config, configPath };
 }
 
-export async function loadDefaultConfig(): Promise<LoadedConfig | undefined> {
+/**
+ * Loads the configuration file from the default location relative to the cwd
+ */
+async function loadDefaultConfig(): Promise<LoadedConfig | undefined> {
 	const configPath = resolve('./webserv.json');
 	if (await asyncExists(configPath)) {
 		const config = require(configPath);
 		return { config, configPath };
 	}
+	return undefined;
 }
 
-export function loadConfig(path?: string) {
-	return path ? loadConfigFile(path) : loadDefaultConfig();
-}
-
-export async function bootConfig(path?: string, app: App = new App()) {
-	const configMeta = await loadConfig(path);
-	if (configMeta) {
-		const { config, configPath } = configMeta;
-		const workingDirectory = dirname(configPath);
-		await bootServices(app, config.services, workingDirectory);
-		return config;
+function loadExternals(externals: Config['externals'] = {}, workingDirectory: string) {
+	for (let [name, config] of Object.entries(externals)) {
+		const path = resolve(join(workingDirectory, config.path));
+		setLoader(name, path);
 	}
 }
 
-export async function bootService(app: App, config: ServiceConfig, workingDirectory: string) {
+async function bootService(app: App, config: ServiceConfig, workingDirectory: string) {
 	const loader = getLoader(config.name);
+	if (!loader) {
+		throw new Error(`Service ${config.name} does not exist`);
+	}
 	const environment: Environment = {
 		configPath: workingDirectory,
 		properties: {}
@@ -65,9 +76,19 @@ export async function bootService(app: App, config: ServiceConfig, workingDirect
 	app.add(service);
 }
 
-export async function bootServices(app: App, configs: ServiceConfig[] = [], workingDirectory: string) {
+async function bootServices(app: App, configs: ServiceConfig[] = [], workingDirectory: string) {
 	for (let service of configs) {
 		await bootService(app, service, workingDirectory);
+	}
+}
+
+function checkRegisterTs(config: Config['tsConfig']) {
+	if (config) {
+		if (typeof config === 'boolean') {
+			register();
+		} else {
+			register(config);
+		}
 	}
 }
 
@@ -77,19 +98,41 @@ export async function startServer(app: App, config: Config = {}) {
 		port
 	});
 
-	if (mode === 'ngrok') {
-		await startNgrok(port);
-	}
-
 	return controls;
 }
 
-export default async function start(config: Config | string, app = new App()) {
+/**
+ * @returns a config at the provided path, the default config, or undefined if none exist
+ */
+export function loadConfig(path?: string) {
+	return path ? loadConfigFile(path) : loadDefaultConfig();
+}
+
+/**
+ * Starts a server from a config.
+ *
+ * Lifecycle for start:
+ *
+ * 1. load the configuration
+ * 2. load externals
+ * 3. boot services
+ * 4. start the server
+ *
+ * @param config a Config or a path that can be used to load a config
+ * @param app an App to manage the server
+ */
+export default async function start(
+	config: Config | string,
+	{ app = new App(), workingDirectory = process.cwd() } = {}
+) {
 	if (typeof config === 'string') {
-		const loadedConfig = await bootConfig(config, app);
-		return await startServer(app, loadedConfig);
-	} else {
-		await bootServices(app, config.services, process.cwd());
-		return startServer(app, config);
+		const configMeta = await loadConfig(config);
+		workingDirectory = dirname(configMeta.configPath);
+		config = configMeta.config;
 	}
+	checkRegisterTs(config.tsConfig);
+	loadExternals(config.externals, workingDirectory);
+	await bootServices(app, config.services, workingDirectory);
+	const controls = await startServer(app, config);
+	return { ...controls, app };
 }

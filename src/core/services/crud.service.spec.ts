@@ -2,7 +2,7 @@
 
 import { IncomingMessage } from 'http';
 import { eventuallyRejects } from '../../_support/assertions';
-import { describeSuite } from '../../_support/bdd';
+import { describeSuite } from '../../_support/describeSuite';
 import { setupSinon } from '../../_support/mocks';
 import { mockResponse } from '../../_support/mocks/mockResponse';
 import { Service } from '../app';
@@ -28,7 +28,7 @@ function createCrudService(config: Omit<CrudServiceProperties, 'path'>) {
 	return service;
 }
 
-describeSuite(__dirname, () => {
+describeSuite(() => {
 	const sinon = setupSinon();
 
 	function serviceFetch(service: Service, request: IncomingMessage) {

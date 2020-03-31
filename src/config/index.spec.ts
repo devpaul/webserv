@@ -1,78 +1,70 @@
 /// <reference types="intern" />
 
 import { App } from '../core/app';
+import automock, { automockInstance } from '../_support/automock';
+import { describeSuite } from '../_support/describeSuite';
 import { setupMocks, setupSinon } from '../_support/mocks';
 import { Environment } from './loader';
 
 const { assert } = intern.getPlugin('chai');
 const { describe, it, beforeEach } = intern.getPlugin('interface.bdd');
 
-describe('config/index', () => {
+describeSuite(() => {
 	const sinon = setupSinon();
-	const workingDirectory = '.';
+	const workingDirectory = process.cwd();
 	const env: Environment = {
 		configPath: workingDirectory,
 		properties: {}
 	};
 	const getLoaderMock = sinon.stub();
-	const startNgrokMock = sinon.stub();
-	setupMocks({
-		'./loader': { getLoader: getLoaderMock },
-		'../addons/ngrok': { startNgrok: startNgrokMock }
+	const mockPath = automock('path', sinon);
+	const mockFs = automock('fs', sinon);
+	setupMocks(
+		{
+			'ts-node': automock('ts-node', sinon),
+			fs: mockFs,
+			path: mockPath,
+			'./loader': { getLoader: getLoaderMock },
+			'../core/app': automock('../core/app', sinon)
+		},
+		['./index']
+	);
+	let mockedModule: typeof import('./index');
+
+	beforeEach(() => {
+		mockedModule = require('./index');
 	});
 
-	describe('bootService', () => {
-		let bootService: typeof import('./index').bootService;
+	// describe('bootService', () => {
+	// 	let bootService: typeof mockedModule.bootService;
 
-		beforeEach(() => {
-			bootService = require('./index').bootService;
-		});
+	// 	beforeEach(() => {
+	// 		bootService = mockedModule.bootService;
+	// 	});
 
-		it('gets a loader and calls it', async () => {
-			const app = new App();
-			const config = {
-				name: 'name'
-			};
-			const loader = sinon.stub().returns(Promise.resolve({}));
-			getLoaderMock.returns(loader);
+	// 	it('gets a loader and calls it', async () => {
+	// 		const app = new App();
+	// 		const config = {
+	// 			name: 'name'
+	// 		};
+	// 		const loader = sinon.stub().returns(Promise.resolve({}));
+	// 		getLoaderMock.returns(loader);
 
-			await bootService(app, config, workingDirectory);
-			assert.strictEqual(loader.callCount, 1);
-			assert.deepEqual(loader.firstCall.args, [config, env]);
-		});
-	});
-
-	describe('bootServices', () => {
-		let bootServices: typeof import('./index').bootServices;
-
-		beforeEach(() => {
-			bootServices = require('./index').bootServices;
-		});
-
-		it('gets multiple loaders and calls them in order', async () => {
-			const app = new App();
-			const configs = [{ name: 'name1' }, { name: 'name2' }];
-			const loader = sinon.stub().returns(Promise.resolve({}));
-			getLoaderMock.returns(loader);
-
-			const result = bootServices(app, configs, workingDirectory);
-			assert.isDefined(result);
-			await result;
-			assert.strictEqual(loader.callCount, 2);
-			assert.deepEqual(loader.firstCall.args, [configs[0], env]);
-			assert.deepEqual(loader.secondCall.args, [configs[1], env]);
-		});
-	});
+	// 		await bootService(app, config, workingDirectory);
+	// 		assert.strictEqual(loader.callCount, 1);
+	// 		assert.deepEqual(loader.firstCall.args, [config, env]);
+	// 	});
+	// });
 
 	describe('startServer', () => {
-		let startServer: typeof import('./index').startServer;
+		let startServer: typeof mockedModule.startServer;
 		const mockStart = sinon.stub();
 		const app: any = {
 			start: mockStart
 		} as const;
 
 		beforeEach(() => {
-			startServer = require('./index').startServer;
+			startServer = mockedModule.startServer;
 		});
 
 		it('starts the application server with defaults', async () => {
@@ -82,7 +74,6 @@ describe('config/index', () => {
 			const result = await startServer(app);
 
 			assert.strictEqual(result, controls);
-			assert.strictEqual(startNgrokMock.callCount, 0);
 			assert.strictEqual(mockStart.callCount, 1);
 			assert.deepEqual(mockStart.firstCall.args, ['http', { port: 8888 }]);
 		});
@@ -97,24 +88,35 @@ describe('config/index', () => {
 			});
 
 			assert.strictEqual(result, controls);
-			assert.strictEqual(startNgrokMock.callCount, 0);
 			assert.strictEqual(mockStart.callCount, 1);
 			assert.deepEqual(mockStart.firstCall.args, ['https', { port: 1024 }]);
 		});
+	});
 
-		it('starts ngrok', async () => {
-			const controls = {};
-			mockStart.returns(Promise.resolve(controls));
+	describe('start', () => {
+		let start: typeof mockedModule.default;
 
-			const result = await startServer(app, {
-				mode: 'ngrok'
-			});
+		beforeEach(() => {
+			start = mockedModule.default;
+		});
 
-			assert.strictEqual(result, controls);
-			assert.strictEqual(startNgrokMock.callCount, 1);
-			assert.deepEqual(startNgrokMock.firstCall.args, [8888]);
-			assert.strictEqual(mockStart.callCount, 1);
-			assert.deepEqual(mockStart.firstCall.args, ['http', { port: 8888 }]);
+		it('gets multiple loaders and calls them in order', async () => {
+			const mockApp = automockInstance(new App(), sinon);
+			const config = {
+				services: [{ name: 'name1' }, { name: 'name2' }]
+			};
+			const loader = sinon.stub().returns(Promise.resolve({}));
+			getLoaderMock.returns(loader);
+
+			const controls = start(config, { app: mockApp });
+			assert.isDefined(controls);
+			await controls;
+			assert.strictEqual(loader.callCount, 2);
+			// since a config; check to make sure the config was not loaded from disk
+			assert.strictEqual(mockPath.resolve.callCount, 0);
+			// check loaded services
+			assert.deepEqual(loader.firstCall.args, [config.services[0], env]);
+			assert.deepEqual(loader.secondCall.args, [config.services[1], env]);
 		});
 	});
 });
