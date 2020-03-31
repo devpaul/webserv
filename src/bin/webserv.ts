@@ -30,6 +30,11 @@ const argv = yargs
 		alias: 't',
 		describe: 'start a predefined service',
 		type: 'array'
+	})
+	.option('typescript', {
+		alias: 'tsConfig',
+		describe: 'use ts-node to load externals',
+		type: 'boolean'
 	}).argv;
 
 function defaultConfig() {

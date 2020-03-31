@@ -21,6 +21,7 @@ describeSuite(() => {
 	const mockFs = automock('fs', sinon);
 	setupMocks(
 		{
+			'ts-node': automock('ts-node', sinon),
 			fs: mockFs,
 			path: mockPath,
 			'./loader': { getLoader: getLoaderMock },

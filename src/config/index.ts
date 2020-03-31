@@ -1,16 +1,18 @@
 import { exists } from 'fs';
 import { dirname, join, resolve } from 'path';
+import { register, RegisterOptions } from 'ts-node';
 import { App } from '../core/app';
 import { Environment, getLoader, setLoader } from './loader';
 
 export interface Config {
+	externals?: ExternalMap;
 	mode?: 'http' | 'https';
 	port?: number;
 	services?: ServiceConfig[];
-	externals?: {
-		[name: string]: ExternalConfig;
-	};
+	tsConfig?: boolean | RegisterOptions;
 }
+
+export type ExternalMap = { [name: string]: ExternalConfig };
 
 export interface ServiceConfig {
 	name: string;
@@ -61,17 +63,6 @@ function loadExternals(externals: Config['externals'] = {}, workingDirectory: st
 	}
 }
 
-async function bootConfig(path?: string, app: App = new App()) {
-	const configMeta = await loadConfig(path);
-	if (configMeta) {
-		const { config, configPath } = configMeta;
-		const workingDirectory = dirname(configPath);
-		loadExternals(config.externals, workingDirectory);
-		await bootServices(app, config.services, workingDirectory);
-		return config;
-	}
-}
-
 async function bootService(app: App, config: ServiceConfig, workingDirectory: string) {
 	const loader = getLoader(config.name);
 	if (!loader) {
@@ -88,6 +79,16 @@ async function bootService(app: App, config: ServiceConfig, workingDirectory: st
 async function bootServices(app: App, configs: ServiceConfig[] = [], workingDirectory: string) {
 	for (let service of configs) {
 		await bootService(app, service, workingDirectory);
+	}
+}
+
+function checkRegisterTs(config: Config['tsConfig']) {
+	if (config) {
+		if (typeof config === 'boolean') {
+			register();
+		} else {
+			register(config);
+		}
 	}
 }
 
@@ -125,13 +126,13 @@ export default async function start(
 	{ app = new App(), workingDirectory = process.cwd() } = {}
 ) {
 	if (typeof config === 'string') {
-		const loadedConfig = await bootConfig(config, app);
-		const controls = await startServer(app, loadedConfig);
-		return { ...controls, app };
-	} else {
-		loadExternals(config.externals, workingDirectory);
-		await bootServices(app, config.services, workingDirectory);
-		const controls = await startServer(app, config);
-		return { ...controls, app };
+		const configMeta = await loadConfig(config);
+		workingDirectory = dirname(configMeta.configPath);
+		config = configMeta.config;
 	}
+	checkRegisterTs(config.tsConfig);
+	loadExternals(config.externals, workingDirectory);
+	await bootServices(app, config.services, workingDirectory);
+	const controls = await startServer(app, config);
+	return { ...controls, app };
 }
