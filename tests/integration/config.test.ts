@@ -2,7 +2,7 @@
 import { resolve } from 'path';
 import { setLogLevel } from '../../src/core/log';
 import { ServerControls } from '../../src/core/servers/startServer';
-import { assertOk, createServer } from './_support/createServer';
+import { assertOk, assertResponse, createServer } from './_support/createServer';
 
 const { describe, it, beforeEach, afterEach } = intern.getPlugin('interface.bdd');
 
@@ -40,5 +40,11 @@ describe('config tests', () => {
 			'http://localhost:3331/src/index',
 			'http://localhost:3331/assets/1.txt'
 		]);
+	});
+
+	it('boots a config with an external service', async () => {
+		const configPath = resolve(__dirname, '_servers', 'external', 'webserv.json');
+		controls = await createServer(configPath);
+		await assertResponse('http://localhost:3331', { hello: 'potato' });
 	});
 });

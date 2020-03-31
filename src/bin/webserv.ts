@@ -1,10 +1,9 @@
 #!/usr/bin/env node
+import { dirname } from 'path';
+import { FileConfig } from 'src/config/services/file';
+import { LogConfig } from 'src/config/services/log';
 import * as yargs from 'yargs';
-
-import { bootConfig, bootService, startServer } from '../config';
-import { bootFileService } from '../config/services/file';
-import { bootLogService } from '../config/services/log';
-import { App } from '../core/app';
+import start, { Config, loadConfig, ServiceConfig } from '../config';
 
 const argv = yargs
 	.options('config', {
@@ -20,7 +19,7 @@ const argv = yargs
 	.option('mode', {
 		alias: 'm',
 		describe: 'use http or https',
-		choices: ['http', 'https', 'ngrok']
+		choices: ['http', 'https']
 	})
 	.option('port', {
 		alias: 'p',
@@ -33,41 +32,26 @@ const argv = yargs
 		type: 'array'
 	}).argv;
 
-export async function start() {
-	const app = new App();
-	const basePath = process.cwd();
-
-	if (argv.log != null) {
-		app.add(await bootLogService({ level: argv.log || 'info' }));
+function defaultConfig() {
+	if (argv.config) {
+		throw new Error(`Config ${argv.config} not found`);
 	}
 
-	if (argv.type) {
-		const [name, options] = argv.type.map((val) => String(val));
-		const config = {
-			name,
-			...getConfig(name, options)
+	const config: Config = {
+		services: []
+	};
+
+	if (!argv.type) {
+		const fileServiceConfig: FileConfig & ServiceConfig = {
+			name: 'file',
+			paths: {
+				'*': '.'
+			}
 		};
-		bootService(app, config, basePath);
+		config.services.push(fileServiceConfig);
 	}
 
-	const config = await bootConfig(argv.config, app);
-	if (!config) {
-		if (argv.config) {
-			throw new Error(`Config ${argv.config} not found`);
-		}
-		if (!argv.type) {
-			app.add(
-				await bootFileService(
-					{
-						paths: { '*': '.' }
-					},
-					{ configPath: basePath, properties: {} }
-				)
-			);
-		}
-	}
-	const serverConfig = Object.assign({}, config, argv);
-	return startServer(app, serverConfig);
+	return config;
 }
 
 function getConfig(name: string, ...options: string[]) {
@@ -101,7 +85,34 @@ function getConfig(name: string, ...options: string[]) {
 	}
 }
 
-start().catch((err: Error) => {
+export async function run() {
+	const loadedConfig = await loadConfig(argv.config);
+	const config = loadedConfig ? loadedConfig.config : defaultConfig();
+	const workingDirectory = loadedConfig ? dirname(loadedConfig.configPath) : process.cwd();
+	config.services = config.services || [];
+	const { services } = config;
+
+	if (argv.log != null) {
+		const logConfig: LogConfig & ServiceConfig = {
+			name: 'log',
+			level: argv.log || 'info'
+		};
+		services.unshift(logConfig);
+	}
+
+	if (argv.type) {
+		const [name, options] = argv.type.map((val) => String(val));
+		services.push({
+			name,
+			...getConfig(name, options)
+		});
+	}
+
+	const serverConfig = Object.assign({}, config, argv);
+	return start(serverConfig, { workingDirectory });
+}
+
+run().catch((err: Error) => {
 	console.error('failed to start webserv');
 	console.error(`reason: ${err.message}`);
 	console.error(err.stack);
