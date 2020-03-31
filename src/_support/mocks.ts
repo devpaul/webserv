@@ -3,7 +3,7 @@ import { createSandbox, SinonSandbox } from 'sinon';
 
 const { before, after, afterEach } = intern.getPlugin('interface.bdd');
 
-export function startMocking(mocks: { [key: string]: any }) {
+export function startMocking(mocks: { [key: string]: any }, allowable: string[] = []) {
 	mockery.enable({
 		useCleanCache: true,
 		warnOnUnregistered: false
@@ -12,6 +12,7 @@ export function startMocking(mocks: { [key: string]: any }) {
 	for (let [name, mock] of Object.entries(mocks)) {
 		mockery.registerMock(name, mock);
 	}
+	mockery.registerAllowables(allowable);
 
 	return mocks;
 }
@@ -33,9 +34,9 @@ export function setupSinon(sinon: SinonSandbox = createSandbox()) {
 	return sinon;
 }
 
-export function setupMocks(mocks: { [key: string]: any }) {
+export function setupMocks(mocks: { [key: string]: any }, allowable: string[] = []) {
 	before(() => {
-		startMocking(mocks);
+		startMocking(mocks, allowable);
 	});
 
 	after(() => {

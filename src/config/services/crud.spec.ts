@@ -1,7 +1,7 @@
 /// <reference types="intern" />
 
+import { describeSuite } from '../../_support/describeSuite';
 import { setupMocks, setupSinon } from '../../_support/mocks';
-import { describeSuite } from '../../_support/bdd';
 import { Environment } from '../loader';
 
 const { assert } = intern.getPlugin('chai');
@@ -12,7 +12,7 @@ const env: Environment = {
 	properties: {}
 };
 
-describeSuite(__filename, () => {
+describeSuite(() => {
 	describe('bootCrudService', () => {
 		const sinon = setupSinon();
 		const mockCrudService = sinon.stub();

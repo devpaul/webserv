@@ -4,11 +4,11 @@ import { IncomingMessage } from 'http';
 import { describe, it } from 'intern/lib/interfaces/bdd';
 import { Socket } from 'net';
 import { eventuallyRejects } from '../_support/assertions';
-import { describeSuite } from '../_support/bdd';
+import { describeSuite } from '../_support/describeSuite';
 import { setupSinon } from '../_support/mocks';
 import { multiupgrade, upgrade } from './upgrade';
 
-describeSuite(__filename, () => {
+describeSuite(() => {
 	const sinon = setupSinon();
 	const request = {} as IncomingMessage;
 	const socket = {} as Socket;

@@ -1,18 +1,25 @@
 import { exists } from 'fs';
-import { resolve, dirname } from 'path';
-import { App } from '../core/app';
-import { getLoader, Environment } from './loader';
+import { dirname, resolve } from 'path';
 import { startNgrok } from '../addons/ngrok';
+import { App } from '../core/app';
+import { Environment, getLoader } from './loader';
 
 export interface Config {
 	mode?: 'http' | 'https' | 'ngrok';
 	port?: number;
 	services?: ServiceConfig[];
+	externals?: {
+		[name: string]: ExternalConfig;
+	};
 }
 
 export interface ServiceConfig {
 	name: string;
 	[key: string]: any;
+}
+
+export interface ExternalConfig {
+	path: string;
 }
 
 export interface LoadedConfig {
@@ -26,6 +33,9 @@ function asyncExists(path: string) {
 	});
 }
 
+/**
+ * Loads the configuration file from the provided path
+ */
 export function loadConfigFile(path: string): LoadedConfig {
 	const configPath = resolve(path);
 	const config = require(configPath);
@@ -33,6 +43,9 @@ export function loadConfigFile(path: string): LoadedConfig {
 	return { config, configPath };
 }
 
+/**
+ * Loads the configuration file from the default location relative to the cwd
+ */
 export async function loadDefaultConfig(): Promise<LoadedConfig | undefined> {
 	const configPath = resolve('./webserv.json');
 	if (await asyncExists(configPath)) {
@@ -41,6 +54,9 @@ export async function loadDefaultConfig(): Promise<LoadedConfig | undefined> {
 	}
 }
 
+/**
+ * @returns a config at the provided path, the default config, or undefined if none exist
+ */
 export function loadConfig(path?: string) {
 	return path ? loadConfigFile(path) : loadDefaultConfig();
 }
@@ -65,7 +81,7 @@ export async function bootService(app: App, config: ServiceConfig, workingDirect
 	app.add(service);
 }
 
-export async function bootServices(app: App, configs: ServiceConfig[] = [], workingDirectory: string) {
+async function bootServices(app: App, configs: ServiceConfig[] = [], workingDirectory: string) {
 	for (let service of configs) {
 		await bootService(app, service, workingDirectory);
 	}

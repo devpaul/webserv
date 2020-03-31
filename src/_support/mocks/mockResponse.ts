@@ -1,9 +1,8 @@
-import * as sinon from 'sinon';
-import { SinonSandbox } from 'sinon';
+import sinonGlobal, { SinonSandbox } from 'sinon';
 
 const { assert } = intern.getPlugin('chai');
 
-export function mockResponse(box: Pick<SinonSandbox, 'mock'> = sinon) {
+export function mockResponse(box: Pick<SinonSandbox, 'mock'> = sinonGlobal) {
 	return {
 		setHeader: box.mock(),
 		writeHead: box.mock().returnsThis(),

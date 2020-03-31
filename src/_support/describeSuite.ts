@@ -1,5 +1,6 @@
-import { resolve, relative as relativePath } from 'path';
 import { describe } from 'intern/lib/interfaces/bdd';
+import { relative as relativePath, resolve } from 'path';
+import { getCaller } from './getCaller';
 
 const SPEC_TEST_EXT_LEN = '.spec.ts'.length;
 
@@ -18,9 +19,9 @@ function trimSpec(path: string) {
 /**
  * Automatically generates the module under test's filename
  *
- * @param path the __filename from the module
  * @param cb a callback for the describe method
  */
-export function describeSuite(path: string, cb: () => void) {
-	describe(trimSpec(relative(path)), cb);
+export function describeSuite(cb: () => void) {
+	const moduleName = trimSpec(relative(getCaller()));
+	describe(moduleName, cb);
 }

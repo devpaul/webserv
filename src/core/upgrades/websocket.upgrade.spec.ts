@@ -1,13 +1,13 @@
 /// <reference types="intern" />
-import { describe, before, it } from 'intern/lib/interfaces/bdd';
 import { assert } from 'chai';
-import { describeSuite } from '../../_support/bdd';
-import { setupMocks, setupSinon } from '../../_support/mocks';
 import { IncomingMessage } from 'http';
+import { before, describe, it } from 'intern/lib/interfaces/bdd';
 import { Socket } from 'net';
+import { describeSuite } from '../../_support/describeSuite';
+import { setupMocks, setupSinon } from '../../_support/mocks';
 import { WebSocketProperties } from './websocket.upgrade';
 
-describeSuite(__filename, () => {
+describeSuite(() => {
 	let websocketUpgrade: typeof import('./websocket.upgrade').websocket;
 	const sinon = setupSinon();
 	const handleUpgradeMock = sinon.stub();
