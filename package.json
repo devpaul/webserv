@@ -31,7 +31,7 @@
     "clean": "shx rm -rf _dist",
     "copy": "run-s copy:src copy:package",
     "copy:src": "copyfiles src/**/*.html _dist",
-    "copy:package": "copyfiles README.md package.json LICENSE _dist",
+    "copy:package": "copyfiles README.md package.json LICENSE webserv.schema.json _dist",
     "dist": "run-s clean copy build:dist update:version",
     "dist:release": "run-s clean copy build:dist update:version:dist",
     "lint": "eslint ./src/**/*.ts",
