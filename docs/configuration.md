@@ -67,7 +67,7 @@ export interface Config {
 	thing?: string;
 }
 
-export function helloWorldLoader(config: Config): Service {
+export default function helloWorldLoader(config: Config): Service {
 	const thing = config.thing ?? 'world';
 	return {
 		route: {
