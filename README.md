@@ -9,13 +9,15 @@
 
 Webserv's aim is to have a fast, simple way to provide a backend to your projects. We want to enable developers to start working on their experience immediately. Webserv is not, nor will ever be a production-ready server (for that we recommend [Nestjs](https://nestjs.com/)). Instead it is a quick and easy way to start serving your app with zero thought or investment.
 
-Serve your folder right now without installing anything using `npx`.
+Serve a folder right now without installing anything using `npx`.
 
 ```
 npx webserv
 ```
 
 Webserv comes with standard server patterns. Start a proxy, CRUD server, upload, or log connections from the command-line. Have a more complex use case? `webserv` supports JSON configs and has a fully-typed programmatic API so you will *never* be stuck.
+
+Want to learn more? Read our [documentation](./docs).
 
 Interested? Start experimenting now on [Glitch](https://glitch.com)
 
@@ -33,7 +35,7 @@ webserv -m https -t file ./_dist -p 9999
 
 ### Command-line Options
 
-#### -m, --mode {http | https }
+#### -m, --mode { http | https }
 
 Create a `http` or `https` server (defaults to http)
 
