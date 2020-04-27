@@ -1,0 +1,16 @@
+{
+	"externals": {
+		"hello": {
+			"path": "./services/hello"
+		}
+	},
+	"servers": [
+		{
+			"services": [
+				{
+					"name": "hello"
+				}
+			]
+		}
+	]
+}

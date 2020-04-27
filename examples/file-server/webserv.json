@@ -1,0 +1,19 @@
+{
+	"servers": [
+		{
+			"port": 2020,
+			"services": [
+				{
+					"name": "file",
+					"paths": {
+						"*": "."
+					},
+					"showDirectoryContents": true
+				},
+				{
+					"name": "log"
+				}
+			]
+		}
+	]
+}
