@@ -1,5 +1,4 @@
 /// <reference types="intern" />
-import { join } from 'path';
 import { ServerControls } from '../../src/core/servers/startServer';
 import { examples } from './_support/config';
 import { assertResponse, createServer } from './_support/createServer';
@@ -17,7 +16,7 @@ describe('crud server test', () => {
 	});
 
 	it('file crud service', async () => {
-		const configPath = join(examples, 'crud', 'webserv.json');
+		const configPath = examples('crud', 'webserv.json');
 		controls = await createServer(configPath);
 		await assertResponse('http://localhost:3331/', [{ id: 'one' }, { id: 'two' }]);
 		await assertResponse('http://localhost:3331/one/', { id: 'one' });

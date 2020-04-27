@@ -1,21 +1,21 @@
 /// <reference types="intern" />
 import Ajv from 'ajv';
-import { join, relative } from 'path';
+import { relative } from 'path';
 import { inspect } from 'util';
-import { examples } from './_support/config';
+import { examples, projectRoot, servers } from './_support/config';
 
 const { describe, it } = intern.getPlugin('interface.bdd');
 const { assert } = intern.getPlugin('chai');
 
 describe('schema validations', () => {
 	const ajv = new Ajv();
-	const validate = ajv.compile(require('../../webserv.schema.json'));
+	const validate = ajv.compile(require(projectRoot('webserv.schema.json')));
 	const configs = [
-		'./_assets/webserv_config1.json',
-		'./_assets/webserv_multiple_services.json',
-		join(examples, '/crud/', 'webserv.json'),
-		join(examples, '/file-host/', 'webserv.json'),
-		join(examples, '/hello-world/', 'webserv.json')
+		servers('webserv-multiple-services.json'),
+		servers('webserv-file-server.json'),
+		examples('/crud/', 'webserv.json'),
+		examples('/file-host/', 'webserv.json'),
+		examples('/hello-world/', 'webserv.json')
 	];
 
 	for (let config of configs) {

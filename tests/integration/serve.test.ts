@@ -1,7 +1,6 @@
 /// <reference types="intern" />
 
 import fetch from 'node-fetch';
-import { join } from 'path';
 import { createSandbox } from 'sinon';
 import { isHttpError } from '../../src/core/HttpError';
 import { setLogLevel } from '../../src/core/log';
@@ -9,6 +8,7 @@ import { multiroute } from '../../src/core/route';
 import { startHttpServer } from '../../src/core/servers/createHttpServer';
 import { ServerControls } from '../../src/core/servers/startServer';
 import { fileService } from '../../src/core/services/file.service';
+import { servers } from './_support/config';
 import { detectEol } from './_support/eol';
 
 const { assert } = intern.getPlugin('chai');
@@ -24,7 +24,7 @@ describe('serve tests', () => {
 	before(async () => {
 		setLogLevel('warn');
 		const service = fileService({
-			basePath: join(__dirname, '_assets/sample1')
+			basePath: servers('assets', 'sample1')
 		});
 		service.route.errorHandler = (err, response) => {
 			if (isHttpError(err)) {
