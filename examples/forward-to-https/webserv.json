@@ -1,0 +1,23 @@
+{
+	"servers": [
+		{
+			"name": "http-forwarder",
+			"description": "This is a http server that redirects to the https server",
+			"port": 8080
+		},
+		{
+			"name": "secure-server",
+			"type": "https",
+			"port": 8443,
+			"services": [
+				{
+					"name": "file",
+					"basePath": "./assets",
+					"paths": {
+						"*": "."
+					}
+				}
+			]
+		}
+	]
+}

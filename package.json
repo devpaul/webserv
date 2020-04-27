@@ -37,6 +37,7 @@
     "example:crud": "ts-node ./src/bin/webserv -c ./examples/crud/webserv.json",
     "example:file": "ts-node ./src/bin/webserv -c ./examples/file-host/webserv.json",
     "example:hello": "ts-node ./src/bin/webserv -c ./examples/hello-world/webserv.json",
+    "example:https": "ts-node ./src/bin/webserv -c ./examples/forward-to-https/webserv.json",
     "lint": "eslint ./src/**/*.ts",
     "local": "npx -p file://./_dist webserv",
     "pretty": "prettier --write ./src/**",
