@@ -1,23 +1,21 @@
 /// <reference types="intern" />
 import { examples } from '../_support/config';
-import { assertResponse, createServer } from '../_support/createServer';
+import { assertOk, createServer } from '../_support/createServer';
 import { createJanitor, wrapServers } from '../_support/janitor';
 import { testLogLevel } from '../_support/testLogLevel';
 
 const { describe, it } = intern.getPlugin('interface.bdd');
 
-describe('crud example', () => {
+describe('file-host example', () => {
 	const janitor = createJanitor('afterEach');
 
 	testLogLevel('warn');
 
-	it('test crud', async () => {
-		const configPath = examples('crud', 'webserv.json');
+	it('test file-host', async () => {
+		const configPath = examples('file-host', 'webserv.json');
 		const servers = await createServer(configPath, [{ port: 3331 }]);
 		janitor.track(...servers.map(wrapServers));
 
-		await assertResponse('http://localhost:3331/', [{ id: 'one' }, { id: 'two' }]);
-		await assertResponse('http://localhost:3331/one/', { id: 'one' });
-		await assertResponse('http://localhost:3331/two', { id: 'two' });
+		await assertOk(['http://localhost:3331/', 'http://localhost:3331/files/']);
 	});
 });
