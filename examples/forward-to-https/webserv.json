@@ -3,7 +3,13 @@
 		{
 			"name": "http-forwarder",
 			"description": "This is a http server that redirects to the https server",
-			"port": 8080
+			"port": 8080,
+			"services": [
+				{
+					"name": "forward",
+					"forward": "https://localhost:8443"
+				}
+			]
 		},
 		{
 			"name": "secure-server",

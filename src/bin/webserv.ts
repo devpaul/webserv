@@ -103,7 +103,7 @@ export async function run() {
 		console.warn('Multiple servers defined. Command line arguments will apply to the first server.');
 	}
 
-	argv.log ?? (config.logLevel = argv.log);
+	argv.log && (config.logLevel = argv.log);
 
 	if (argv.type) {
 		const [name, options] = argv.type.map((val) => String(val));
@@ -113,8 +113,8 @@ export async function run() {
 		});
 	}
 
-	argv.port ?? (server.port = argv.port);
-	argv.mode ?? (server.type = argv.mode as 'http' | 'https');
+	argv.port && (server.port = argv.port);
+	argv.mode && (server.type = argv.mode as 'http' | 'https');
 
 	return start(config, { configPath: workingDirectory });
 }

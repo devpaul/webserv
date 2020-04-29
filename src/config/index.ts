@@ -1,6 +1,7 @@
 import { dirname } from 'path';
+import { inspect } from 'util';
 import { App } from '../core/app';
-import { setLogLevel } from '../core/log';
+import { log, setLogLevel } from '../core/log';
 import { ServerControls } from '../core/servers/startServer';
 import { Environment, isEnvironment } from './loader';
 import { checkRegisterTs } from './utils/addons';
@@ -33,6 +34,9 @@ export default async function start(config: Config | string, envConfig: Partial<
 	if (config.logLevel) {
 		setLogLevel(config.logLevel);
 	}
+
+	log.debug('Using config', inspect(config, { depth: 5 }));
+
 	const env = isEnvironment(envConfig)
 		? envConfig
 		: {
@@ -43,7 +47,8 @@ export default async function start(config: Config | string, envConfig: Partial<
 	loadExternals(config.externals, env);
 	const servers: ServerControls[] = [];
 	for (let server of config.servers) {
-		servers.push(await bootServer(server, env));
+		const controls = await bootServer(server, env);
+		servers.push(controls);
 	}
 	return { servers, app };
 }
