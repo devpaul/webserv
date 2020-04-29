@@ -1,6 +1,5 @@
 import { dirname } from 'path';
 import { inspect } from 'util';
-import { App } from '../core/app';
 import { log, setLogLevel } from '../core/log';
 import { ServerControls } from '../core/servers/startServer';
 import { Environment, isEnvironment } from './loader';
@@ -23,7 +22,7 @@ import { bootServer } from './utils/server';
  * @param config a Config or a path that can be used to load a config
  * @param app an App to manage the server
  */
-export default async function start(config: Config | string, envConfig: Partial<Environment> = {}, app = new App()) {
+export default async function start(config: Config | string, envConfig: Partial<Environment> = {}) {
 	if (typeof config === 'string') {
 		const configMeta = await loadConfig(config);
 		if (!envConfig.configPath) {
@@ -50,5 +49,5 @@ export default async function start(config: Config | string, envConfig: Partial<
 		const controls = await bootServer(server, env);
 		servers.push(controls);
 	}
-	return { servers, app };
+	return servers;
 }

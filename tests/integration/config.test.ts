@@ -11,7 +11,7 @@ describe('config tests', () => {
 	testLogLevel('warn');
 
 	it('boots a simple file server config', async () => {
-		const { servers } = await createServer(serverPath('webserv-file-server.json'));
+		const servers = await createServer(serverPath('webserv-file-server.json'));
 		janitor.track(...servers.map(wrapServers));
 
 		await assertOk([

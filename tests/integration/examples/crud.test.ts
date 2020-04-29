@@ -13,7 +13,7 @@ describe('crud server test', () => {
 
 	it('file crud service', async () => {
 		const configPath = examples('crud', 'webserv.json');
-		const { servers } = await createServer(configPath, [{ port: 3331 }]);
+		const servers = await createServer(configPath, [{ port: 3331 }]);
 		janitor.track(...servers.map(wrapServers));
 
 		await assertResponse('http://localhost:3331/', [{ id: 'one' }, { id: 'two' }]);
