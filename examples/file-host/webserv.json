@@ -3,19 +3,21 @@
 		{
 			"services": [
 				{
-					"name": "upload",
-					"path": "/upload/*",
-					"directory": "./uploads",
-					"createUploadDirectory": true,
-					"allowOverwrite": true
-				},
-				{
 					"name": "file",
 					"basePath": ".",
 					"showDirectoryContents": true,
+					"searchDefaults": [],
+					"extensions": [],
 					"paths": {
-						"*": "./uploads"
+						"/files*": "./uploads"
 					}
+				},
+				{
+					"name": "upload",
+					"path": "/*",
+					"directory": "./uploads",
+					"createUploadDirectory": true,
+					"allowOverwrite": true
 				}
 			]
 		}

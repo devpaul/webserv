@@ -1,5 +1,4 @@
 {
-	"logLevel": "debug",
 	"servers": [
 		{
 			"port": 4110,

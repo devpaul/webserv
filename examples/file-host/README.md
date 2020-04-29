@@ -12,6 +12,6 @@ run `webserv` in this directory
 
 ## Usage
 
-Visit http://localhost:8888/upload/ to get to the upload page
+Visit http://localhost:8888/ to get to the upload page
 
-Visit http://locahost:8888 to see a list of uploaded files
+Visit http://locahost:8888/files to see a list of uploaded files

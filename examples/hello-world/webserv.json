@@ -1,5 +1,4 @@
 {
-	"logLevel": "debug",
 	"externals": {
 		"hello": {
 			"path": "./services/hello"
