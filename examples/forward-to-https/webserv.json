@@ -1,4 +1,9 @@
 {
+	"externals": {
+		"forward": {
+			"path": "./services/forward"
+		}
+	},
 	"servers": [
 		{
 			"name": "http-forwarder",
@@ -7,7 +12,7 @@
 			"services": [
 				{
 					"name": "forward",
-					"forward": "https://localhost:8443"
+					"location": "https://localhost:8443"
 				}
 			]
 		},
