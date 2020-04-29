@@ -1,6 +1,9 @@
 import fetch from 'node-fetch';
 import { dirname } from 'path';
-import start, { loadConfig } from '../../../src/config';
+import start from '../../../src/config';
+import { Environment } from '../../../src/config/loader';
+import { loadConfig } from '../../../src/config/utils/config';
+import { Server } from '../../../src/config/utils/server';
 
 const { assert } = intern.getPlugin('chai');
 
@@ -30,15 +33,19 @@ export async function assertResponse(site: FetchRequest | string, expected?: obj
 	expected && assert.deepEqual(await result.json(), expected);
 }
 
-export async function createServer(configPath: string) {
+export async function createServer(configPath: string, serverOverrides: Partial<Server>[] = []) {
 	const { config, configPath: path } = await loadConfig(configPath);
-	const controls = await start(
-		{
-			...config,
-			port: 3331
-		},
-		{ workingDirectory: dirname(path) }
-	);
+	const env: Environment = {
+		configPath: dirname(path)
+	};
+	for (let i = 0; i < serverOverrides.length; i++) {
+		const override = serverOverrides[i];
+		const server = config.servers[i];
+		config.servers[i] = {
+			...server,
+			...override
+		};
+	}
 
-	return controls;
+	return await start(config, env);
 }

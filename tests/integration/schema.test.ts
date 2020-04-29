@@ -11,11 +11,12 @@ describe('schema validations', () => {
 	const ajv = new Ajv();
 	const validate = ajv.compile(require(projectRoot('webserv.schema.json')));
 	const configs = [
-		servers('webserv-multiple-services.json'),
 		servers('webserv-file-server.json'),
 		examples('/crud/', 'webserv.json'),
 		examples('/file-host/', 'webserv.json'),
-		examples('/hello-world/', 'webserv.json')
+		examples('/forward-to-https/', 'webserv.json'),
+		examples('/hello-world/', 'webserv.json'),
+		examples('/proxy/', 'webserv.json')
 	];
 
 	for (let config of configs) {

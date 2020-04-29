@@ -1,10 +1,11 @@
 {
 	"servers": [
 		{
+			"port": 3331,
 			"services": [
 				{
 					"name": "file",
-					"basePath": ".",
+					"basePath": "./assets",
 					"paths": {
 						"/src/*": "./sample1/js",
 						"/assets/*": "./sample1/child",
