@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 import { dirname } from 'path';
-import { FileConfig } from 'src/config/services/file';
-import { LogConfig } from 'src/config/services/log';
 import * as yargs from 'yargs';
-import start, { Config, loadConfig, ServiceConfig } from '../config';
+import start from '../config';
+import { FileConfig } from '../config/services/file';
+import { Config, loadConfig } from '../config/utils/config';
+import { Server, ServiceConfig } from '../config/utils/server';
 
 const argv = yargs
 	.options('config', {
@@ -37,12 +38,12 @@ const argv = yargs
 		type: 'boolean'
 	}).argv;
 
-function defaultConfig() {
+function defaultConfig(): Config {
 	if (argv.config) {
 		throw new Error(`Config ${argv.config} not found`);
 	}
 
-	const config: Config = {
+	const serverConfig: Server = {
 		services: []
 	};
 
@@ -53,10 +54,12 @@ function defaultConfig() {
 				'*': '.'
 			}
 		};
-		config.services.push(fileServiceConfig);
+		serverConfig.services.push(fileServiceConfig);
 	}
 
-	return config;
+	return {
+		servers: [serverConfig]
+	};
 }
 
 function getConfig(name: string, ...options: string[]) {
@@ -94,27 +97,26 @@ export async function run() {
 	const loadedConfig = await loadConfig(argv.config);
 	const config = loadedConfig ? loadedConfig.config : defaultConfig();
 	const workingDirectory = loadedConfig ? dirname(loadedConfig.configPath) : process.cwd();
-	config.services = config.services || [];
-	const { services } = config;
+	const server = config.servers[0];
 
-	if (argv.log != null) {
-		const logConfig: LogConfig & ServiceConfig = {
-			name: 'log',
-			level: argv.log || 'info'
-		};
-		services.unshift(logConfig);
+	if (config.servers.length > 1 && (argv.type || argv.port || argv.mode)) {
+		console.warn('Multiple servers defined. Command line arguments will apply to the first server.');
 	}
+
+	argv.log ?? (config.logLevel = argv.log);
 
 	if (argv.type) {
 		const [name, options] = argv.type.map((val) => String(val));
-		services.push({
+		server.services.push({
 			name,
 			...getConfig(name, options)
 		});
 	}
 
-	const serverConfig = Object.assign({}, config, argv);
-	return start(serverConfig, { workingDirectory });
+	argv.port ?? (server.port = argv.port);
+	argv.mode ?? (server.type = argv.mode as 'http' | 'https');
+
+	return start(config, { configPath: workingDirectory });
 }
 
 run().catch((err: Error) => {
