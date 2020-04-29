@@ -1,0 +1,14 @@
+{
+	"servers": [
+		{
+			"port": 4110,
+			"services": [
+				{
+					"name": "proxy",
+					"changeOrigin": true,
+					"forward": "http://devpaul.com"
+				}
+			]
+		}
+	]
+}
