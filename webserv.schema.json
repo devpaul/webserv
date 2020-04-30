@@ -474,7 +474,7 @@
 					"then": {
 						"description": "A basic upload service",
 						"properties": {
-							"path": {
+							"route": {
 								"type": "string",
 								"description": "the base route for the upload service"
 							},
