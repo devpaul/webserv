@@ -16,7 +16,7 @@ describe('config/services/upload', () => {
 	describe('bootUploadService', () => {
 		it('Adds an upload route', async () => {
 			const config = {
-				path: '*',
+				route: '*',
 				directory: '.'
 			};
 			const service = (await bootUploadService(config, env)) as Service;

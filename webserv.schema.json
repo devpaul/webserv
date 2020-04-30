@@ -249,7 +249,7 @@
 					"then": {
 						"description": "The crud service provides in-memory create, read, update, delete (and list) operations",
 						"properties": {
-							"path": {
+							"route": {
 								"type": "string",
 								"description": "the base route for this service"
 							},
@@ -295,7 +295,7 @@
 							}
 						},
 						"required": [
-							"path"
+							"route"
 						]
 					}
 				},
@@ -314,7 +314,7 @@
 								"type": "string",
 								"description": "the top-level url for this route"
 							},
-							"paths": {
+							"routes": {
 								"type": "object",
 								"description": "a map of routes to file paths to serve file and directories"
 							},
@@ -354,10 +354,6 @@
 					"then": {
 						"description": "adds console logging and (optionally) a log server",
 						"properties": {
-							"level": {
-								"type": "string",
-								"description": "changes the logging level of the application server. Default \"log\"."
-							},
 							"respondOK": {
 								"type": "boolean",
 								"description": "if the server should return 200 after every request. Useful for quickly logging something to console for visibility."
@@ -376,7 +372,7 @@
 					"then": {
 						"description": "proxies requests to another server",
 						"properties": {
-							"baseDir": {
+							"route": {
 								"type": "string",
 								"description": "the top-level route for this proxy"
 							},
@@ -478,7 +474,7 @@
 					"then": {
 						"description": "A basic upload service",
 						"properties": {
-							"path": {
+							"route": {
 								"type": "string",
 								"description": "the base route for the upload service"
 							},

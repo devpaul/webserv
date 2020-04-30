@@ -8,13 +8,13 @@
 					"showDirectoryContents": true,
 					"searchDefaults": [],
 					"extensions": [],
-					"paths": {
+					"routes": {
 						"/files*": "./uploads"
 					}
 				},
 				{
 					"name": "upload",
-					"path": "/*",
+					"route": "/*",
 					"directory": "./uploads",
 					"createUploadDirectory": true,
 					"allowOverwrite": true

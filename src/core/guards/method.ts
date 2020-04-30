@@ -13,9 +13,9 @@ export const methodGuard: GuardFactory<MethodGuardProperties> = ({ method }) => 
 };
 
 const routeGuard = (method: HttpMethod) => {
-	return (path?: PathGuardProperties['match']) => {
-		if (path) {
-			return every({ guards: [methodGuard({ method }), pathGuard({ match: path })] });
+	return (route?: PathGuardProperties['match']) => {
+		if (route) {
+			return every({ guards: [methodGuard({ method }), pathGuard({ match: route })] });
 		}
 		return methodGuard({ method });
 	};

@@ -1,11 +1,11 @@
 import { resolve } from 'path';
+import { RequireSome } from '../../core/interface';
+import { crudService, CrudServiceProperties, Record } from '../../core/services/crud.service';
 import { readDir } from '../../core/util/file/readDir';
 import { readJsonFile } from '../../core/util/file/readFile';
-import { crudService, CrudServiceProperties, Record } from '../../core/services/crud.service';
 import { ServiceLoader } from '../loader';
 
-export interface CrudConfig extends CrudServiceProperties {
-	path: string;
+export interface CrudConfig extends RequireSome<CrudServiceProperties, 'route'> {
 	/** load crud data from disk */
 	loadData?: {
 		path: string;

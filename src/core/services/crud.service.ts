@@ -2,13 +2,12 @@ import { Service } from '../app';
 import { method } from '../guards/method';
 import { pathGuard } from '../guards/path';
 import { HttpError, HttpStatus } from '../HttpError';
-import { RouteDescriptor } from '../interface';
+import { RouteDescriptor, RouteProperties } from '../interface';
 import { body } from '../processors/before/body.processor';
 import { jsonTransform } from '../transforms/json.transform';
 import { getParams } from '../util/request';
 
-export interface CrudServiceProperties {
-	path?: string;
+export interface CrudServiceProperties extends RouteProperties {
 	data?: Record[];
 	operations?: Operation[];
 	dataLoader?: DataLoader;
@@ -66,12 +65,12 @@ function defaultLoader(id?: string): Promise<Record> | Record | Promise<Record[]
  */
 export function crudService(props: CrudServiceProperties): Service {
 	const {
-		path = '/',
+		route = '/',
 		data = [],
 		operations = ['list', 'create', 'read', 'update', 'delete'],
 		dataLoader = defaultLoader
 	} = props;
-	const expandedPath = path.charAt(path.length - 1) === '*' ? path : `${path}*`;
+	const expandedRoute = route.charAt(route.length - 1) === '*' ? route : `${route}*`;
 	const store: Map<string, Record | Symbol> = new Map(data.map((data) => [data.id, data]));
 	const getRecord = (id: string) => (store.has(id) ? store.get(id) : dataLoader(id));
 	const middlewares: { [P in Operation]: RouteDescriptor } = {
@@ -142,7 +141,7 @@ export function crudService(props: CrudServiceProperties): Service {
 
 	return {
 		route: {
-			guards: [pathGuard({ match: expandedPath })],
+			guards: [pathGuard({ match: expandedRoute })],
 			before: [body({})],
 			transforms: [jsonTransform],
 			middleware: Object.entries(middlewares)

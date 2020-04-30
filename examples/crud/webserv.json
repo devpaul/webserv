@@ -4,7 +4,7 @@
 			"services": [
 				{
 					"name": "crud",
-					"path": "/",
+					"route": "/",
 					"loadData": {
 						"path": "./data"
 					}

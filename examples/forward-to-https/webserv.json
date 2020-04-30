@@ -24,7 +24,7 @@
 				{
 					"name": "file",
 					"basePath": "./assets",
-					"paths": {
+					"routes": {
 						"*": "."
 					}
 				}

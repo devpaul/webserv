@@ -50,7 +50,7 @@ function defaultConfig(): Config {
 	if (!argv.type) {
 		const fileServiceConfig: FileConfig & ServiceConfig = {
 			name: 'file',
-			paths: {
+			routes: {
 				'*': '.'
 			}
 		};

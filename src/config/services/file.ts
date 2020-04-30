@@ -5,18 +5,18 @@ import { ServiceLoader } from '../loader';
 
 export interface FileConfig extends Omit<FileServiceProperties, 'basePath' | 'path'> {
 	basePath?: string;
-	paths: { [key: string]: string };
+	routes: { [key: string]: string };
 }
 
 export const bootFileService: ServiceLoader<FileConfig> = (config, { configPath }) => {
-	const { paths = {}, basePath, ...extraConfig } = config;
+	const { routes = {}, basePath, ...extraConfig } = config;
 	const absolutePath = basePath ? resolve(configPath, basePath) : resolve(configPath);
-	return Object.entries(paths).map(([key, path]) => {
+	return Object.entries(routes).map(([key, path]) => {
 		const mappingBasePath = join(absolutePath, path);
 		log.debug(`Serving mapping ${key} to ${mappingBasePath}`);
 		return fileService({
 			...extraConfig,
-			path: key,
+			route: key,
 			basePath: mappingBasePath
 		});
 	});

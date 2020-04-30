@@ -2,7 +2,7 @@ import { join } from 'path';
 import { Service } from '../app';
 import { method } from '../guards/method';
 import { pathGuard } from '../guards/path';
-import { Transform } from '../interface';
+import { RouteProperties, Transform } from '../interface';
 import { saveFiles, SaveFilesProperties } from '../middleware/saveFiles';
 import { serve } from '../middleware/serve';
 import { serveFile } from '../middleware/serveFile';
@@ -10,16 +10,14 @@ import { fileProcessor } from '../processors/before/file.processor';
 import { directoryTransform } from '../transforms/directory.transform';
 import { htmlTemplate } from '../util/htmlTemplate';
 
-export interface UploadServiceProperties extends SaveFilesProperties {
-	path?: string;
-}
+export interface UploadServiceProperties extends SaveFilesProperties, RouteProperties {}
 
 export function uploadService(props: UploadServiceProperties): Service {
-	const { path = '*', directory } = props;
+	const { route = '*', directory } = props;
 
 	return {
 		route: {
-			guards: [pathGuard({ match: path })],
+			guards: [pathGuard({ match: route })],
 			middleware: [
 				{
 					before: [fileProcessor],

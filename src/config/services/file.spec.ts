@@ -1,7 +1,7 @@
 /// <reference types="intern" />
 
-import { setupSinon, setupMocks } from '../../_support/mocks';
 import { resolve } from 'path';
+import { setupMocks, setupSinon } from '../../_support/mocks';
 import { Environment } from '../loader';
 
 const { assert } = intern.getPlugin('chai');
@@ -29,7 +29,7 @@ describe('config/services/file', () => {
 
 		it('creates a single route from a path', async () => {
 			const config = {
-				paths: {
+				routes: {
 					'*': '.'
 				}
 			};
@@ -39,14 +39,14 @@ describe('config/services/file', () => {
 			assert.isArray(service);
 			assert.isTrue(mockFileService.calledOnce);
 			assert.deepEqual(mockFileService.firstCall.args[0], {
-				path: '*',
+				route: '*',
 				basePath: resolve('configPath')
 			});
 		});
 
 		it('creates multiple routes from a list of paths', async () => {
 			const config = {
-				paths: {
+				routes: {
 					'/uploads/*': './uploads',
 					'*': '.'
 				}
@@ -57,11 +57,11 @@ describe('config/services/file', () => {
 			assert.isArray(service);
 			assert.isTrue(mockFileService.calledTwice);
 			assert.deepEqual(mockFileService.firstCall.args[0], {
-				path: '/uploads/*',
+				route: '/uploads/*',
 				basePath: resolve('configPath/uploads')
 			});
 			assert.deepEqual(mockFileService.secondCall.args[0], {
-				path: '*',
+				route: '*',
 				basePath: resolve('configPath')
 			});
 		});
@@ -69,7 +69,7 @@ describe('config/services/file', () => {
 		it('creates a route using a basePath', async () => {
 			const config = {
 				basePath: 'serve',
-				paths: {
+				routes: {
 					'*': '.'
 				}
 			};
@@ -79,7 +79,7 @@ describe('config/services/file', () => {
 			assert.isArray(service);
 			assert.isTrue(mockFileService.calledOnce);
 			assert.deepEqual(mockFileService.firstCall.args[0], {
-				path: '*',
+				route: '*',
 				basePath: resolve('configPath/serve')
 			});
 		});

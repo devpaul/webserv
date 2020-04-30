@@ -31,17 +31,6 @@ describe('config/services/log', () => {
 			assert.lengthOf(service.global.before, 2);
 		});
 
-		it('sets the log level when level is passed', async () => {
-			const config = {
-				level: 'taco'
-			};
-			const service = await bootLogService(config);
-
-			assert.isNotArray(service);
-			assert.strictEqual(setLogLevelMock.callCount, 1);
-			assert.strictEqual(setLogLevelMock.firstCall.args[0], 'taco');
-		});
-
 		it('adds a route when respondOk is true', async () => {
 			const config = {
 				respondOk: true
