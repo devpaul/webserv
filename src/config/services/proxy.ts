@@ -9,6 +9,7 @@ export const bootProxyService: SimpleServiceLoader<ProxyConfig> = (config) => {
 		target,
 		changeOrigin,
 		followRedirects,
-		ws
+		ws,
+		...config
 	});
 };
