@@ -4,7 +4,7 @@
     "name": "Paul Shannon",
     "url": "https://devpaul.com"
   },
-  "version": "2.0.0-pre",
+  "version": "2.1.0-pre",
   "description": "a quick, flexible, fully typed development server",
   "license": "MPL-2.0",
   "bin": {
