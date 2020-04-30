@@ -1,0 +1,25 @@
+{
+	"servers": [
+		{
+			"port": 4110,
+			"services": [
+				{
+					"name": "file",
+					"basePath": "./assets",
+					"paths": {
+						"*": "."
+					}
+				}
+			]
+		},
+		{
+			"services": [
+				{
+					"name": "proxy",
+					"changeOrigin": true,
+					"target": "http://localhost:4110"
+				}
+			]
+		}
+	]
+}

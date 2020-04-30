@@ -1,7 +1,6 @@
-import { GuardFactory } from '../interface';
+import pathToRegexp, { Key } from 'path-to-regexp';
 import { parse as parseUrl } from 'url';
-import pathToRegexp from 'path-to-regexp';
-import { Key } from 'path-to-regexp';
+import { GuardFactory } from '../interface';
 import { log } from '../log';
 import { updateRequest } from '../util/request';
 
@@ -55,8 +54,8 @@ export const pathGuard: GuardFactory<PathGuardProperties> = ({ match }) => {
 			const url = parseUrl(request.url);
 			const result = regex.exec(url.pathname);
 
+			log.debug(`matching ${url.pathname} against ${regex}. ${Boolean(result)}.`);
 			if (result) {
-				log.debug(`"${url.pathname}" matched path "${match}"`);
 				updateRequest(request, {
 					originalUrl: request.url,
 					params: parameterizeMatches(keys, result),

@@ -6,5 +6,10 @@ export const textTransform: Transform = async (result, _request, response) => {
 	}
 	response.setHeader('content-type', 'text/html');
 
-	response.end(result && typeof result === 'string' ? result : JSON.stringify(result));
+	const eol = '\n';
+	const output = Array.isArray(result)
+		? result.map((item) => (typeof item === 'object' ? JSON.stringify(item) : String(item))).join(eol)
+		: JSON.stringify(result);
+
+	response.end(output);
 };

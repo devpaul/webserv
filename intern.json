@@ -31,7 +31,7 @@
 			],
 			"node": {
 				"suites": [
-					"tests/integration/*.test.ts"
+					"tests/integration/**/*.test.ts"
 				]
 			}
 		}

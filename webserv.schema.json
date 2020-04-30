@@ -10,34 +10,218 @@
 			"description": "external modules added to the loader factory",
 			"patternProperties": {
 				"^S_": {
-					"type": "object",
-					"description": "configuration information for the external loader",
-					"properties": {
-						"path": {
-							"type": "string",
-							"description": "path to the external module loader, relative to this configuration file"
-						}
-					},
-					"required": [
-						"path"
-					],
-					"additionalProperties": false
+					"$ref": "#/definitions/external"
 				}
 			}
 		},
-		"services": {
+		"logLevel": {
+			"type": "string",
+			"description": "Changes webserv's log level",
+			"enum": [
+				"debug",
+				"info",
+				"warn",
+				"error"
+			]
+		},
+		"servers": {
 			"type": "array",
-			"description": "a list of services configured and added to the application server",
+			"description": "a list of servers started by this configuration",
 			"items": {
-				"$ref": "#/definitions/service"
+				"$ref": "#/definitions/server"
 			},
 			"additionalItems": false
 		}
 	},
 	"required": [
-		"services"
+		"servers"
 	],
 	"definitions": {
+		"external": {
+			"type": "object",
+			"description": "configuration information for the external loader",
+			"properties": {
+				"path": {
+					"type": "string",
+					"description": "path to the external module loader, relative to this configuration file"
+				}
+			},
+			"required": [
+				"path"
+			],
+			"additionalProperties": false
+		},
+		"httpsOptions": {
+			"type": "object",
+			"properties": {
+				"httpsConfig": {
+					"type": "object",
+					"description": "configuration for https",
+					"properties": {
+						"pfx": {
+							"description": "PFX or PKCS12 encoded private key and certificate chain. pfx is an alternative to providing key and cert individually. PFX is usually encrypted, if it is, passphrase will be used to decrypt it.",
+							"anyOf": [
+								{
+									"type": "string"
+								},
+								{
+									"type": "array",
+									"items": {
+										"type": [
+											"string",
+											"object"
+										]
+									}
+								}
+							]
+						},
+						"key": {
+							"description": "Private keys in PEM format. PEM allows the option of private keys being encrypted. Encrypted keys will be decrypted with options.passphrase.",
+							"anyOf": [
+								{
+									"type": "string"
+								},
+								{
+									"type": "array",
+									"items": {
+										"type": "object"
+									}
+								}
+							]
+						},
+						"passphrase": {
+							"type": "string",
+							"description": "Shared passphrase used for a single private key and/or a PFX"
+						},
+						"cert": {
+							"description": "Cert chains in PEM format. One cert chain should be provided per private key.",
+							"anyOf": [
+								{
+									"type": "string"
+								},
+								{
+									"type": "array",
+									"items": {
+										"type": "string"
+									}
+								}
+							]
+						},
+						"ca": {
+							"description": "Optionally override the trusted CA certificates. Default is to trust the well-known CAs curated by Mozilla.",
+							"anyOf": [
+								{
+									"type": "string"
+								},
+								{
+									"type": "array",
+									"items": {
+										"type": "string"
+									}
+								}
+							]
+						},
+						"ciphers": {
+							"type": "string",
+							"description": "Cipher suite specification, replacing the default."
+						},
+						"honorCipherOrder": {
+							"type": "boolean",
+							"description": "Attempt to use the server's cipher suite preferences instead of the client's"
+						},
+						"ecdhCurve": {
+							"type": "string",
+							"description": "A string describing a named curve or a colon separated list of curve NIDs or names, for example P-521:P-384:P-256, to use for ECDH key agreement. Set to auto to select the curve automatically."
+						},
+						"clientCertEngine": {
+							"type": "string",
+							"description": "Name of an OpenSSL engine which can provide the client certificate."
+						},
+						"crl": {
+							"description": "PEM formatted CRLs (Certificate Revocation Lists).",
+							"anyOf": [
+								{
+									"type": "string"
+								},
+								{
+									"type": "array",
+									"items": {
+										"type": "string"
+									}
+								}
+							]
+						},
+						"dhparam": {
+							"description": "Diffie Hellman parameters",
+							"type": "string"
+						},
+						"maxVersion": {
+							"description": "Optionally set the maximum TLS version to allow.",
+							"type": "string",
+							"enum": [
+								"TLSv1.3",
+								"TLSv1.2",
+								"TLSv1.1",
+								"TLSv1"
+							]
+						},
+						"minVersion": {
+							"description": "Optionally set the minimum TLS version to allow.",
+							"type": "string",
+							"enum": [
+								"TLSv1.3",
+								"TLSv1.2",
+								"TLSv1.1",
+								"TLSv1"
+							]
+						}
+					}
+				}
+			}
+		},
+		"server": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"type": "string",
+					"description": "used to uniquely identify the server"
+				},
+				"port": {
+					"type": "number",
+					"description": "numeric port to start the server"
+				},
+				"services": {
+					"type": "array",
+					"description": "a list of services configured and added to the application server",
+					"items": {
+						"$ref": "#/definitions/service"
+					},
+					"additionalItems": false
+				},
+				"type": {
+					"type": "string",
+					"enum": [
+						"http",
+						"https"
+					],
+					"description": "The type of server to start; defaults to http"
+				}
+			},
+			"allOf": [
+				{
+					"if": {
+						"properties": {
+							"type": {
+								"const": "https"
+							}
+						}
+					},
+					"then": {
+						"$ref": "#/definitions/httpsOptions"
+					}
+				}
+			]
+		},
 		"service": {
 			"type": "object",
 			"description": "a service to be added to the application",

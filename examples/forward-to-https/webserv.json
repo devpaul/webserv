@@ -1,0 +1,34 @@
+{
+	"externals": {
+		"forward": {
+			"path": "./services/forward"
+		}
+	},
+	"servers": [
+		{
+			"name": "http-forwarder",
+			"description": "This is a http server that redirects to the https server",
+			"port": 8080,
+			"services": [
+				{
+					"name": "forward",
+					"location": "https://localhost:8443"
+				}
+			]
+		},
+		{
+			"name": "secure-server",
+			"type": "https",
+			"port": 8443,
+			"services": [
+				{
+					"name": "file",
+					"basePath": "./assets",
+					"paths": {
+						"*": "."
+					}
+				}
+			]
+		}
+	]
+}

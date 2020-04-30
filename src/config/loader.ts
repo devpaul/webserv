@@ -8,7 +8,15 @@ import { bootUploadService } from './services/upload';
 
 export interface Environment {
 	configPath: string;
-	properties: { [key: string]: any };
+	properties?: { [key: string]: any };
+}
+
+export function isEnvironment(value: any): value is Environment {
+	return (
+		typeof value === 'object' &&
+		typeof value.configPath === 'string' &&
+		(!value.properties || typeof value.properties === 'object')
+	);
 }
 
 export type ServiceLoaderResult = Promise<Service | Service[]> | Service | Service[];

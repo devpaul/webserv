@@ -1,0 +1,25 @@
+{
+	"servers": [
+		{
+			"services": [
+				{
+					"name": "file",
+					"basePath": ".",
+					"showDirectoryContents": true,
+					"searchDefaults": [],
+					"extensions": [],
+					"paths": {
+						"/files*": "./uploads"
+					}
+				},
+				{
+					"name": "upload",
+					"path": "/*",
+					"directory": "./uploads",
+					"createUploadDirectory": true,
+					"allowOverwrite": true
+				}
+			]
+		}
+	]
+}
