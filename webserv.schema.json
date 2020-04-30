@@ -314,7 +314,7 @@
 								"type": "string",
 								"description": "the top-level url for this route"
 							},
-							"paths": {
+							"routes": {
 								"type": "object",
 								"description": "a map of routes to file paths to serve file and directories"
 							},

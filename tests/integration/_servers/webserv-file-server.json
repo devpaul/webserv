@@ -6,7 +6,7 @@
 				{
 					"name": "file",
 					"basePath": "./assets",
-					"paths": {
+					"routes": {
 						"/src/*": "./sample1/js",
 						"/assets/*": "./sample1/child",
 						"*": "./sample1"

@@ -8,7 +8,7 @@
 					"showDirectoryContents": true,
 					"searchDefaults": [],
 					"extensions": [],
-					"paths": {
+					"routes": {
 						"/files*": "./uploads"
 					}
 				},
