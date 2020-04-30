@@ -354,10 +354,6 @@
 					"then": {
 						"description": "adds console logging and (optionally) a log server",
 						"properties": {
-							"level": {
-								"type": "string",
-								"description": "changes the logging level of the application server. Default \"log\"."
-							},
 							"respondOK": {
 								"type": "boolean",
 								"description": "if the server should return 200 after every request. Useful for quickly logging something to console for visibility."
