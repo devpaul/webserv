@@ -2,7 +2,6 @@
 
 [![Build Status](https://travis-ci.org/devpaul/webserv.svg?branch=master)](https://travis-ci.org/devpaul/webserv)
 [![Windows build status](https://ci.appveyor.com/api/projects/status/pwxbf43ctu05uxn8?svg=true)](https://ci.appveyor.com/project/devpaul/webserv)
-[![codecov.io](https://codecov.io/github/devpaul/webserv/coverage.svg?branch=master)](https://codecov.io/github/devpaul/webserv?branch=master)
 [![npm version](https://badge.fury.io/js/webserv.svg)](https://badge.fury.io/js/webserv)
 
 ## Why use `webserv`?
@@ -17,21 +16,11 @@ npx webserv
 
 Webserv comes with standard server patterns. Start a proxy, CRUD server, upload, or log connections from the command-line. Have a more complex use case? `webserv` supports JSON configs and has a fully-typed programmatic API so you will *never* be stuck.
 
-Want to learn more? Read our [documentation](./docs).
-
-Interested? Start experimenting now on [Glitch](https://glitch.com)
-
-[![Remix on Glitch](https://cdn.glitch.com/2703baf2-b643-4da7-ab91-7ee2a2d00b5b%2Fremix-button.svg)](https://glitch.com/edit/#!/remix/hello-webserv)
+Want to learn more? Read our [documentation](https://github.com/devpaul/webserv/tree/master/docs).
 
 ## Command Line
 
 Webserv allows you to quickly start a fully fledged development server from the command line without editing a single file.
-
-Start a https server with self-signed certificate like this:
-
-```
-webserv -m https -t file ./_dist -p 9999
-```
 
 ### Command-line Options
 
@@ -42,6 +31,8 @@ Create a `http` or `https` server (defaults to http)
 ```
 webserv -m https
 ```
+
+https servers will auto-generate self-signed certificates
 
 #### -l, --log
 
@@ -121,41 +112,8 @@ Webserv supports more complex usage through config files. When a file named `web
 
 The available configurations match the server types (available with the `-t` option): crud, file, log, proxy, and upload.
 
-The configuration json is used to specify services. Example `webserv.json` file:
-
-```
-{
-	"services": [
-		{
-			"name": "file",
-			"paths": {
-				"/src/*": "./dist",
-				"/aframe/*": "./node_modules/aframe",
-				"/node_modules/*": "./node_modules",
-				"*": "./src"
-			}
-		},
-		{
-			"name": "upload",
-			"route": "/upload/*",
-			"directory": "./uploadDirectory"
-		},
-		{
-			"name": "crud",
-			"route": "/users/*",
-			"data": {
-				"1": {
-					"id": 1,
-					"name": "Paul"
-				}
-			}
-		}
-	]
-}
-```
-
-All service configurations include a `name` that refers to the service to be loaded and configuration options. Configuration options may be found on the type definitions in [src/config/services](https://github.com/devpaul/webserv/tree/master/src/config/services).
+See the [configuration documentation](https://github.com/devpaul/webserv/blob/master/docs/configuration.md) for all of the details.
 
 ## Programmatic API
 
-For users that may need to create their own services or have complex use cases that are not served the configuration, `webserv` offers a fully-typed programmatic API. See [examples/hello](https://github.com/devpaul/webserv/tree/master/src/config/services) and [src/webserv/core/routes](https://github.com/devpaul/webserv/tree/master/src/core/routes) for example usage.
+For users that may need to create their own services or have complex use cases that are not served the configuration, `webserv` offers a fully-typed programmatic API written in TypeScript. See the [hello world example](https://github.com/devpaul/webserv/blob/master/examples/hello-world/services/hello.ts) for example usage.
