@@ -16,7 +16,7 @@ npx webserv
 
 Webserv comes with standard server patterns. Start a proxy, CRUD server, upload, or log connections from the command-line. Have a more complex use case? `webserv` supports JSON configs and has a fully-typed programmatic API so you will *never* be stuck.
 
-Want to learn more? Read our [documentation](https://github.com/devpaul/webserv/tree/master/docs).
+Want to learn more? Look at our [examples](https://github.com/devpaul/webserv/tree/master/examples) and read through our [documentation](https://github.com/devpaul/webserv/tree/master/docs).
 
 ## Command Line
 
