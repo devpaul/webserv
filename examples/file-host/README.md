@@ -14,4 +14,4 @@ run `webserv` in this directory
 
 Visit http://localhost:8888/ to get to the upload page
 
-Visit http://locahost:8888/files to see a list of uploaded files
+Visit http://localhost:8888/files to see a list of uploaded files
