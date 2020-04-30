@@ -28,7 +28,7 @@ describeSuite(() => {
 
 		it('creates a crud route', async () => {
 			const config = {
-				path: '*'
+				route: '*'
 			};
 
 			const service = await bootCrudService(config, env);
@@ -40,7 +40,7 @@ describeSuite(() => {
 
 		it('creates a crud route with initial data', async () => {
 			const config = {
-				path: '*',
+				route: '*',
 				data: [{ id: 'id-1', data: 'one' }]
 			};
 

@@ -21,7 +21,7 @@ const loaded = [{ id: 'three', value: 3 }];
 
 function createCrudService(config: Omit<CrudServiceProperties, 'path'>) {
 	const service = crudService({
-		path: '*',
+		route: '*',
 		...config
 	});
 	assert.isDefined(service.route);

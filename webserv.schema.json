@@ -249,7 +249,7 @@
 					"then": {
 						"description": "The crud service provides in-memory create, read, update, delete (and list) operations",
 						"properties": {
-							"path": {
+							"route": {
 								"type": "string",
 								"description": "the base route for this service"
 							},
@@ -295,7 +295,7 @@
 							}
 						},
 						"required": [
-							"path"
+							"route"
 						]
 					}
 				},
