@@ -1,15 +1,17 @@
 import { resolve } from 'path';
-import { RequireSome } from '../../core/interface';
-import { crudService, CrudServiceProperties, Record } from '../../core/services/crud.service';
-import { readDir } from '../../core/util/file/readDir';
-import { readJsonFile } from '../../core/util/file/readFile';
-import { ServiceLoader } from '../loader';
+import { RequireSome } from '../../../core/interface';
+import { crudService, CrudServiceProperties, Record } from '../../../core/services/crud.service';
+import { readDir } from '../../../core/util/file/readDir';
+import { readJsonFile } from '../../../core/util/file/readFile';
+import { Environment, ServiceFactory } from '../../interfaces';
+import { $Env } from '../../utils/environment';
 
 export interface CrudConfig extends RequireSome<CrudServiceProperties, 'route'> {
 	/** load crud data from disk */
 	loadData?: {
 		path: string;
 	};
+	[$Env]: Environment;
 }
 
 function createFileLoader(path: string) {
@@ -30,9 +32,9 @@ function createFileLoader(path: string) {
 	return dataLoader;
 }
 
-export const bootCrudService: ServiceLoader<CrudConfig> = (config, { configPath }) => {
+export const crudServiceFactory: ServiceFactory<CrudConfig> = (config) => {
 	if (config.loadData) {
-		const path = resolve(configPath, config.loadData.path);
+		const path = resolve(config[$Env].configPath, config.loadData.path);
 		config.dataLoader = createFileLoader(path);
 	}
 	return crudService(config);

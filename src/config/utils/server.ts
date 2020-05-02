@@ -1,6 +1,8 @@
 import { ServerOptions } from 'https';
 import { App } from '../../core/app';
-import { Environment, getLoader } from '../loader';
+import { getServiceInjector } from '../factories/loader';
+import { Environment } from '../interfaces';
+import { $Env } from './environment';
 
 export interface Server {
 	httpsOptions?: ServerOptions;
@@ -16,11 +18,12 @@ export interface ServiceConfig {
 }
 
 async function bootService(app: App, config: ServiceConfig, env: Environment) {
-	const loader = getLoader(config.name);
-	if (!loader) {
+	const injector = getServiceInjector();
+	const factory = injector.get(config.name);
+	if (!factory) {
 		throw new Error(`Service ${config.name} does not exist`);
 	}
-	const service = await loader(config, env);
+	const service = await factory({ ...config, [$Env]: env });
 	app.add(service);
 }
 

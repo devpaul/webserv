@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 import { dirname } from 'path';
 import start from '../../../src/config';
-import { Environment } from '../../../src/config/loader';
+import { Environment } from '../../../src/config/interfaces';
 import { loadConfig } from '../../../src/config/utils/config';
 import { Server } from '../../../src/config/utils/server';
 

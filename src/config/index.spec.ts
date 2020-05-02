@@ -3,7 +3,7 @@
 import automock from '../_support/automock';
 import { describeSuite } from '../_support/describeSuite';
 import { setupMocks, setupSinon } from '../_support/mocks';
-import { Environment } from './loader';
+import { Environment } from './interfaces';
 
 const { assert } = intern.getPlugin('chai');
 const { describe, it, beforeEach } = intern.getPlugin('interface.bdd');
@@ -23,7 +23,7 @@ describeSuite(() => {
 			'ts-node': automock('ts-node', sinon),
 			fs: mockFs,
 			path: mockPath,
-			'./loader': { isEnvironment: isEnvironmentMock },
+			'./utils/environment': { isEnvironment: isEnvironmentMock },
 			'./utils/addons': { checkRegisterTs: sinon.stub() },
 			'./utils/config': { loadConfig: sinon.stub() },
 			'./utils/externals': { loadExternals: sinon.stub() },
