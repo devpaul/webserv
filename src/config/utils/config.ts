@@ -1,8 +1,8 @@
 import { promises } from 'fs';
 import { resolve } from 'path';
-import { fileExists } from '../../core/util/file/exists';
 import { TypeScriptConfig } from './addons';
 import { ExternalMap } from './externals';
+import { fileExists } from './file/exists';
 import { Server } from './server';
 
 const {} = promises;

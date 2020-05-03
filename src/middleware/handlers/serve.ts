@@ -4,8 +4,8 @@ import { parse as parseUrl } from 'url';
 import { HttpError, HttpStatus } from '../../core/HttpError';
 import { HandlerFactory } from '../../core/interface';
 import { log } from '../../core/log';
-import { getStat } from '../../core/util/file/getStat';
-import { sendFile } from '../../core/util/file/sendFile';
+import { getStat } from '../util/file/getStat';
+import { sendFile } from '../util/file/sendFile';
 import { forwarder } from './forwarder';
 
 export interface ServeProperties {
