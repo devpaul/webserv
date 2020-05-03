@@ -8,13 +8,13 @@ export const enum ServerType {
 
 export type HttpMethod = 'connect' | 'delete' | 'get' | 'head' | 'post' | 'put' | 'trace';
 
-export type Process = (request: IncomingMessage, response: ServerResponse) => Promise<void> | void;
+export type Process = (request: IncomingMessage, response: ServerResponse) => Eventually<void>;
 
 export type ProcessFactory<T extends object> = (options: T) => Process;
 
 export type Guard = (request: IncomingMessage) => boolean;
 
-export type AsyncGuard = (request: IncomingMessage) => boolean | Promise<boolean>;
+export type AsyncGuard = (request: IncomingMessage) => Eventually<boolean>;
 
 export type GuardFactory<T extends object> = (options: T) => Guard;
 
@@ -27,7 +27,7 @@ export type HandlerResponse = object | void;
  * This may then be transformed by a Transform to supply a response in an acceptable format.
  */
 export interface Handler {
-	(request: IncomingMessage, response: ServerResponse): Promise<HandlerResponse> | HandlerResponse;
+	(request: IncomingMessage, response: ServerResponse): Eventually<HandlerResponse>;
 }
 
 export type HandlerFactory<T extends object = {}> = (options: T) => Handler;
@@ -40,7 +40,7 @@ export interface Route {
 	/**
 	 * Tests if the IncomingMessage should be handled by this route
 	 */
-	test(request: IncomingMessage, response: ServerResponse): Promise<boolean> | boolean;
+	test(request: IncomingMessage, response: ServerResponse): Eventually<boolean>;
 	/**
 	 * Seeks a response to provide to ServerResponse
 	 */
@@ -68,11 +68,13 @@ export interface RouteProperties {
 
 export type RequireSome<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: T[P] };
 
+export type Eventually<T> = Promise<T> | T;
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Socket upgrades
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export type UpgradeListener = (request: IncomingMessage, socket: Socket, head: Buffer) => void | Promise<void>;
+export type UpgradeListener = (request: IncomingMessage, socket: Socket, head: Buffer) => Eventually<void>;
 
 export type UpgradeListenerFactory<T extends object> = (options: T) => UpgradeListener;
 
