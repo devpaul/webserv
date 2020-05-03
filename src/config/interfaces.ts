@@ -1,5 +1,5 @@
 import { Service } from '../core/app';
-import { Factory } from './Injector';
+import { Factory } from './injector';
 
 export type Eventually<T> = Promise<T> | T;
 
