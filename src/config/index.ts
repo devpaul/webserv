@@ -2,9 +2,9 @@ import { dirname } from 'path';
 import { inspect } from 'util';
 import { log, setLogLevel } from '../core/log';
 import { ServerControls } from '../core/servers/startServer';
-import { Environment, isEnvironment } from './loader';
 import { checkRegisterTs } from './utils/addons';
 import { Config, loadConfig } from './utils/config';
+import { Environment, isEnvironment } from './utils/environment';
 import { loadExternals } from './utils/externals';
 import { bootServer } from './utils/server';
 

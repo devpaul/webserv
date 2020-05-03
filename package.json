@@ -34,6 +34,7 @@
     "copy:package": "copyfiles README.md package.json LICENSE webserv.schema.json _dist",
     "dist": "run-s clean copy build:dist update:version",
     "dist:release": "run-s clean copy build:dist update:version:dist",
+    "e2e": "run-s test:integration",
     "example:crud": "ts-node ./src/bin/webserv -c ./examples/crud/webserv.json",
     "example:file": "ts-node ./src/bin/webserv -c ./examples/file-host/webserv.json",
     "example:hello": "ts-node ./src/bin/webserv -c ./examples/hello-world/webserv.json",

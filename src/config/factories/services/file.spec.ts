@@ -1,29 +1,32 @@
 /// <reference types="intern" />
 
 import { resolve } from 'path';
-import { setupMocks, setupSinon } from '../../_support/mocks';
-import { Environment } from '../loader';
+import { describeSuite } from '../../../_support/describeSuite';
+import { setupMocks, setupSinon } from '../../../_support/mocks';
+import { $Env, Environment } from '../../utils/environment';
 
 const { assert } = intern.getPlugin('chai');
 const { describe, it, beforeEach } = intern.getPlugin('interface.bdd');
 
 const env: Environment = {
-	configPath: 'configPath',
-	properties: {}
+	configPath: 'configPath'
 };
 
-describe('config/services/file', () => {
+describeSuite(() => {
 	describe('bootFileService', () => {
 		const sinon = setupSinon();
 		const mockFileService = sinon.stub();
 		setupMocks({
-			'../../core/log': { log: { debug: sinon.stub() } },
-			'../../core/services/file.service': { fileService: mockFileService }
+			'../../../core/log': { log: { debug: sinon.stub() } },
+			'../../../core/services/file.service': { fileService: mockFileService },
+			'../../utils/environment': {
+				$Env
+			}
 		});
-		let bootFileService: typeof import('./file').bootFileService;
+		let factory: typeof import('./file').fileServiceFactory;
 
 		beforeEach(() => {
-			bootFileService = require('./file').bootFileService;
+			factory = require('./file').fileServiceFactory;
 			mockFileService.returns({});
 		});
 
@@ -31,10 +34,13 @@ describe('config/services/file', () => {
 			const config = {
 				routes: {
 					'*': '.'
+				},
+				[$Env]: {
+					configPath: 'configPath'
 				}
 			};
 
-			const service = await bootFileService(config, env);
+			const service = await factory(config);
 
 			assert.isArray(service);
 			assert.isTrue(mockFileService.calledOnce);
@@ -49,10 +55,11 @@ describe('config/services/file', () => {
 				routes: {
 					'/uploads/*': './uploads',
 					'*': '.'
-				}
+				},
+				[$Env]: env
 			};
 
-			const service = await bootFileService(config, env);
+			const service = await factory(config);
 
 			assert.isArray(service);
 			assert.isTrue(mockFileService.calledTwice);
@@ -71,10 +78,11 @@ describe('config/services/file', () => {
 				basePath: 'serve',
 				routes: {
 					'*': '.'
-				}
+				},
+				[$Env]: env
 			};
 
-			const service = await bootFileService(config, env);
+			const service = await factory(config);
 
 			assert.isArray(service);
 			assert.isTrue(mockFileService.calledOnce);

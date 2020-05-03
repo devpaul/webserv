@@ -1,4 +1,4 @@
-import { ServiceLoader } from '../../../src/config/loader';
+import { ServiceFactory } from '../../../src/config/interfaces';
 import { Service } from '../../../src/core/app';
 import { method } from '../../../src/core/guards/method';
 import { pathGuard } from '../../../src/core/guards/path';
@@ -20,7 +20,7 @@ export interface Config {
  * GET /hello/:thing - returns a hello to the passed thing
  * GET * - returns usage instructions
  */
-const hello: ServiceLoader<Config> = ({ route = '/*' }) => {
+const hello: ServiceFactory<Config> = ({ route = '/*' }) => {
 	const service: Service = {
 		route: {
 			guards: [pathGuard({ match: route })],
