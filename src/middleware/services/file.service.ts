@@ -1,7 +1,7 @@
 import { Service } from '../../core/app';
 import { RouteProperties } from '../../core/interface';
 import { method } from '../guards/method';
-import { serve, ServeProperties } from '../middleware/serve';
+import { serve, ServeProperties } from '../handlers/serve';
 import { noCache } from '../processors/cache.processor';
 import { directoryTransform } from '../transforms/directory.transform';
 import { jsonTransform } from '../transforms/json.transform';

@@ -1,6 +1,6 @@
 import { Service } from '../../core/app';
 import { RouteProperties } from '../../core/interface';
-import { proxy as proxyMiddleware } from '../middleware/proxy';
+import { proxy as proxyMiddleware } from '../handlers/proxy';
 import { proxyUpgrade } from '../upgrades/proxy.upgrade';
 import { createProxy, CreateProxyOptions } from '../util/createProxy';
 

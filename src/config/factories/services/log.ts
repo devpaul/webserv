@@ -1,5 +1,5 @@
 import { ServiceFactory } from 'src/config/interfaces';
-import { response } from '../../../middleware/middleware/response';
+import { response } from '../../../middleware/handlers/response';
 import { body } from '../../../middleware/processors/before/body.processor';
 import { logRequest } from '../../../middleware/processors/log.processor';
 
