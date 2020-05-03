@@ -1,5 +1,4 @@
-import { ServiceFactory } from '../../../src/config/interfaces';
-import { Service } from '../../../src/core/app';
+import { Service, ServiceFactory } from '../../..';
 import { forwarder } from '../../../src/middleware/handlers/forwarder';
 
 export interface Config {
