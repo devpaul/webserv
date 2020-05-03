@@ -1,6 +1,6 @@
-import { ServiceLoader } from '../../../src/config/loader';
+import { ServiceFactory } from '../../../src/config/interfaces';
 import { Service } from '../../../src/core/app';
-import { forwarder } from '../../../src/core/middleware/forwarder';
+import { forwarder } from '../../../src/middleware/handlers/forwarder';
 
 export interface Config {
 	location: string;
@@ -9,7 +9,7 @@ export interface Config {
 /**
  * Forward http users to https
  */
-const forward: ServiceLoader<Config> = ({ location }) => {
+const forward: ServiceFactory<Config> = ({ location }) => {
 	const service: Service = {
 		route: {
 			middleware: forwarder({

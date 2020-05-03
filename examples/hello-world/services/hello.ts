@@ -1,9 +1,9 @@
 import { ServiceFactory } from '../../../src/config/interfaces';
 import { Service } from '../../../src/core/app';
-import { method } from '../../../src/core/guards/method';
-import { pathGuard } from '../../../src/core/guards/path';
-import { textTransform } from '../../../src/core/transforms/text.transform';
-import { getParams } from '../../../src/core/util/request';
+import { method } from '../../../src/middleware/guards/method';
+import { pathGuard } from '../../../src/middleware/guards/path';
+import { textTransform } from '../../../src/middleware/transforms/text.transform';
+import { getParams } from '../../../src/middleware/util/request';
 
 export interface Config {
 	route?: string;
