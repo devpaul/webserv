@@ -1,6 +1,6 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { HttpError, HttpStatus } from './HttpError';
-import { Middleware, MiddlewareResult, Route, RouteDescriptor } from './interface';
+import { Handler, HandlerResponse, Route, RouteDescriptor } from './interface';
 
 export type RouteFactory = (options: RouteDescriptor) => Route;
 
@@ -37,7 +37,7 @@ export const route: RouteFactory = ({
 	}
 
 	async function run(request: IncomingMessage, response: ServerResponse) {
-		let result: MiddlewareResult;
+		let result: HandlerResponse;
 		try {
 			result = await middleware(request, response);
 
@@ -67,10 +67,10 @@ export const route: RouteFactory = ({
 	};
 };
 
-export const multiroute = (list: Array<RouteDescriptor | Route>): Middleware => {
+export const multiroute = (list: Array<RouteDescriptor | Route>): Handler => {
 	const routes = list.map((item) => (isRoute(item) ? item : route(item)));
 
-	const middleware: Middleware = async (request, response) => {
+	const middleware: Handler = async (request, response) => {
 		for (let route of routes) {
 			if (await route.test(request, response)) {
 				return await route.run(request, response);

@@ -1,8 +1,8 @@
-import { MiddlewareFactory } from '../../core/interface';
+import { HandlerFactory } from '../../core/interface';
 import { log } from '../../core/log';
 import { response } from './response';
 
-export const notFound: MiddlewareFactory = () => {
+export const notFound: HandlerFactory = () => {
 	const responseHandler = response({
 		message: 'Not Found',
 		statusCode: 404

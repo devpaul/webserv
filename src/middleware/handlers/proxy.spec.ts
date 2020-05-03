@@ -3,7 +3,7 @@ import { IncomingMessage, ServerResponse } from 'http';
 import { afterEach } from 'intern/lib/interfaces/tdd';
 import * as mockery from 'mockery';
 import { createSandbox } from 'sinon';
-import { MiddlewareFactory } from '../../core/interface';
+import { HandlerFactory } from '../../core/interface';
 import { ProxyProperties } from './proxy';
 
 const { assert } = intern.getPlugin('chai');
@@ -18,7 +18,7 @@ describe('core/middleware/proxy', () => {
 		const mockProxy = {
 			web: sinon.stub()
 		};
-		let proxyFactory: MiddlewareFactory<ProxyProperties>;
+		let proxyFactory: HandlerFactory<ProxyProperties>;
 
 		before(() => {
 			mockery.enable({

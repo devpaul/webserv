@@ -18,21 +18,21 @@ export type AsyncGuard = (request: IncomingMessage) => boolean | Promise<boolean
 
 export type GuardFactory<T extends object> = (options: T) => Guard;
 
-export type MiddlewareResult = object | void;
+export type HandlerResponse = object | void;
 
 /**
- * Middleware handles a single request made to the server.
+ * Handles a single request made to the server.
  *
- * The preferred way to provide a response is by returning a MiddlewareResult from the middleware.
+ * The preferred way to provide a response is by returning a RequestHandlerResult.
  * This may then be transformed by a Transform to supply a response in an acceptable format.
  */
-export interface Middleware {
-	(request: IncomingMessage, response: ServerResponse): Promise<MiddlewareResult> | MiddlewareResult;
+export interface Handler {
+	(request: IncomingMessage, response: ServerResponse): Promise<HandlerResponse> | HandlerResponse;
 }
 
-export type MiddlewareFactory<T extends object = {}> = (options: T) => Middleware;
+export type HandlerFactory<T extends object = {}> = (options: T) => Handler;
 
-export type Transform = (result: MiddlewareResult, request: IncomingMessage, response: ServerResponse) => void;
+export type Transform = (result: HandlerResponse, request: IncomingMessage, response: ServerResponse) => void;
 
 export type TransformFactory<T extends object> = (options: T) => Transform;
 
@@ -44,15 +44,15 @@ export interface Route {
 	/**
 	 * Seeks a response to provide to ServerResponse
 	 */
-	run: Middleware;
+	run: Handler;
 }
 
-export type ErrorRequestHandler = (error: any, response: ServerResponse, result?: MiddlewareResult) => void;
+export type ErrorRequestHandler = (error: any, response: ServerResponse, result?: HandlerResponse) => void;
 
 export interface RouteDescriptor {
 	before?: Process[];
 	guards?: Guard[];
-	middleware: Middleware | Array<Route | RouteDescriptor>;
+	middleware: Handler | Array<Route | RouteDescriptor>;
 	transforms?: Transform[];
 	after?: Process[];
 	errorHandler?: ErrorRequestHandler;

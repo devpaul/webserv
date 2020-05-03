@@ -2,7 +2,7 @@ import { access, constants, readdir } from 'fs';
 import { join, resolve } from 'path';
 import { parse as parseUrl } from 'url';
 import { HttpError, HttpStatus } from '../../core/HttpError';
-import { MiddlewareFactory } from '../../core/interface';
+import { HandlerFactory } from '../../core/interface';
 import { log } from '../../core/log';
 import { getStat } from '../../core/util/file/getStat';
 import { sendFile } from '../../core/util/file/sendFile';
@@ -66,7 +66,7 @@ function listDirectoryContents(target: string) {
 	});
 }
 
-export const serve: MiddlewareFactory<ServeProperties> = ({
+export const serve: HandlerFactory<ServeProperties> = ({
 	basePath = process.cwd(),
 	trailingSlash,
 	showDirectoryContents = true,

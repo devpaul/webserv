@@ -1,6 +1,6 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import Server from 'http-proxy';
-import { MiddlewareFactory } from '../../core/interface';
+import { HandlerFactory } from '../../core/interface';
 import { log } from '../../core/log';
 import { createProxy } from '../util/createProxy';
 
@@ -17,11 +17,7 @@ function defaultProxyCallback(error: Error) {
 	}
 }
 
-export const proxy: MiddlewareFactory<ProxyProperties> = ({
-	proxy,
-	baseUrl,
-	onProxyCallback = defaultProxyCallback
-}) => {
+export const proxy: HandlerFactory<ProxyProperties> = ({ proxy, baseUrl, onProxyCallback = defaultProxyCallback }) => {
 	proxy = proxy || createProxy({ target: baseUrl });
 
 	return (request, response) => {

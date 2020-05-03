@@ -1,7 +1,7 @@
 import { createWriteStream, existsSync } from 'fs';
 import { basename, join, resolve as resolvePath } from 'path';
 import { HttpError, HttpStatus } from '../../core/HttpError';
-import { MiddlewareFactory } from '../../core/interface';
+import { HandlerFactory } from '../../core/interface';
 import { log } from '../../core/log';
 import { hasIncomingFiles } from '../processors/before/file.processor';
 import mkdirp = require('mkdirp');
@@ -12,7 +12,7 @@ export interface SaveFilesProperties {
 	directory: string;
 }
 
-export const saveFiles: MiddlewareFactory<SaveFilesProperties> = ({
+export const saveFiles: HandlerFactory<SaveFilesProperties> = ({
 	allowOverwrite = false,
 	createUploadDirectory = false,
 	directory

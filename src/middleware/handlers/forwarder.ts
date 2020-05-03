@@ -1,4 +1,4 @@
-import { MiddlewareFactory } from '../../core/interface';
+import { HandlerFactory } from '../../core/interface';
 import { log } from '../../core/log';
 import { response } from './response';
 
@@ -6,7 +6,7 @@ export interface ForwarderProperties {
 	location: string;
 }
 
-export const forwarder: MiddlewareFactory<ForwarderProperties> = ({ location }) => {
+export const forwarder: HandlerFactory<ForwarderProperties> = ({ location }) => {
 	const responseHandler = response({
 		header: { Location: location },
 		statusCode: 301

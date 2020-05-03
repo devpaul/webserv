@@ -5,7 +5,7 @@ import { IncomingMessage, ServerResponse } from 'http';
 import { beforeEach } from 'intern/lib/interfaces/tdd';
 import { join } from 'path';
 import { HttpStatus } from '../../core/HttpError';
-import { MiddlewareFactory } from '../../core/interface';
+import { HandlerFactory } from '../../core/interface';
 import { eventuallyRejects } from '../../_support/assertions';
 import { setupMocks, setupSinon } from '../../_support/mocks';
 import { assertHeader, mockResponse } from '../../_support/mocks/mockResponse';
@@ -28,7 +28,7 @@ describe('core/middleware/serve', () => {
 			fs: mockfs,
 			send: mockSend
 		});
-		let serveFactory: MiddlewareFactory<ServeProperties>;
+		let serveFactory: HandlerFactory<ServeProperties>;
 
 		function assertSendTarget(target: string, base = process.cwd()) {
 			assert.strictEqual(mockSend.callCount, 1);
