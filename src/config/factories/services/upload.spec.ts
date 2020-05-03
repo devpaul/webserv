@@ -2,8 +2,7 @@
 
 import { Service } from '../../../core/app';
 import { describeSuite } from '../../../_support/describeSuite';
-import { Environment } from '../../interfaces';
-import { $Env } from '../../utils/environment';
+import { $Env, Environment } from '../../utils/environment';
 import { uploadServiceFactory } from './upload';
 
 const { assert } = intern.getPlugin('chai');

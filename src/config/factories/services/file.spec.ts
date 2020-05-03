@@ -3,8 +3,7 @@
 import { resolve } from 'path';
 import { describeSuite } from '../../../_support/describeSuite';
 import { setupMocks, setupSinon } from '../../../_support/mocks';
-import { Environment } from '../../interfaces';
-import { $Env } from '../../utils/environment';
+import { $Env, Environment } from '../../utils/environment';
 
 const { assert } = intern.getPlugin('chai');
 const { describe, it, beforeEach } = intern.getPlugin('interface.bdd');

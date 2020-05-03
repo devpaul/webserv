@@ -1,8 +1,8 @@
 import { resolve } from 'path';
 import { RequireSome } from '../../../core/interface';
 import { uploadService, UploadServiceProperties } from '../../../core/services/upload.service';
-import { Environment, ServiceFactory } from '../../interfaces';
-import { $Env } from '../../utils/environment';
+import { ServiceFactory } from '../../interfaces';
+import { $Env, Environment } from '../../utils/environment';
 
 export interface UploadConfig extends RequireSome<UploadServiceProperties, 'route'> {
 	[$Env]: Environment;

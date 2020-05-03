@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { dirname } from 'path';
+import { $Env, createEnvironment } from 'src/config/utils/environment';
 import * as yargs from 'yargs';
 import start from '../config';
 import { FileConfig } from '../config/factories/services/file';
@@ -52,7 +53,8 @@ function defaultConfig(): Config {
 			name: 'file',
 			routes: {
 				'*': '.'
-			}
+			},
+			[$Env]: createEnvironment()
 		};
 		serverConfig.services.push(fileServiceConfig);
 	}

@@ -3,7 +3,7 @@
 import automock from '../_support/automock';
 import { describeSuite } from '../_support/describeSuite';
 import { setupMocks, setupSinon } from '../_support/mocks';
-import { Environment } from './interfaces';
+import { Environment } from './utils/environment';
 
 const { assert } = intern.getPlugin('chai');
 const { describe, it, beforeEach } = intern.getPlugin('interface.bdd');

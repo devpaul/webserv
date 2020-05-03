@@ -1,6 +1,7 @@
 import { join, resolve } from 'path';
 import { getServiceInjector } from '../factories/loader';
-import { Environment, ServiceFactory } from '../interfaces';
+import { ServiceFactory } from '../interfaces';
+import { Environment } from './environment';
 
 export interface ExternalConfig {
 	path: string;

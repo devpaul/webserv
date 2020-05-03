@@ -1,8 +1,8 @@
 import { join, resolve } from 'path';
 import { log } from '../../../core/log';
 import { fileService, FileServiceProperties } from '../../../core/services/file.service';
-import { Environment, ServiceFactory } from '../../interfaces';
-import { $Env } from '../../utils/environment';
+import { ServiceFactory } from '../../interfaces';
+import { $Env, Environment } from '../../utils/environment';
 
 export interface FileConfig extends Omit<FileServiceProperties, 'basePath' | 'path'> {
 	basePath?: string;

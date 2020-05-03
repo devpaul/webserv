@@ -1,8 +1,7 @@
 import { ServerOptions } from 'https';
 import { App } from '../../core/app';
 import { getServiceInjector } from '../factories/loader';
-import { Environment } from '../interfaces';
-import { $Env } from './environment';
+import { $Env, Environment } from './environment';
 
 export interface Server {
 	httpsOptions?: ServerOptions;

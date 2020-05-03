@@ -1,5 +1,10 @@
 import { v4 } from 'uuid';
-import { Environment } from '../interfaces';
+
+export interface Environment {
+	configPath: string;
+}
+
+export const $Env = Symbol('Environment ' + v4());
 
 export function isEnvironment(value: any): value is Environment {
 	return (
@@ -9,4 +14,8 @@ export function isEnvironment(value: any): value is Environment {
 	);
 }
 
-export const $Env = Symbol('Environment ' + v4());
+export function createEnvironment(): Environment {
+	return {
+		configPath: process.cwd()
+	};
+}
