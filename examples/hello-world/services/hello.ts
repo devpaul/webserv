@@ -1,5 +1,4 @@
-import { ServiceFactory } from '../../../src/config/interfaces';
-import { Service } from '../../../src/core/app';
+import { Service, ServiceFactory } from '../../..';
 import { method } from '../../../src/middleware/guards/method';
 import { pathGuard } from '../../../src/middleware/guards/path';
 import { textTransform } from '../../../src/middleware/transforms/text.transform';
