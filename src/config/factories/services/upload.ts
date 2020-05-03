@@ -1,6 +1,6 @@
 import { resolve } from 'path';
 import { RequireSome } from '../../../core/interface';
-import { uploadService, UploadServiceProperties } from '../../../core/services/upload.service';
+import { uploadService, UploadServiceProperties } from '../../../middleware/services/upload.service';
 import { ServiceFactory } from '../../interfaces';
 import { $Env, Environment } from '../../utils/environment';
 

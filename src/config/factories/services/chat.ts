@@ -1,4 +1,4 @@
-import { chatService, ChatServiceProperties } from '../../../core/services/chat.service';
+import { chatService, ChatServiceProperties } from '../../../middleware/services/chat.service';
 import { ServiceFactory } from '../../interfaces';
 
 export type ChatConfig = ChatServiceProperties;

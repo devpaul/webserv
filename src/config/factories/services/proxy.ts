@@ -1,5 +1,5 @@
 import { ServiceFactory } from 'src/config/interfaces';
-import { proxyService, ProxyServiceProperties } from '../../../core/services/proxy.service';
+import { proxyService, ProxyServiceProperties } from '../../../middleware/services/proxy.service';
 
 export interface ProxyConfig extends ProxyServiceProperties {}
 

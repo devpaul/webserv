@@ -1,8 +1,8 @@
 import { resolve } from 'path';
 import { RequireSome } from '../../../core/interface';
-import { crudService, CrudServiceProperties, Record } from '../../../core/services/crud.service';
 import { readDir } from '../../../core/util/file/readDir';
 import { readJsonFile } from '../../../core/util/file/readFile';
+import { crudService, CrudServiceProperties, Record } from '../../../middleware/services/crud.service';
 import { ServiceFactory } from '../../interfaces';
 import { $Env, Environment } from '../../utils/environment';
 
