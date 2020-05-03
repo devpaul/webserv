@@ -16,7 +16,7 @@ describeSuite(() => {
 		const sinon = setupSinon();
 		const mockCrudService = sinon.stub();
 		setupMocks({
-			'../../../core/services/crud.service': { crudService: mockCrudService }
+			'../../../middleware/services/crud.service': { crudService: mockCrudService }
 		});
 		let factory: typeof import('./crud').crudServiceFactory;
 

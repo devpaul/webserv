@@ -18,7 +18,7 @@ describeSuite(() => {
 		const mockFileService = sinon.stub();
 		setupMocks({
 			'../../../core/log': { log: { debug: sinon.stub() } },
-			'../../../core/services/file.service': { fileService: mockFileService },
+			'../../../middleware/services/file.service': { fileService: mockFileService },
 			'../../utils/environment': {
 				$Env
 			}

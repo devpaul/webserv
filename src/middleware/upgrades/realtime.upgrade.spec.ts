@@ -18,7 +18,7 @@ describeSuite(() => {
 		'../upgrades/websocket.upgrade': {
 			websocket: mockWebSocketUpgrade
 		},
-		'../log': {
+		'../../core/log': {
 			log: logMock
 		}
 	});
