@@ -1,7 +1,7 @@
 import { ServiceFactory } from 'src/config/interfaces';
-import { response } from '../../../core/middleware/response';
-import { body } from '../../../core/processors/before/body.processor';
-import { logRequest } from '../../../core/processors/log.processor';
+import { response } from '../../../middleware/handlers/response';
+import { body } from '../../../middleware/processors/before/body.processor';
+import { logRequest } from '../../../middleware/processors/log.processor';
 
 export interface LogConfig {
 	respondOk?: boolean;

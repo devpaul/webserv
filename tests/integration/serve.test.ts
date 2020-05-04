@@ -7,7 +7,7 @@ import { setLogLevel } from '../../src/core/log';
 import { multiroute } from '../../src/core/route';
 import { startHttpServer } from '../../src/core/servers/createHttpServer';
 import { ServerControls } from '../../src/core/servers/startServer';
-import { fileService } from '../../src/core/services/file.service';
+import { fileService } from '../../src/middleware/services/file.service';
 import { servers } from './_support/config';
 import { detectEol } from './_support/eol';
 

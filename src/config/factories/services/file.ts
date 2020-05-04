@@ -1,6 +1,6 @@
 import { join, resolve } from 'path';
 import { log } from '../../../core/log';
-import { fileService, FileServiceProperties } from '../../../core/services/file.service';
+import { fileService, FileServiceProperties } from '../../../middleware/services/file.service';
 import { ServiceFactory } from '../../interfaces';
 import { $Env, Environment } from '../../utils/environment';
 

@@ -1,8 +1,8 @@
 /// <reference types="intern" />
 import fetch from 'node-fetch';
 import { App } from '../../src/core/app';
-import { response } from '../../src/core/middleware/response';
-import { body } from '../../src/core/processors/before/body.processor';
+import { response } from '../../src/middleware/handlers/response';
+import { body } from '../../src/middleware/processors/before/body.processor';
 
 const { assert } = intern.getPlugin('chai');
 const { describe, it } = intern.getPlugin('interface.bdd');
