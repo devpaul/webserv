@@ -40,6 +40,7 @@
     "example:hello": "ts-node ./src/bin/webserv -c ./examples/hello-world/webserv.json",
     "example:https": "ts-node ./src/bin/webserv -c ./examples/forward-to-https/webserv.json",
     "example:proxy": "ts-node ./src/bin/webserv -c ./examples/proxy/webserv.json",
+    "example:test": "ts-node ./src/bin/webserv -p 5432 -t proxy https://devpaul.com",
     "generate": "run-s generate:*",
     "generate:guards": "barrelsby -e \"(spec|index.ts)\" -d \"./src/middleware/guards\"",
     "generate:handlers": "barrelsby -e \"(spec|index.ts)\" -d \"./src/middleware/handlers\"",

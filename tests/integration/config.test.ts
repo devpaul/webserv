@@ -1,5 +1,5 @@
 /// <reference types="intern" />
-import { servers as serverPath } from './_support/config';
+import { servers as serverPath, TEST_PORT } from './_support/config';
 import { assertOk, createServer } from './_support/createServer';
 import { createJanitor, wrapServers } from './_support/janitor';
 import { testLogLevel } from './_support/testLogLevel';
@@ -15,9 +15,9 @@ describe('config tests', () => {
 		janitor.track(...servers.map(wrapServers));
 
 		await assertOk([
-			'http://localhost:3331',
-			'http://localhost:3331/src/index',
-			'http://localhost:3331/assets/1.txt'
+			`http://localhost:${TEST_PORT}`,
+			`http://localhost:${TEST_PORT}/src/index`,
+			`http://localhost:${TEST_PORT}/assets/1.txt`
 		]);
 	});
 });

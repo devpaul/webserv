@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 import { dirname } from 'path';
-import { $Env, createEnvironment } from 'src/config/utils/environment';
 import * as yargs from 'yargs';
 import start from '../config';
 import { FileConfig } from '../config/factories/services/file';
 import { Config, loadConfig } from '../config/utils/config';
+import { $Env, createEnvironment } from '../config/utils/environment';
 import { Server, ServiceConfig } from '../config/utils/server';
 
 const argv = yargs
