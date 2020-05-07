@@ -6,7 +6,7 @@
 
 ## Why use `webserv`?
 
-Webserv's aim is to have a fast, simple way to provide a backend to your projects. We want to enable developers to start working on their experience immediately. Webserv is not, nor will ever be a production-ready server (for that we recommend [Nestjs](https://nestjs.com/)). Instead it is a quick and easy way to start serving your app with zero thought or investment.
+Webserv's aim is to have a fast, simple way to provide a backend to your projects. We want to enable developers to start working on their experience immediately.
 
 Serve a folder right now without installing anything using `npx`.
 
